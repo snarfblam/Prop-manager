@@ -1,0 +1,26 @@
+{
+  "name": "prop-manager",
+  "version": "1.0.0",
+  "description": "Application for property management and tenant services.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snarfblam/Prop-manager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/snarfblam/Prop-manager/issues"
+  },
+  "homepage": "https://github.com/snarfblam/Prop-manager#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "request": "^2.85.0",
+    "sequelize": "^4.37.7"
+  }
+}
