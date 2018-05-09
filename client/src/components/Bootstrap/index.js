@@ -1,7 +1,7 @@
 /*
-    Bootstrap grid components
+    Bootstrap components
 
-    usage example:
+    grid components example:
         <Container>
             <Row>
                 <Col size='12 sm-4'>
@@ -14,9 +14,26 @@
         </Container>
 */
 
+// grid
 import Col from './Col';
 import Row from './Row';
 import Container from './Container';
 
-export { Col, Row, Container };
-export default { Col, Row, Container };
+// nav
+import Navbar from './Navbar';
+import NavbarBrand from './NavbarBrand';
+import NavbarNav from './NavbarNav';
+import NavItem from './NavItem';
+import NavLink from './NavLink';
+import NavLinkItem from './NavLinkItem';
+
+
+export {
+    Col, Row, Container,
+    Navbar, NavbarBrand, NavbarNav, NavItem, NavLink, NavLinkItem
+};
+
+export default {
+    Col, Row, Container,
+    Navbar, NavbarBrand, NavbarNav, NavItem, NavLink, NavLinkItem
+};
