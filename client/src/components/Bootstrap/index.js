@@ -12,6 +12,18 @@
                 </Col>
             </Row>
         </Container>
+
+    Navbar example:
+        <Navbar>
+            <NavbarBrand to='/some/path'>
+                My Site
+            </NavbarBrand>
+            <NavbarNav>
+                <NavLinkItem to='/something>Something</NavLinkItem>
+                <NavLinkItem to='/stuff>Stuff</NavLinkItem>
+                <NavItem>Text that isn't a link</NavItem>
+            </NavbarNav>
+        </Navbar>
 */
 
 // grid

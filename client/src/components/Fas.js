@@ -1,7 +1,10 @@
 /*
     Font-awesome icon component
 
-    usage example: <button><Fas icon='plus' /> Add Item<button>
+    usage example: 
+        <button>
+            <Fas icon='plus' /> Add Item
+        </button>
 */
 
 import React from 'react';

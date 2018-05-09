@@ -1,3 +1,7 @@
+/*
+    Implements a bootstrap container element.
+*/
+
 import React from 'react';
 
 export default props => (
