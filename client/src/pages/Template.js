@@ -3,7 +3,7 @@
     Template for other pages
 
     Props:
-        navItems: collection of JSX NavItem or NavLinkItem objects
+        navItems: either (collection of JSX NavItem or NavLinkItem objects) or (array of objects {path: string, text: string})
         content: collection of JSX items
 
 */
@@ -20,6 +20,16 @@ class Landing extends React.Component {
         };
     }
 
+    toNavItems(navList) {
+        return navList.map(item => {
+            if (item.path && item.text) {
+                return <NavLinkItem to={item.path}>{item.text}</NavLinkItem>
+            } else {
+                return item;
+            }
+        });
+    }
+
     render() {
         return (
             <div>
@@ -30,12 +40,12 @@ class Landing extends React.Component {
                             132 Chapel St
                         </NavbarBrand>
                         <NavbarNav>
-                            {this.props.navItems}
+                            {this.toNavItems(this.props.navItems)}
                         </NavbarNav>
                         <NavbarNav>
                             <NavLinkItem to='/'>
-                                Login    
-                            </NavLinkItem>    
+                                Login
+                            </NavLinkItem>
                         </NavbarNav>
                     </Container>
                 </Navbar>

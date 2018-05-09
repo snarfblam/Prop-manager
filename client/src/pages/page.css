@@ -2,3 +2,13 @@
     vertical-align: sub;
     margin-right: .3rem;
 }
+
+.rent-amount {
+    color: darkgreen;
+    font-size: 2rem;
+}
+
+.rent-date {
+    color: midnightblue;
+    font-size: 2rem;
+}
