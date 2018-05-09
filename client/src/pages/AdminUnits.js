@@ -4,8 +4,8 @@ import Template from './Template';
 import './page.css'
 
 class AdminUnits extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props)
         this.state = {
 
         };

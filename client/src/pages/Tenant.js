@@ -4,8 +4,8 @@ import Template from './Template';
 import './page.css'
 
 class Tenant extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props)
         this.state = {
 
         };

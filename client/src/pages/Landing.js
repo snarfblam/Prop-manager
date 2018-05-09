@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import './page.css'
 
 class Landing extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props)
         this.state = {
 
         };
