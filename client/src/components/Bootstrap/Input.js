@@ -3,6 +3,7 @@ import React from 'react';
 // props.name
 //      .value
 //      .label
+//      .password?
 export default props => (
     <div className='form-group'>
         <label htmlFor={'input-' + props.name}>
@@ -10,9 +11,11 @@ export default props => (
         </label>
         <input
             className='form-control'
-            type='text' name={props.name}
+            type={props.password ? 'password' : 'text'}
+            name={props.name}
             id={'input-' + props.name}
             value={props.value}
-            onChange={props.onChange} />
+            onChange={props.onChange}
+        />
     </div>    
 );
