@@ -19,6 +19,7 @@ export default props => (
             </h2>
             <div className='modal-body'>
                 {props.state.content}
+                {console.log(props.state.content)}
             </div>
         </div>
     </div>

@@ -7,23 +7,23 @@ import React from 'react';
 /**
  * @constructor
  * @prop {boolean} visible - Indicates whether the modal will be visible on the page
- * @prop {any} contents - React component to display inside the modal
+ * @prop {any} content - React component to display inside the modal
  * @prop {string} title - Title to display for the modal
  */
-function ModalState(visible, contents, title) {
+function ModalState(visible, content, title) {
     this.visible = visible || false;
     this.title = title || '';
-    this.contents = contents || (<p />);
+    this.content = content || (<p />);
 
     Object.freeze(this);
 }
 
-ModalState.prototype.show = function (contents, title) {
-    return new ModalState(true, contents || this.contents, title || this.title);
+ModalState.prototype.show = function (content, title) {
+    return new ModalState(true, content || this.content, title || this.title);
 }
 
 ModalState.prototype.hide = function () {
-    return new ModalState(false, this.contents, this.title);
+    return new ModalState(false, this.content, this.title);
 }
 
 export default ModalState;
