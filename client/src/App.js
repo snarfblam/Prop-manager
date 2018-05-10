@@ -19,8 +19,17 @@ class App extends Component {
         super(props);
 
         this.state = {
-            modal: new ModalState(false, '', ''),
+            modal: new ModalState(false, null, "Hi, I'm a modal"),
         };
+    }
+
+    
+    onLoginClicked() {
+        this.setState({
+            modal: this.state.modal.show((
+                <div>modal test </div>
+            ), "Login"),
+        });
     }
 
     render() {

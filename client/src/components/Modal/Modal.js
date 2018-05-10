@@ -17,7 +17,9 @@ export default props => (
                 }}>&times;</a></span>
                 {props.state.title}
             </h2>
-            <p className='modal-body'>{props.state.text}</p>
+            <div className='modal-body'>
+                {props.state.content}
+            </div>
         </div>
     </div>
 );

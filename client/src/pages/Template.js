@@ -11,15 +11,16 @@
 import React from 'react';
 import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import './page.css'
+import LoginLink from '../components/Login/LoginLink';
+import { ModalState } from '../components/Modal';
 
 class Landing extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-
         };
     }
-
+ 
     toNavItems(navList) {
         return navList.map(item => {
             if (item.path && item.text) {
@@ -29,6 +30,7 @@ class Landing extends React.Component {
             }
         });
     }
+
 
     render() {
         return (
@@ -43,9 +45,10 @@ class Landing extends React.Component {
                             {this.toNavItems(this.props.navItems)}
                         </NavbarNav>
                         <NavbarNav>
-                            <NavLinkItem to='/'>
+                            {/* <NavLinkItem to='/'>
                                 Login
-                            </NavLinkItem>
+                            </NavLinkItem> */}
+                            <LoginLink onClick={this.onLoginClicked} />
                         </NavbarNav>
                     </Container>
                 </Navbar>
