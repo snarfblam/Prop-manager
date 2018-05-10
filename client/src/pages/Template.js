@@ -23,7 +23,7 @@ class Landing extends React.Component {
     toNavItems(navList) {
         return navList.map(item => {
             if (item.path && item.text) {
-                return <NavLinkItem to={item.path}>{item.text}</NavLinkItem>
+                return <NavLinkItem to={item.path} key={item.path}>{item.text}</NavLinkItem>
             } else {
                 return item;
             }
