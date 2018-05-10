@@ -1,32 +1,33 @@
 module.exports = function(sequelize, DataTypes) {
-  var Service = sequelize.define("Service", {
-    unitnumber: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      len: { args: 1,
-              msg: "Must have a Categoy Name"}
-    },
-    businessName: {
+  var Unit = sequelize.define("Unit", {
+    unitName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       len: { args: 1,
-              msg: "Must have a Business Name"}
+              msg: "Must have a Unit Name"}
     },
-    businessService: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    costOfService: {
+    rate: {
       type: DataTypes.INTEGER,
       allowNull: false
     }
   });
-  Service.associate = function(models) {
-    Service.belongsTo(models.User, {
+  Unit.associate = function(models) {
+    Unit.belongsTo(models.User, {
       foreignKey: {
         allowNull: false
       }
     });
+
+    // connecting/ the maintenance aka one to many
+    Unit.hasMany(models.Maintenance, {
+      onDelete: "cascade"
+    });
+
+    // connecting the payment aka one to many
+    Unit.hasMany(models.Payment, {
+      onDelete: "cascade"
+    });
+
   };
     return Unit;
 };
