@@ -9,7 +9,7 @@ app.use(Express.urlencoded());
 app.use(Express.json());
 
 ////////////// Routing ////////////////////////
-app.use(express.static(path.join(__dirname, 'client', 'build')));
+app.use(Express.static(path.join(__dirname, 'client', 'build')));
 app.get('*', (req, res) => {
     var indexPath = path.join(__dirname, 'client', 'build', 'index.html');
     res.sendfile(indexPath);
