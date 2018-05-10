@@ -12,3 +12,14 @@
     color: midnightblue;
     font-size: 2rem;
 }
+
+.googlogo {
+    margin-top: .5em;
+    height: 24px;
+}
+
+.container-400 {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: left;  
+}

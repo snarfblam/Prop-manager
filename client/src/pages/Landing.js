@@ -29,6 +29,7 @@ class Landing extends React.Component {
                             <li><Link to='/admin/payments'>Admin Payments</Link></li>
                             <li><Link to='/admin/users'>Admin Users</Link></li>
                             <li><Link to='/tenant'>Tenant</Link></li>
+                            <li><Link to='/tenant/activate'>Tenant Activate</Link></li>
                         </ul>    
                     </div>
                 }

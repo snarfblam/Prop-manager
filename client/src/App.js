@@ -10,6 +10,7 @@ import AdminMaint from './pages/AdminMaint';
 import AdminPayments from './pages/AdminPayments';
 import AdminUsers from './pages/AdminUsers';
 import Tenant from './pages/Tenant';
+import TenantActivate from './pages/TenantActivate';
 import { Modal, ModalState } from './components/Modal';
 
 
@@ -33,6 +34,7 @@ class App extends Component {
                     <Route exact path='/admin/payments' component={AdminPayments} />
                     <Route exact path='/admin/users' component={AdminUsers} />
                     <Route exact path='/tenant' component={Tenant} />
+                    <Route exact path='/tenant/activate' component={TenantActivate} />
 
                     <Modal state={this.state.modal} onRequestClose={() => this.setState({ modal: this.state.modal.hide() })} />
                 </div>
