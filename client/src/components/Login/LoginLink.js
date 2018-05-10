@@ -4,7 +4,6 @@ function onLogin(event, handler) {
     event.preventDefault();
     // if (handler) handler();
     handler();
-    console.log(handler);
 }
 
 export default props => (

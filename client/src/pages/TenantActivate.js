@@ -4,7 +4,7 @@ import Template from './Template';
 import './page.css'
 import GoogleSvg from '../components/svg/GoogleSvg';
 
-class TenantActivate extends React.Component {
+class TenantActivate extends Template {
     constructor(props) {
         super(props)
         this.state = {
@@ -12,15 +12,18 @@ class TenantActivate extends React.Component {
         };
     }
 
-    render() {
-        return (
-            <Template
-            navItems={[
-                { path: '/tenant', text: 'Home' },
+  
+
+    getNavItems() {
+        return [
+                   { path: '/tenant', text: 'Home' },
                 { path: '/tenant', text: 'Pay Rent'},
                 { path: '/tenant', text: 'Request Maintenance' },
-            ]}
-                content={
+     ];
+    }
+
+    getContent() {
+        return (
                     <div>
                         <h2>Activate your account</h2>
                         <hr />                        
@@ -44,10 +47,7 @@ class TenantActivate extends React.Component {
                         </Form>    
 
                     </div>
-                }
-            />
-        )
-
+        );
     }
 }
 

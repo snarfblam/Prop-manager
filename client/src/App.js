@@ -23,7 +23,7 @@ class App extends Component {
         };
     }
 
-    
+
     onLoginClicked() {
         this.setState({
             modal: this.state.modal.show((
@@ -36,18 +36,33 @@ class App extends Component {
         return (
             <BrowserRouter>
                 <div className="App">
-                    <Route exact path='/' component={Landing} />
-                    <Route exact path='/admin/overview' component={AdminOverview} />
-                    <Route exact path='/admin/units' component={AdminUnits} />
-                    <Route exact path='/admin/maint' component={AdminMaint} />
-                    <Route exact path='/admin/payments' component={AdminPayments} />
-                    <Route exact path='/admin/users' component={AdminUsers} />
-                    <Route exact path='/tenant' component={Tenant} />
-                    <Route exact path='/tenant/activate' component={TenantActivate} />
+                    <Route exact path='/' render={() => this.renderPage(Landing)} />
+                    <Route exact path='/admin/overview' render={() => this.renderPage(AdminOverview)} />
+                    <Route exact path='/admin/units' render={() => this.renderPage(AdminUnits)} />
+                    <Route exact path='/admin/maint' render={() => this.renderPage(AdminMaint)} />
+                    <Route exact path='/admin/payments' render={() => this.renderPage(AdminPayments)} />
+                    <Route exact path='/admin/users' render={() => this.renderPage(AdminUsers)} />
+                    <Route exact path='/tenant' render={() => this.renderPage(Tenant)} />
+                    <Route exact path='/tenant/activate' render={() => this.renderPage(TenantActivate)} />
 
+                    {console.log("app", this.state.modal)}
                     <Modal state={this.state.modal} onRequestClose={() => this.setState({ modal: this.state.modal.hide() })} />
                 </div>
             </BrowserRouter>
+        );
+    }
+
+    renderPage(Page) {
+        return (
+            <Page
+                showModal={
+                    (content, title) => {
+                        this.setState({
+                            modal: this.state.modal.show(content, title),
+                        });
+                     }
+                }
+            />
         );
     }
 }

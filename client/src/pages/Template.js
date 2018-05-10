@@ -14,7 +14,7 @@ import './page.css'
 import LoginLink from '../components/Login/LoginLink';
 import { ModalState } from '../components/Modal';
 
-class Landing extends React.Component {
+class Template extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -42,22 +42,43 @@ class Landing extends React.Component {
                             132 Chapel St
                         </NavbarBrand>
                         <NavbarNav>
-                            {this.toNavItems(this.props.navItems)}
+                            {this.toNavItems(
+                                // this.props.navItems
+                                this.getNavItems()
+                            )}
                         </NavbarNav>
                         <NavbarNav>
                             {/* <NavLinkItem to='/'>
                                 Login
                             </NavLinkItem> */}
-                            <LoginLink onClick={this.onLoginClicked} />
+                            <LoginLink onClick={() => this.onLoginClicked()} />
                         </NavbarNav>
                     </Container>
                 </Navbar>
 
-                {this.props.content}
+                {/* {this.props.content} */}
+                {this.getContent()}
 
             </div>
         );
     }
+
+    onLoginClicked() {
+
+        this.props.showModal(
+            <h1>hi</h1>,
+            "hello"
+        );
+    }
+
+    // getNavItems() {
+    //     throw Error("getNavItems not implemented");
+    // }
+
+    
+    // getContent() {
+    //     throw Error("getNavItems not implemented");
+    // }
 }
 
-export default Landing;
+export default Template;

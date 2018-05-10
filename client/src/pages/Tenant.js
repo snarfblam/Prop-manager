@@ -3,7 +3,7 @@ import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../compo
 import Template from './Template';
 import './page.css'
 
-class Tenant extends React.Component {
+class Tenant extends Template {
     constructor(props) {
         super(props)
         this.state = {
@@ -11,15 +11,17 @@ class Tenant extends React.Component {
         };
     }
 
-    render() {
-        return (
-            <Template
-            navItems={[
+
+    getNavItems() {
+        return [
                 { path: '/tenant', text: 'Home' },
                 { path: '/tenant', text: 'Pay Rent'},
                 { path: '/tenant', text: 'Request Maintenance' },
-            ]}
-                content={
+        ];
+    }
+
+    getContent() {
+        return (
                     <div>
                         <h3>Rent</h3>
                         <p>
@@ -34,10 +36,7 @@ class Tenant extends React.Component {
                         <button>Request Maintenance</button>
 
                     </div>
-                }
-            />
-        )
-
+        );
     }
 }
 
