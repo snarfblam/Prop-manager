@@ -1,0 +1,39 @@
+.table-cmp-container {
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    width: fit-content;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: calc(100% - 100px);
+}
+
+.table-cmp {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+.table-cmp thead {
+    background: lightgray;
+}
+
+.table-cmp tr:nth-child(even) {
+    background: #EEF;
+}
+tr:nth-child(odd) {
+    background: inherit;
+}
+
+.table-cmp td,
+.table-cmp th {
+    padding: 4px 16px;
+}
+
+.table-cmp tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.table-cmp tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
