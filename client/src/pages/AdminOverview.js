@@ -3,7 +3,7 @@ import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../compo
 import Template from './Template';
 import './page.css'
 
-class AdminOverview extends React.Component {
+class AdminOverview extends Template {
     constructor(props) {
         super(props)
         this.state = {
@@ -11,28 +11,27 @@ class AdminOverview extends React.Component {
         };
     }
 
-    render() {
-        return (
-            <Template
-            navItems={[
-                { path: '/admin/overview', text: 'Overview' },
-                { path: '/admin/units', text: 'Units'},
-                { path: '/admin/maint', text: 'Maintenance' },
-                { path: '/admin/payments', text: 'Payments'},
-                { path: '/admin/users', text: 'Users' },
-            ]}
-                content={
-                    <div>
-                        <h1>Overview</h1>
-                        <h2>Maintenance</h2>
-                        table goes here
-                        <h2>Payments</h2>
-                        table goes here
-                    </div>
-                }
-            />
-        )
 
+    getNavItems() {
+        return [
+            { path: '/admin/overview', text: 'Overview' },
+            { path: '/admin/units', text: 'Units'},
+            { path: '/admin/maint', text: 'Maintenance' },
+            { path: '/admin/payments', text: 'Payments'},
+            { path: '/admin/users', text: 'Users' },
+        ];
+    }
+
+    getContent() {
+        return (
+            <div>
+                <h1>Overview</h1>
+                <h2>Maintenance</h2>
+                table goes here
+                <h2>Payments</h2>
+                table goes here
+            </div>
+        );
     }
 }
 

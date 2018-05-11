@@ -2,8 +2,9 @@ import React from 'react';
 import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
+import Button from '../components/Bootstrap/Button';
 
-class Tenant extends React.Component {
+class Tenant extends Template {
     constructor(props) {
         super(props)
         this.state = {
@@ -11,15 +12,17 @@ class Tenant extends React.Component {
         };
     }
 
-    render() {
-        return (
-            <Template
-            navItems={[
+
+    getNavItems() {
+        return [
                 { path: '/tenant', text: 'Home' },
                 { path: '/tenant', text: 'Pay Rent'},
                 { path: '/tenant', text: 'Request Maintenance' },
-            ]}
-                content={
+        ];
+    }
+
+    getContent() {
+        return (
                     <div>
                         <h3>Rent</h3>
                         <p>
@@ -28,16 +31,13 @@ class Tenant extends React.Component {
                         <p>
                             <span className='rent-amount'>$850</span> on <span className='rent-date'>April 1, 2019</span>
                         </p>
-                        <button>Pay Rent</button>
+                        <Button>Pay Rent</Button>
                         <h3>Maintenance Requests</h3>
                         <p>[request table here]</p>
-                        <button>Request Maintenance</button>
+                        <Button>Request Maintenance</Button>
 
                     </div>
-                }
-            />
-        )
-
+        );
     }
 }
 

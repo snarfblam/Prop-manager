@@ -1,3 +1,8 @@
+hr {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .brand-emblem {
     vertical-align: sub;
     margin-right: .3rem;
@@ -11,4 +16,15 @@
 .rent-date {
     color: midnightblue;
     font-size: 2rem;
+}
+
+.googlogo {
+    margin-top: .5em;
+    height: 24px;
+}
+
+.container-400 {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: left;  
 }
