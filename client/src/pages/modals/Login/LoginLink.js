@@ -7,7 +7,7 @@ function onLogin(event, handler) {
 }
 
 export default props => (
-    <a href='#' onClick={(e) => {
+    <a href='/login' onClick={(e) => {
         onLogin(e, props.onClick);
     }}>Login</a>
 )

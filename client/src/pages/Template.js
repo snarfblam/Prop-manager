@@ -11,8 +11,7 @@
 import React from 'react';
 import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import './page.css'
-import LoginLink from '../components/Login/LoginLink';
-import { ModalState } from '../components/Modal';
+import LoginLink from './modals/Login/LoginLink';
 import Login from './modals/Login'
 
 class Template extends React.Component {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
 
