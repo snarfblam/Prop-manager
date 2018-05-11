@@ -1,3 +1,8 @@
+hr {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .brand-emblem {
     vertical-align: sub;
     margin-right: .3rem;

@@ -13,6 +13,7 @@ import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../compo
 import './page.css'
 import LoginLink from '../components/Login/LoginLink';
 import { ModalState } from '../components/Modal';
+import Login from '../components/Login/Login';
 
 class Template extends React.Component {
     constructor(props) {
@@ -66,8 +67,8 @@ class Template extends React.Component {
     onLoginClicked() {
 
         this.props.showModal(
-            <h1>hi</h1>,
-            "hello"
+            <Login />,
+            "Log In"
         );
     }
 

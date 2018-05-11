@@ -3,6 +3,7 @@ import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container, Form, Input } f
 import Template from './Template';
 import './page.css'
 import GoogleSvg from '../components/svg/GoogleSvg';
+import Button from '../components/Bootstrap/Button';
 
 class TenantActivate extends Template {
     constructor(props) {
@@ -30,9 +31,9 @@ class TenantActivate extends Template {
                         <p>
                             Activate your account with
                         </p>
-                        <button>
+                        <Button>
                             <GoogleSvg className="googlogo"/>
-                        </button>
+                        </Button>
 
                         <hr />                        
                         <p>Create a local account</p>
@@ -43,7 +44,7 @@ class TenantActivate extends Template {
                                 value='steven'
                                 label='Password'
                             />
-                            <button>Create Account</button>
+                            <Button>Create Account</Button>
                         </Form>    
 
                     </div>

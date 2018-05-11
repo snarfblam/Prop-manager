@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
+import Button from '../components/Bootstrap/Button';
 
 class Tenant extends Template {
     constructor(props) {
@@ -30,10 +31,10 @@ class Tenant extends Template {
                         <p>
                             <span className='rent-amount'>$850</span> on <span className='rent-date'>April 1, 2019</span>
                         </p>
-                        <button>Pay Rent</button>
+                        <Button>Pay Rent</Button>
                         <h3>Maintenance Requests</h3>
                         <p>[request table here]</p>
-                        <button>Request Maintenance</button>
+                        <Button>Request Maintenance</Button>
 
                     </div>
         );
