@@ -1,6 +1,6 @@
 import React from 'react';
-import GoogleSvg from '../svg/GoogleSvg';
-import { Form, Input } from '../Bootstrap';
+import GoogleSvg from '../../../components/svg/GoogleSvg';
+import { Form, Input } from '../../../components/Bootstrap';
 
 export default props => (
     <div>
