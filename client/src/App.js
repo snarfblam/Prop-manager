@@ -44,7 +44,6 @@ class App extends Component {
                     <Route exact path='/tenant' render={() => this.renderPage(Tenant)} />
                     <Route exact path='/tenant/activate' render={() => this.renderPage(TenantActivate)} />
 
-                    {console.log("app", this.state.modal)}
                     <Modal state={this.state.modal} onRequestClose={() => this.setState({ modal: this.state.modal.hide() })} />
                 </div>
             </BrowserRouter>

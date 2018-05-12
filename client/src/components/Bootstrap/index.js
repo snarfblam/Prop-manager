@@ -43,17 +43,20 @@ import NavLinkItem from './NavLinkItem';
 import Form from './Form';
 import Input from './Input';
 import Select from './Select';
+import CheckList, { CheckListState } from './CheckList';
 
 
 
 export {
     Col, Row, Container,
     Navbar, NavbarBrand, NavbarNav, NavItem, NavLink, NavLinkItem,
-    Form, Input, Select
+    Form, Input, Select,
+    CheckList, CheckListState
 };
 
 export default {
     Col, Row, Container,
     Navbar, NavbarBrand, NavbarNav, NavItem, NavLink, NavLinkItem,
-    Form, Input, Select
+    Form, Input, Select,
+    CheckList, CheckListState
 };

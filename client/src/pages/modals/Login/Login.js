@@ -5,11 +5,8 @@ import { Form, Input } from '../../../components/Bootstrap';
 export default props => (
     <div>
         <p>
-            Log in with
+            Log in with&ensp;<button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
         </p>
-        <button className='btn btn-dark'>
-            <GoogleSvg className="googlogo" />
-        </button>
 
         <hr />
         <p>Log in with username</p>
