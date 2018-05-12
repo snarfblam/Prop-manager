@@ -1,3 +1,14 @@
+/*  
+    Select element.
+
+    Props:
+        name: string - input name
+        value: string - selected value
+        items?: - optional array will be rendered as options. Alternatively, native <option> objects may be nested inside the <Select> object 
+                  items can be strings or {value: string, text: string}
+        onChange: function
+*/
+
 import React from 'react';
 
 // props.name
@@ -9,7 +20,12 @@ export default props => (
             {props.label}    
         </label>
         <select className='form-control' type='text' name={props.name} id={'input-' + props.name} value={props.value} onChange={props.onChange}>
-            {props.children}    
+            {props.children}
+            {props.items.map((item, index) => (
+                <option key={index} value={item.value || item}>
+                    {item.text || item}    
+                </option>
+            ))}
         </select>    
     </div>    
 );
