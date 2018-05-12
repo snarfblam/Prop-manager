@@ -12,8 +12,8 @@ class AdminMaint extends Template {
 
         this.filterOptions = [
             {name: 'complete', label: 'Completed', checked: true},
-            {name: 'incomplete', label: 'Not completed'},
-        ];
+            {name: 'incomplete', label: 'Not completed'}, 
+        ]; 
         this.state = {
             filterState: new CheckListState(this.filterOptions),
         };

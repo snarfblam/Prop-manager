@@ -33,7 +33,6 @@
 import React from 'react';
 
 export default props => {
-    console.log(props.inline);
     var className = props.inline ? 'form-check form-check-inline' : 'frm-check';
     var state = props.state;
     return (
@@ -44,8 +43,8 @@ export default props => {
                         <input
                             type='checkbox'
                             name={item.name}
-                            value={props.state[item.name] || false}
-                            onChange={(e) => { props.stateChanged(state.setValue(item.name, e.target.value)) }}
+                            checked={props.state[item.name] || false}
+                            onChange={(e) => { props.stateChanged(state.setValue(item.name, e.target.checked)) }}
                         /> {item.label}
                     </label>
                 </div>
