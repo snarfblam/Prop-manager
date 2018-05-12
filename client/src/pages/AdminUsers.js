@@ -1,9 +1,8 @@
 import React from 'react';
-import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
 
-class AdminUsers extends React.Component {
+class AdminUsers extends Template {
     constructor(props) {
         super(props)
         this.state = {
@@ -11,17 +10,20 @@ class AdminUsers extends React.Component {
         };
     }
 
-    render() {
-        return (
-            <Template
-            navItems={[
+ 
+
+    getNavItems() {
+        return [
                 { path: '/admin/overview', text: 'Overview' },
                 { path: '/admin/units', text: 'Units'},
                 { path: '/admin/maint', text: 'Maintenance' },
                 { path: '/admin/payments', text: 'Payments'},
                 { path: '/admin/users', text: 'Users' },
-            ]}
-                content={
+        ];
+    }
+
+    getContent() {
+        return (
                     <div>
                         <h1>Users</h1>
                         user &lt;select&gt; goes here
@@ -30,10 +32,7 @@ class AdminUsers extends React.Component {
                         <hr />
                         presumably the 'new user' interface will be right here
                     </div>
-                }
-            />
-        )
-
+        );
     }
 }
 

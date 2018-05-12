@@ -11,24 +11,26 @@
 import React from 'react';
 import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import './page.css'
+import LoginLink from './modals/Login/LoginLink';
+import Login from './modals/Login'
 
-class Landing extends React.Component {
+class Template extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-
         };
     }
-
+ 
     toNavItems(navList) {
         return navList.map(item => {
             if (item.path && item.text) {
-                return <NavLinkItem to={item.path}>{item.text}</NavLinkItem>
+                return <NavLinkItem to={item.path} key={item.path}>{item.text}</NavLinkItem>
             } else {
                 return item;
             }
         });
     }
+
 
     render() {
         return (
@@ -40,21 +42,43 @@ class Landing extends React.Component {
                             132 Chapel St
                         </NavbarBrand>
                         <NavbarNav>
-                            {this.toNavItems(this.props.navItems)}
+                            {this.toNavItems(
+                                // this.props.navItems
+                                this.getNavItems()
+                            )}
                         </NavbarNav>
                         <NavbarNav>
-                            <NavLinkItem to='/'>
+                            {/* <NavLinkItem to='/'>
                                 Login
-                            </NavLinkItem>
+                            </NavLinkItem> */}
+                            <LoginLink onClick={() => this.onLoginClicked()} />
                         </NavbarNav>
                     </Container>
                 </Navbar>
 
-                {this.props.content}
+                {/* {this.props.content} */}
+                {this.getContent()}
 
             </div>
         );
     }
+
+    onLoginClicked() {
+
+        this.props.showModal(
+            <Login />,
+            "Log In"
+        );
+    }
+
+    // getNavItems() {
+    //     throw Error("getNavItems not implemented");
+    // }
+
+    
+    // getContent() {
+    //     throw Error("getNavItems not implemented");
+    // }
 }
 
-export default Landing;
+export default Template;
