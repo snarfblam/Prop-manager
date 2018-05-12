@@ -19,12 +19,16 @@
   },
   "homepage": "https://github.com/snarfblam/Prop-manager#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "express-sequelize-session": "^0.4.0",
     "express-session": "^1.15.6",
     "express-session-sequelize": "^1.1.0",
     "mysql2": "^1.5.3",
+    "passport": "^0.4.0",
+    "passport-google-oauth": "^1.0.0",
+    "passport-google-oauth20": "^1.0.0",
     "request": "^2.85.0",
     "sequelize": "^4.37.7",
     "stripe": "^5.9.0"
