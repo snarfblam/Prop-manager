@@ -27,7 +27,7 @@
         } []    
         inline?: any            - if true, items will be displayed inline
         state: {...values}      - a CheckListState object with a boolean property named after each item
-        stateChanged: function()- called when this object's state is changed, passing a single parameter: a CheckListState.
+        onChange: function()- called when this object's state is changed, passing a single parameter: a CheckListState.
  */
 
 import React from 'react';
@@ -44,7 +44,7 @@ export default props => {
                             type='checkbox'
                             name={item.name}
                             checked={props.state[item.name] || false}
-                            onChange={(e) => { props.stateChanged(state.setValue(item.name, e.target.checked)) }}
+                            onChange={(e) => { props.onChange(state.setValue(item.name, e.target.checked)) }}
                         /> {item.label}
                     </label>
                 </div>
