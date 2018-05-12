@@ -39,9 +39,9 @@ class AdminMaint extends Template {
                 { name: 'status', label: '' },
             ],
             items: [
-                { unit: 5, date: '5/10/2018', message: 'Just saying hi!', status: ackButton },
-                { unit: 1, date: '5/8/2018', message: 'heater is on fire, please send help', status: ackButton },
-                { unit: 5, date: '4/29/2018', message: 'roof is leaking, documents ruined, electronics destroyed, seeking compensation. lawsuit pending, please await legal correspondence.', status: ackButton },
+                { unit: 103, date: '5/10/2018', message: 'Just saying hi!', status: ackButton },
+                { unit: 101, date: '5/8/2018', message: 'heater is on fire, please send help', status: ackButton },
+                { unit: 102, date: '4/29/2018', message: 'roof is leaking, documents ruined, electronics destroyed, seeking compensation. lawsuit pending, please await legal correspondence.', status: ackButton },
             ]
         };
 
@@ -52,7 +52,7 @@ class AdminMaint extends Template {
                     items={this.filterOptions}
                     state={this.state.filterState}
                     inline
-                    stateChanged={newState => this.setState({
+                    onChange={newState => this.setState({
                         filterState: newState
                     })}
                 />    
