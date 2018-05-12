@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
+import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container, CheckList, CheckListState } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
 import { Table } from '../components/Table';
@@ -9,8 +9,13 @@ import Fas from '../components/Fas';
 class AdminMaint extends Template {
     constructor(props) {
         super(props)
-        this.state = {
 
+        this.filterOptions = [
+            {name: 'complete', label: 'Completed', checked: true},
+            {name: 'incomplete', label: 'Not completed'},
+        ];
+        this.state = {
+            filterState: new CheckListState(this.filterOptions),
         };
     }
 
@@ -43,6 +48,14 @@ class AdminMaint extends Template {
         return (
             <div>
                 <h2>Maintenance Requests</h2>
+                <CheckList 
+                    items={this.filterOptions}
+                    state={this.state.filterState}
+                    inline
+                    stateChanged={newState => this.setState({
+                        filterState: newState
+                    })}
+                />    
                 <Table data={data} />
             </div>
         );
