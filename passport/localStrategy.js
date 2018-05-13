@@ -3,9 +3,12 @@ const LocalStrategy = require('passport-local').Strategy
 
 const strategy = new LocalStrategy(
 	{
-		usernameField: 'username' // not necessary, DEFAULT
+		usernameField: 'username', // not necessary, DEFAULT
+        passReqToCallback: true,
 	},
-	function(username, password, done) {
+    function (req, username, password, done) {
+        // TODO: validate that this function signature is correct
+        throw Error("Before running this code, please verify we are receiving the correct parameters here.");
 		User.findOne({ 'local.username': username }, (err, userMatch) => {
 			if (err) {
 				return done(err)
