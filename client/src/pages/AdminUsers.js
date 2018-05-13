@@ -4,6 +4,7 @@ import './page.css'
 import { Select } from '../components/Bootstrap';
 import { Table } from '../components/Table';
 import Button from '../components/Bootstrap/Button';
+import NewUser from './modals/NewUser/NewUser';
 
 class AdminUsers extends Template {
     constructor(props) {
@@ -15,10 +16,23 @@ class AdminUsers extends Template {
                 { value: 'would be an id 3', text: 'Clark' },
             ],
             selectedUserId: 'would be an id 2', // should correspond to a userList value
+            newUserData: {},
         };
+
+        this.onNewUserSubmit = this.onNewUserSubmit.bind(this);
     }
 
+    onNewUserSubmit(data) {
+        // this.hideModal();
+        this.showModal(<p>This is where we would make a request to our API</p>, "Cool Beans!");
 
+        // Save the form data. If there is an error from the server, this allows the user to bring the form back
+        // up with the entered data still in there instead of starting from scratch.
+        
+        this.state.newUserData = data;
+        // TODO: reset newUserData upon a success result from the server
+        
+    }
 
     getNavItems() {
         return [
@@ -53,7 +67,9 @@ class AdminUsers extends Template {
                 <h3>Information</h3>
                 <Table data={data} />
                 <hr />
-                <Button onClick={()=>alert('Will there be a modal?')}>Create New User </Button>
+                <Button onClick={() => this.props.showModal(
+                    <NewUser onSubmit={this.onNewUserSubmit} initialData={ this.state.newUserData} />, "New User" 
+                )}>Create New User </Button>
             </div>
         );
     }

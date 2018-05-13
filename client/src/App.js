@@ -60,6 +60,9 @@ class App extends Component {
                         });
                      }
                 }
+                hideModal={ () =>
+                    this.setState({modal: this.state.modal.hide()})
+                }
             />
         );
     }
