@@ -16,15 +16,22 @@ class AdminUsers extends Template {
                 { value: 'would be an id 3', text: 'Clark' },
             ],
             selectedUserId: 'would be an id 2', // should correspond to a userList value
-            newUserModalVisible: false,
+            newUserData: {},
         };
 
         this.onNewUserSubmit = this.onNewUserSubmit.bind(this);
     }
 
-    onNewUserSubmit() {
+    onNewUserSubmit(data) {
         // this.hideModal();
         this.showModal(<p>This is where we would make a request to our API</p>, "Cool Beans!");
+
+        // Save the form data. If there is an error from the server, this allows the user to bring the form back
+        // up with the entered data still in there instead of starting from scratch.
+        
+        this.state.newUserData = data;
+        // TODO: reset newUserData upon a success result from the server
+        
     }
 
     getNavItems() {
@@ -61,7 +68,7 @@ class AdminUsers extends Template {
                 <Table data={data} />
                 <hr />
                 <Button onClick={() => this.props.showModal(
-                    <NewUser onSubmit={this.onNewUserSubmit} />, "New User"
+                    <NewUser onSubmit={this.onNewUserSubmit} initialData={ this.state.newUserData} />, "New User" 
                 )}>Create New User </Button>
             </div>
         );

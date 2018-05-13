@@ -19,6 +19,7 @@ class NewUser extends React.Component {
     constructor(props) {
         super(props);
 
+        var initialData = props.initialData || {};
         this.state = {
             fullname: '',
             phone: '',
@@ -36,6 +37,7 @@ class NewUser extends React.Component {
             errors: {
 
             },
+            ...initialData,
         }
 
         this.onInputChange = this.onInputChange.bind(this);
