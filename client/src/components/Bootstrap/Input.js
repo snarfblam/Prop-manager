@@ -1,4 +1,5 @@
 import React from 'react';
+import Fas from '../Fas';
 
 // props.name
 //      .value
@@ -8,7 +9,10 @@ import React from 'react';
 export default props => (
     <div className='form-group'>
         <label htmlFor={'input-' + props.name}>
-            {props.label}    
+            {props.label}
+            <span class={props.errorText ? 'input-error-text' : 'input-error-text-hidden'}>
+                &emsp;<Fas icon='exclamation-circle' /> {props.errorText}
+            </span>
         </label>
         <input
             className='form-control'
