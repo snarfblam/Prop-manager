@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
       },
       status: {
         allowNull: false,
-        type: DataTypes.BOOLEAN,      
+          type: DataTypes.BOOLEAN,  
       }
     });
       

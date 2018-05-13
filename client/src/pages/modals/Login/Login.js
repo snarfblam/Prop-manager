@@ -1,11 +1,14 @@
 import React from 'react';
 import GoogleSvg from '../../../components/svg/GoogleSvg';
 import { Form, Input } from '../../../components/Bootstrap';
+import './Login.css';
 
 export default props => (
     <div>
         <p>
-            Log in with&ensp;<button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
+            <a className='login-link' href='/auth/google'>
+                Log in with&ensp;<button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
+            </a>    
         </p>
 
         <hr />
@@ -27,3 +30,7 @@ export default props => (
 
     </div>
 );
+
+function loginGoogle() {
+    window.location.href = '/auth/google';
+}

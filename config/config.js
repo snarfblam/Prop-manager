@@ -16,9 +16,9 @@ module.exports = {
         "dialect": "mysql"
     },
     "production": {
-        "username": "root",
-        "password": null,
-        "database": "database_production",
+        "username": process.env.DB_UNAME,
+        "password": process.env.DB_PASSWD,
+        "database": "propsmanager",
         "host": "127.0.0.1",
         "dialect": "mysql"
     }

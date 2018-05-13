@@ -32,9 +32,9 @@ class TenantActivate extends Template {
                         <p>
                             Activate your account with
                         </p>
-                        <Button>
-                            <GoogleSvg className="googlogo"/>
-                        </Button>
+                        <a className='login-link' href='/auth/google'>
+                            <button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
+                        </a>  
 
                         <hr />                        
                         <p>Create a local account</p>
