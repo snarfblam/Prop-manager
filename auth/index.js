@@ -3,7 +3,11 @@ const router = express.Router()
 // const User = require('../db/models/user')
 const passport = require('../passport')
 
-router.get('/google', passport.authenticate('google', { scope: ['profile'] }))
+var googleAuthHandler = passport.authenticate('google', { scope: ['profile'] });
+router.get('/google', (req, res, next) => {
+    null;
+    googleAuthHandler(req, res, next);
+});
 router.get(
 	'/google/callback',
 	passport.authenticate('google', {

@@ -19,10 +19,8 @@ app.use(Express.urlencoded());
 app.use(Express.json());
 app.use(cookieParser());
 
-db.sequelize.sync({ force: true }).then(function () {
-    app.listen(PORT, () => {
-        console.log('Listening on port ' + PORT);
-    });
+db.sequelize.sync({
+    force: true
 }).then(() => {
     const sequelizeSessionStore = new SessionStore({
         db: db.sequelize,
@@ -37,14 +35,20 @@ db.sequelize.sync({ force: true }).then(function () {
 
     app.use(passport.initialize())
     app.use(passport.session()) // will call the deserializeUser
+}).then(() => {
+    ////////////// Routing ////////////////////////
+    app.use('/auth', require('./auth'));
+    app.use('/static', Express.static(path.join(__dirname, 'client', 'build', 'static')));
+    app.get('*', (req, res) => {
+        var indexPath = path.join(__dirname, 'client', 'build', 'index.html');
+        res.sendfile(indexPath);
+
+    });
+
+    app.listen(PORT, () => {
+        console.log('Listening on port ' + PORT);
+    });
 })
 
 
 
-////////////// Routing ////////////////////////
-app.use('/auth', require('./auth'));
-app.use(Express.static(path.join(__dirname, 'client', 'build')));
-app.get('*', (req, res) => {
-    var indexPath = path.join(__dirname, 'client', 'build', 'index.html');
-    res.sendfile(indexPath);
-});
