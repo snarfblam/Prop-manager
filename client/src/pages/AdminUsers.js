@@ -5,6 +5,7 @@ import { Select } from '../components/Bootstrap';
 import { Table } from '../components/Table';
 import Button from '../components/Bootstrap/Button';
 import NewUser from './modals/NewUser/NewUser';
+import Spinner from './modals/Spinner'
 
 class AdminUsers extends Template {
     constructor(props) {
@@ -24,7 +25,8 @@ class AdminUsers extends Template {
 
     onNewUserSubmit(data) {
         // this.hideModal();
-        this.showModal(<p>This is where we would make a request to our API</p>, "Cool Beans!");
+        // this.showModal(<p>This is where we would make a request to our API</p>, "Cool Beans!");
+        this.showModal(<Spinner />, "Working...");
 
         // Save the form data. If there is an error from the server, this allows the user to bring the form back
         // up with the entered data still in there instead of starting from scratch.
