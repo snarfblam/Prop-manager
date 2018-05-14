@@ -28,6 +28,10 @@ module.exports = function(sequelize, DataTypes) {
       onDelete: "cascade"
     });
 
+    Unit.belongsToMany(models.User, {
+      through: 'User_unit'
+    });
+
   };
     return Unit;
 };
