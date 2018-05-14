@@ -7,6 +7,10 @@ module.exports = function(sequelize, DataTypes) {
         notEmpty: true
       }
     },
+    role: {
+      allowNull: true,
+      type: DataTypes.STRING,
+    },
     activationCode: {
       allowNull: true,
       type: DataTypes.STRING,
