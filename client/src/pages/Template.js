@@ -19,6 +19,9 @@ class Template extends React.Component {
         super(props)
         this.state = {
         };
+
+        this.showModal = this.props.showModal;
+        this.hideModal = this.props.hideModal;
     }
  
     toNavItems(navList) {
@@ -65,7 +68,7 @@ class Template extends React.Component {
 
     onLoginClicked() {
 
-        this.props.showModal(
+        this.showModal(
             <Login />,
             "Log In"
         );
