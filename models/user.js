@@ -7,9 +7,17 @@ module.exports = function(sequelize, DataTypes) {
         notEmpty: true
       }
     },
+    role: {
+      allowNull: true,
+      type: DataTypes.STRING,
+    },
+    activationCode: {
+      allowNull: true,
+      type: DataTypes.STRING,
+    },
     authtype: {
       allowNull: false,
-      type: DataTypes.STRING,      
+      type: DataTypes.STRING,
     },
     local_username: {
       allowNull: true,
@@ -67,14 +75,17 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
-    
+
   User.associate = function(models) {
     User.hasMany(models.Unit, {
       onDelete: "cascade"
     });
+    User.belongsToMany(models.Unit, {
+      through: 'User_unit'
+    });
   };
-  
+
+
 return User;
 
 };
-  
