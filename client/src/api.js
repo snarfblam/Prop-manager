@@ -7,9 +7,10 @@ import axios from 'axios';
  *  success -> {activationCode: string}
  *  failure -> {error: string}
  * @param {any} userData - A list of user properties required for a user account
+ * @returns {Promise<any>}
  */
 function createNewUser(userData) {
-    axios
+    return axios
         .post('/api/createUser', userData)
         .then(response => {
             if (response.status !== 200) throw Error('Could not access server to create user.');
