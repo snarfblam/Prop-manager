@@ -48,6 +48,7 @@ class AdminUsers extends Template {
                         </p>,
                         "User Created"
                     );
+                    this.setState({ newUserData: {} });
                 }
             });
 
