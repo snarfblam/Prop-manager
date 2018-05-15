@@ -1,7 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
   var User = sequelize.define("User", {
     fullname: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.STRING,
       validate: {
         notEmpty: true
@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
     },
     authtype: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.STRING,
     },
     local_username: {
@@ -31,15 +31,15 @@ module.exports = function(sequelize, DataTypes) {
       allowNull:true,
       type: DataTypes.STRING
     },
-    phoneNumber: {
-      allowNull: false,
+    phone: {
+      allowNull: true,
       type: DataTypes.STRING,
       validate: {
         not: ['[a-z]', 'i']
       }
     },
     email: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.STRING,
       unique: true,
       validate: {
@@ -47,28 +47,28 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     address: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.STRING,
       validate: {
         notEmpty: true
       }
     },
     city: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.STRING,
       validate: {
         notEmpty: true
       }
     },
     state: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.STRING,
       validate: {
         notEmpty: true
       }
     },
-    zipcode: {
-      allowNull: false,
+    zip: {
+      allowNull: true,
       type: DataTypes.INTEGER,
       validate: {
         notEmpty: true
@@ -80,6 +80,7 @@ module.exports = function(sequelize, DataTypes) {
     User.hasMany(models.Unit, {
       onDelete: "cascade"
     });
+    
     User.belongsToMany(models.Unit, {
       through: 'User_unit'
     });
