@@ -5,6 +5,8 @@ import { Select } from '../components/Bootstrap';
 import { Table } from '../components/Table';
 import Button from '../components/Bootstrap/Button';
 import NewUser from './modals/NewUser/NewUser';
+import Spinner from './modals/Spinner'
+import * as api from '../api';
 
 class AdminUsers extends Template {
     constructor(props) {
@@ -16,7 +18,7 @@ class AdminUsers extends Template {
                 { value: 'would be an id 3', text: 'Clark' },
             ],
             selectedUserId: 'would be an id 2', // should correspond to a userList value
-            newUserData: {},
+            newUserData: {}, // Temporarily store new-user-form data so we can re-populate the form on the modal if there is an error
         };
 
         this.onNewUserSubmit = this.onNewUserSubmit.bind(this);
@@ -24,12 +26,35 @@ class AdminUsers extends Template {
 
     onNewUserSubmit(data) {
         // this.hideModal();
-        this.showModal(<p>This is where we would make a request to our API</p>, "Cool Beans!");
+        // this.showModal(<p>This is where we would make a request to our API</p>, "Cool Beans!");
+        this.state.newUserData = data;
+        this.showModal(<Spinner />, "Working...");
+        api
+            .createNewUser(data)
+            .then(response => {
+                if (response.error || !response.activationCode) {
+                    this.showModal(
+                        <div>
+                            <p>There was an error creating the user:</p>
+                            <p>{response.error}</p>
+                        </div>,
+                        'Error'
+                    );
+                } else {
+                    var activateUrl = 'http://' + window.location.hostname + '/tenant/activate/' + response.activationCode;
+                    this.showModal(
+                        <p>
+                            The user account was created. The user can activate the account at: {activateUrl}
+                        </p>,
+                        "User Created"
+                    );
+                    this.setState({ newUserData: {} });
+                }
+            });
 
         // Save the form data. If there is an error from the server, this allows the user to bring the form back
         // up with the entered data still in there instead of starting from scratch.
         
-        this.state.newUserData = data;
         // TODO: reset newUserData upon a success result from the server
         
     }
