@@ -8,13 +8,13 @@ module.exports = function(sequelize, DataTypes) {
     },
     rate: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true //please change back to false
     }
   });
   Unit.associate = function(models) {
     Unit.belongsTo(models.User, {
       foreignKey: {
-        allowNull: false
+        allowNull: true //please change back to false
       }
     });
 

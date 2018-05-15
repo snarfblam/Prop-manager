@@ -31,7 +31,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull:true,
       type: DataTypes.STRING
     },
-    phoneNumber: {
+    phone: {
       allowNull: true,
       type: DataTypes.STRING,
       validate: {
@@ -67,7 +67,7 @@ module.exports = function(sequelize, DataTypes) {
         notEmpty: true
       }
     },
-    zipcode: {
+    zip: {
       allowNull: true,
       type: DataTypes.INTEGER,
       validate: {
@@ -80,6 +80,7 @@ module.exports = function(sequelize, DataTypes) {
     User.hasMany(models.Unit, {
       onDelete: "cascade"
     });
+    
     User.belongsToMany(models.Unit, {
       through: 'User_unit'
     });

@@ -24,6 +24,11 @@ app.use(apiRoutes)
 db.sequelize.sync({
     force: true
 }).then(() => {
+    db.Unit.create({
+      unitName: "Big Office",
+      rate: 90
+    });
+
     const sequelizeSessionStore = new SessionStore({
         db: db.sequelize,
     });

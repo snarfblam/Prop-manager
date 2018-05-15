@@ -61,6 +61,7 @@ var router = express.Router();
     router.post('/api/createUser', (req, res, next) => {
       var data = req.body;
       data.activationCode = uuidv1();
+      data.UnitId = data.unit;
 
       db.User.create(data).then(function(dbUser) {
         res.json({
