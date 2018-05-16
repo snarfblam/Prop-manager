@@ -64,7 +64,8 @@ class TenantActivate extends Template {
         api
             .activateUser({ activationCode: this.activationCode })
             .then(result => {
-                if (result.status == 'success') {
+                console.log(result);
+                if (result.result == 'success') {
                     // this.hideModal();
                     this.setState({ activationCodeStatus: 'verified' });
                 } else {
