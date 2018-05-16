@@ -62,6 +62,7 @@ var router = express.Router();
       var data = req.body;
       data.activationCode = uuidv1();
       data.UnitId = data.unit;
+      data.role = 'tenant';
         db.Unit.findOne({where: {id: data.UnitId }}).then(function(findUnit){        
           console.log(findUnit);
           db.User.create(data).then(function(dbUser) {
@@ -102,6 +103,14 @@ var router = express.Router();
     router.post('/api/logout', (req, res, next) => {
 
     });
+
+    // GET - Gets a user's log-in status: {status: 'logged out' | 'tenant' | 'admin' }
+    router.get("/api/userStatus", (req, res, next) => {
+        var user = req.user;
+        if (!user) res.json({ status: 'logged out' });
+        var role = user.role || 'tenant'; // assume the most restrictive account type if not present
+        res.json({ status: role });
+    });
 }
 
 // Surprise routes: Routes nobody planned on! (oops...)
@@ -129,9 +138,6 @@ var router = express.Router();
             });
     });
 }
-
-
-
 
 
 //Creates the Strip modal for Credit card transaction that takes the card and email for from the person making the payment
