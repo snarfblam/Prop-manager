@@ -22,6 +22,16 @@ class AdminUsers extends Template {
         };
 
         this.onNewUserSubmit = this.onNewUserSubmit.bind(this);
+        this.showNewUserModal = this.showNewUserModal.bind(this);
+    }
+
+    showNewUserModal() {
+        this.props.showModal(
+            <NewUser
+                onSubmit={this.onNewUserSubmit}
+                initialData={this.state.newUserData} />
+            , "New User"
+        );
     }
 
     onNewUserSubmit(data) {
@@ -92,9 +102,7 @@ class AdminUsers extends Template {
                 <h3>Information</h3>
                 <Table data={data} />
                 <hr />
-                <Button onClick={() => this.props.showModal(
-                    <NewUser onSubmit={this.onNewUserSubmit} initialData={ this.state.newUserData} />, "New User" 
-                )}>Create New User </Button>
+                <Button onClick={this.showNewUserModal}>Create New User </Button>
             </div>
         );
     }
