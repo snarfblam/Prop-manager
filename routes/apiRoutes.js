@@ -59,24 +59,24 @@ var router = express.Router();
 { // Users
     // POST - Creates a user from the admin dashboard
     router.post('/api/createUser', (req, res, next) => {
-      var data = req.body;
-      data.activationCode = uuidv1();
-      data.UnitId = data.unit;
-      data.role = 'tenant';
-        db.Unit.findOne({where: {id: data.UnitId }}).then(function(findUnit){        
-          console.log(findUnit);
-          db.User.create(data).then(function(dbUser) {
-            findUnit.addUser(dbUser);
-            res.json({
-              activationCode: dbUser.activationCode
-            });
-          }).catch(function(Error) {
-            if(Error) throw console.log(Error);
-          })
-        }).catch(function(Error) {
-          if(Error) throw console.log(Error);
+        var data = req.body;
+        data.activationCode = uuidv1();
+        data.UnitId = data.unit;
+        data.role = 'tenant';
+        db.Unit.findOne({ where: { id: data.UnitId } }).then(function (findUnit) {
+            console.log(findUnit);
+            db.User.create(data).then(function (dbUser) {
+                findUnit.addUser(dbUser);
+                res.json({
+                    activationCode: dbUser.activationCode
+                });
+            }).catch(function (Error) {
+                if (Error) throw console.log(Error);
+            })
+        }).catch(function (Error) {
+            if (Error) throw console.log(Error);
         })
-      
+
     });
 
     // POST - Activates a user
@@ -107,9 +107,12 @@ var router = express.Router();
     // GET - Gets a user's log-in status: {status: 'logged out' | 'tenant' | 'admin' }
     router.get("/api/userStatus", (req, res, next) => {
         var user = req.user;
-        if (!user) res.json({ status: 'logged out' });
-        var role = user.role || 'tenant'; // assume the most restrictive account type if not present
-        res.json({ status: role });
+        if (!user) {
+            res.json({ status: 'logged out' });
+        } else {
+            var role = user.role || 'tenant'; // assume the most restrictive account type if not present
+            res.json({ status: role });
+        }
     });
 }
 
