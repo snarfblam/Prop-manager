@@ -16,9 +16,39 @@ function createNewUser(userData) {
             if (response.status !== 200) throw Error('Could not access server to create user.');
             if (!response.data || !response.data.activationCode) throw Error('Unexpected response from server');
             return { activationCode: response.data.activationCode };
-        }).catch(err => { 
+        }).catch(err => {
+            console.log(err);
             return { error: (err || {}).toString() };
         });
 }
 
-export { createNewUser };
+/**
+ * Assigns an activation code to a user. This must be done prior to the user's first login to allow the user to activate.
+ * Resolves to {status: 'success'} or {error: string}
+ * @param {{activationCode: string}} activationData - Object containing data necessary to activate an account
+ * @returns {Promise<any>}
+ */
+function activateUser(activationData) {
+    return axios
+        .post('/api/activateUser/', activationData)
+        .then(response => {
+            if (response.status !== 200) throw Error('Could not access server to create user.');
+            if (!response.data || !response.data.result) throw Error('Unexpected response from server');
+            return response.data;
+        }).catch(err => {
+            console.log(err);
+            return { error: (err || {}).toString() };
+        })
+}
+
+/**
+ * Retrieves a list of units. Returns a promise that resolves to
+ * {units: {unitName: string, id: ?}[]} or rejects to Error
+ * @returns {Promise<any>}
+ */
+function getUnitList() {
+    return axios
+        .get('/api/getUnitList');
+}
+
+export { createNewUser, activateUser, getUnitList };

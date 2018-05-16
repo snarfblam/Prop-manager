@@ -41,8 +41,8 @@ class App extends Component {
                     <Route exact path='/admin/maint' render={() => this.renderPage(AdminMaint)} />
                     <Route exact path='/admin/payments' render={() => this.renderPage(AdminPayments)} />
                     <Route exact path='/admin/users' render={() => this.renderPage(AdminUsers)} />
-                    <Route exact path='/tenant' render={() => this.renderPage(Tenant)} />
-                    <Route exact path='/tenant/activate' render={() => this.renderPage(TenantActivate)} />
+                    <Route path='/tenant/activate/:code' render={(props) => this.renderPage(TenantActivate, props)} />
+                    <Route exact path='/tenant' render={(x, y) => this.renderPage(Tenant,x,y)} />
 
                     <Modal state={this.state.modal} onRequestClose={() => this.setState({ modal: this.state.modal.hide() })} />
                 </div>
@@ -50,7 +50,8 @@ class App extends Component {
         );
     }
 
-    renderPage(Page) {
+    renderPage(Page, props) {
+        var match = (props || {}).match || null;
         return (
             <Page
                 showModal={
@@ -58,11 +59,12 @@ class App extends Component {
                         this.setState({
                             modal: this.state.modal.show(content, title),
                         });
-                     }
+                    }
                 }
-                hideModal={ () =>
-                    this.setState({modal: this.state.modal.hide()})
+                hideModal={() =>
+                    this.setState({ modal: this.state.modal.hide() })
                 }
+                match={match}
             />
         );
     }
