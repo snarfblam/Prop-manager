@@ -59,18 +59,23 @@ var router = express.Router();
 { // Users
     // POST - Creates a user from the admin dashboard
     router.post('/api/createUser', (req, res, next) => {
-        var data = req.body;
-        data.activationCode = uuidv1();
-        data.UnitId = data.unit;
-
-        db.User.create(data).then(function (dbUser) {
+      var data = req.body;
+      data.activationCode = uuidv1();
+      data.UnitId = data.unit;
+        db.Unit.findOne({where: {id: data.UnitId }}).then(function(findUnit){        
+          console.log(findUnit);
+          db.User.create(data).then(function(dbUser) {
+            findUnit.addUser(dbUser);
             res.json({
-                activationCode: dbUser.activationCode
-            })
-        }).catch(function (Error) {
-            if (Error) console.log(Error);
-            res.json({ error: Error.toString() });
+              activationCode: dbUser.activationCode
+            });
+          }).catch(function(Error) {
+            if(Error) throw console.log(Error);
+          })
+        }).catch(function(Error) {
+          if(Error) throw console.log(Error);
         })
+      
     });
 
     // POST - Activates a user
