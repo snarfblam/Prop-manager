@@ -51,6 +51,7 @@ class App extends Component {
     }
 
     renderPage(Page, props) {
+        var match = (props || {}).match || null;
         return (
             <Page
                 showModal={
@@ -63,7 +64,7 @@ class App extends Component {
                 hideModal={() =>
                     this.setState({ modal: this.state.modal.hide() })
                 }
-                match={props.match}
+                match={match}
             />
         );
     }
