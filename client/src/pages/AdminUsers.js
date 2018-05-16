@@ -51,7 +51,9 @@ class AdminUsers extends Template {
                         'Error'
                     );
                 } else {
-                    var activateUrl = 'http://' + window.location.hostname + '/tenant/activate/' + response.activationCode;
+                    var port = (window.location.port == 80) ? '' : (':' + window.location.port.toString()); // get port only if not default
+
+                    var activateUrl = 'http://' + window.location.hostname + port + '/tenant/activate/' + response.activationCode;
                     this.showModal(
                         <p>
                             The user account was created. The user can activate the account at: {activateUrl}
