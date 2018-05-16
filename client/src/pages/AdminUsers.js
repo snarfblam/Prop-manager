@@ -64,9 +64,9 @@ class AdminUsers extends Template {
 
         // Save the form data. If there is an error from the server, this allows the user to bring the form back
         // up with the entered data still in there instead of starting from scratch.
-        
+
         // TODO: reset newUserData upon a success result from the server
-        
+
     }
 
     getNavItems() {
