@@ -68,7 +68,8 @@ var router = express.Router();
                 activationCode: dbUser.activationCode
             })
         }).catch(function (Error) {
-            if (Error) throw console.log(Error);
+            if (Error) console.log(Error);
+            res.json({ error: Error.toString() });
         })
     });
 
