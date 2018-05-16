@@ -19,7 +19,6 @@ const app = express();
 app.use(express.urlencoded());
 app.use(express.json());
 app.use(cookieParser());
-app.use(apiRoutes)
 
 db.sequelize.sync({
     force: true
@@ -42,6 +41,8 @@ db.sequelize.sync({
 
     app.use(passport.initialize())
     app.use(passport.session()) // will call the deserializeUser
+    app.use(apiRoutes)
+    
 }).then(() => {
     ////////////// Routing ////////////////////////
     app.use('/auth', require('./auth'));

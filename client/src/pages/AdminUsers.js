@@ -22,6 +22,16 @@ class AdminUsers extends Template {
         };
 
         this.onNewUserSubmit = this.onNewUserSubmit.bind(this);
+        this.showNewUserModal = this.showNewUserModal.bind(this);
+    }
+
+    showNewUserModal() {
+        this.props.showModal(
+            <NewUser
+                onSubmit={this.onNewUserSubmit}
+                initialData={this.state.newUserData} />
+            , "New User"
+        );
     }
 
     onNewUserSubmit(data) {
@@ -41,7 +51,9 @@ class AdminUsers extends Template {
                         'Error'
                     );
                 } else {
-                    var activateUrl = 'http://' + window.location.hostname + '/tenant/activate/' + response.activationCode;
+                    var port = (window.location.port == 80) ? '' : (':' + window.location.port.toString()); // get port only if not default
+
+                    var activateUrl = 'http://' + window.location.hostname + port + '/tenant/activate/' + response.activationCode;
                     this.showModal(
                         <p>
                             The user account was created. The user can activate the account at: {activateUrl}
@@ -54,9 +66,9 @@ class AdminUsers extends Template {
 
         // Save the form data. If there is an error from the server, this allows the user to bring the form back
         // up with the entered data still in there instead of starting from scratch.
-        
+
         // TODO: reset newUserData upon a success result from the server
-        
+
     }
 
     getNavItems() {
@@ -92,9 +104,7 @@ class AdminUsers extends Template {
                 <h3>Information</h3>
                 <Table data={data} />
                 <hr />
-                <Button onClick={() => this.props.showModal(
-                    <NewUser onSubmit={this.onNewUserSubmit} initialData={ this.state.newUserData} />, "New User" 
-                )}>Create New User </Button>
+                <Button onClick={this.showNewUserModal}>Create New User </Button>
             </div>
         );
     }

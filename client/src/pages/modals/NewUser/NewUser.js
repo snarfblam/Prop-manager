@@ -2,6 +2,8 @@ import React from 'react';
 import { Form, Input, Select } from '../../../components/Bootstrap';
 import './NewUser.css';
 import Button from '../../../components/Bootstrap/Button';
+import Spinner from '../Spinner';
+import * as api from '../../../api';
 
 const phoneRegex = /^[1-9]\d{2}-\d{3}-\d{4}/;
 const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -29,11 +31,12 @@ class NewUser extends React.Component {
             state: '',
             zip: '',
             unit: 1, // selected UnitId
-            unitList: [ // value is the UnitId, text is the unit's name
-                {value: 0, text: '101'},
-                {value: 1, text: '102'},
-                {value: 2, text: '103'},
-            ],
+            unitList: null,
+            // [ // value is the UnitId, text is the unit's name
+            //     { value: 0, text: '101' },
+            //     { value: 1, text: '102' },
+            //     { value: 2, text: '103' },
+            // ],
             errors: {
 
             },
@@ -52,11 +55,34 @@ class NewUser extends React.Component {
         });
     }
 
+    componentDidMount() {
+        api.getUnitList().then(result => {
+            console.log(result);
+            console.log({
+                unitList: result.data.units.map(unit => ({
+                    value: unit.id,
+                    text: unit.unitName,
+                }))
+            });
+            this.setState({
+                unitList: result.data.units.map(unit => ({
+                    value: unit.id,
+                    text: unit.unitName,
+                }))
+            });
+
+        }).catch(err => {
+            alert('There was an error accessing the server.');
+            console.log(err);
+            // TODO: something better than an alert (we don't have access to showModal right here)
+        });
+    }
+
     onSubmit(e) {
         e.preventDefault();
 
         var errors = {};
-        
+
         var notBlank = ['fullname', 'address', 'city'];
         notBlank.forEach(field => {
             if (this.state[field].trim().length == 0) errors[field] = 'Required';
@@ -119,19 +145,25 @@ class NewUser extends React.Component {
     render() {
         return (
             <div className='new-user-modal'>
-                <Form>
-                    <Select label="Unit" name='unit' items={this.state.unitList} value={this.state.unit} onChange={this.onInputChange} />
-                    <Input label='Full name' name='fullname' value={this.state.fullname} placeholder='' onChange={this.onInputChange} errorText={this.getError('fullname')} />
-                    <Input label='Phone' name='phone' value={this.state.phone} placeholder=' xxx-xxx-xxxx' onChange={this.onInputChange} errorText={this.getError('phone')}/>
-                    <Input label='Email' name='email' value={this.state.email} placeholder='' onChange={this.onInputChange} errorText={this.getError('email')}/>
-                    <Input label='Address' name='address' value={this.state.address} placeholder='' onChange={this.onInputChange} errorText={this.getError('address')}/>
-                    <Input label='City' name='city' value={this.state.city} placeholder='' onChange={this.onInputChange} errorText={this.getError('city')}/>
-                    <Input label='State' name='state' value={this.state.state} placeholder='' onChange={this.onInputChange} errorText={this.getError('state')}/>
-                    <Input label='Zip' name='zip' value={this.state.zip} placeholder='' onChange={this.onInputChange} errorText={this.getError('zip')} />
-                    <Button onClick={this.onSubmit}>Create User</Button>
-                    &emsp;
-                    <Button onClick={this.onReset}>Reset Form</Button>
-                </Form>
+                {console.log(!!this.state.unitList)}
+                {this.state.unitList ? (
+                    <Form>
+                        <Select label="Unit" name='unit' items={this.state.unitList} value={this.state.unit} onChange={this.onInputChange} />
+                        <Input label='Full name' name='fullname' value={this.state.fullname} placeholder='' onChange={this.onInputChange} errorText={this.getError('fullname')} />
+                        <Input label='Phone' name='phone' value={this.state.phone} placeholder=' xxx-xxx-xxxx' onChange={this.onInputChange} errorText={this.getError('phone')} />
+                        <Input label='Email' name='email' value={this.state.email} placeholder='' onChange={this.onInputChange} errorText={this.getError('email')} />
+                        <Input label='Address' name='address' value={this.state.address} placeholder='' onChange={this.onInputChange} errorText={this.getError('address')} />
+                        <Input label='City' name='city' value={this.state.city} placeholder='' onChange={this.onInputChange} errorText={this.getError('city')} />
+                        <Input label='State' name='state' value={this.state.state} placeholder='' onChange={this.onInputChange} errorText={this.getError('state')} />
+                        <Input label='Zip' name='zip' value={this.state.zip} placeholder='' onChange={this.onInputChange} errorText={this.getError('zip')} />
+                        <Button onClick={this.onSubmit}>Create User</Button>
+                        &emsp;
+                        <Button onClick={this.onReset}>Reset Form</Button>
+                    </Form>
+                ) : (
+                    <Spinner />
+                )}
+
             </div>
         );
     }
