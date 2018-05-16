@@ -61,15 +61,23 @@ var router = express.Router();
     router.post('/api/createUser', (req, res, next) => {
       var data = req.body;
       data.activationCode = uuidv1();
-      data.UnitId = data.unit;
-
-      db.User.create(data).then(function(dbUser) {
-        res.json({
-          activationCode: dbUser.activationCode
+      data.UnitId = 1; //data.unit;
+        db.Unit.findOne({where: {id: data.UnitId }}).then(function(findUnit){        
+          console.log(findUnit);
+          db.User.create(data).then(function(dbUser) {
+            findUnit.addUser(dbUser);
+            res.json({
+              activationCode: dbUser.activationCode
+            });
+          }).catch(function(Error) {
+            if(Error) throw console.log(Error);
+          })
+        }).catch(function(Error) {
+          if(Error) throw console.log(Error);
         })
-      }).catch(function(Error) {
-        if(Error) throw console.log(Error);
-      })
+      
+
+
     });
 
     // POST - Activates a user
