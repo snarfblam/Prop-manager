@@ -74,7 +74,12 @@ var router = express.Router();
 
     // POST - Activates a user
     router.post('/api/activateUser', (req, res, next) => {
-
+        if (req.body.activationCode) {
+            req.session.activationCode = req.body.activationCode;
+            res.json({ result: 'success' });
+        } else {
+            res.status(500).end();
+        }
     });
 
     // POST - Login local (provided by passport)
@@ -98,17 +103,20 @@ var router = express.Router();
     // GET - Returns list of units, in the form of 
     // { 
     //    units: {
-    //        
+    //        unitName: string,
+    //        id: ?,
     //    } []
     // }
     router.get('/api/getUnitList', (req, res, next) => {
         db.Unit
             .findAll({})
             .then(units => {
-                res.json(units.map(unit => ({
-                    unitName: unit.unitName,
-                    id: unit.id,
-                })));
+                res.json({
+                    units: units.map(unit => ({
+                        unitName: unit.unitName,
+                        id: unit.id,
+                    }))
+                });
             }).catch(err => {
                 console.log(err);
                 res.status(500).end();

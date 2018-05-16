@@ -52,11 +52,12 @@ const strategy = new GoogleStrategy(
                 return done(null, userMatch)
             } else {
                 if (req.session.activationCode) {
-                    User.findOne({
+                    return User.findOne({
                         where: {
                             activationCode: req.session.activationCode
                         }
                     }).then(userMatch => {
+                        if (!userMatch) throw Error("Activation code not valid");
                         userMatch.activationCode = null;
                         userMatch.googleId = id;
                         return userMatch.save();

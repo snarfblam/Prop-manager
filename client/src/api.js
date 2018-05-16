@@ -30,10 +30,10 @@ function createNewUser(userData) {
  */
 function activateUser(activationData) {
     return axios
-        .post('api/activateUser/')
+        .post('/api/activateUser/', activationData)
         .then(response => {
             if (response.status !== 200) throw Error('Could not access server to create user.');
-            if (!response.data || !response.data.status) throw Error('Unexpected response from server');
+            if (!response.data || !response.data.result) throw Error('Unexpected response from server');
             return response.data;
         }).catch(err => {
             console.log(err);
@@ -41,4 +41,14 @@ function activateUser(activationData) {
         })
 }
 
-export { createNewUser, activateUser };
+/**
+ * Retrieves a list of units. Returns a promise that resolves to
+ * {units: {unitName: string, id: ?}[]} or rejects to Error
+ * @returns {Promise<any>}
+ */
+function getUnitList() {
+    return axios
+        .get('/api/getUnitList');
+}
+
+export { createNewUser, activateUser, getUnitList };
