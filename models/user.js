@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
         notEmpty: true
       }
     },
-    role: {
+    role: { // 'admin' or 'tenant'
       allowNull: true,
       type: DataTypes.STRING,
     },
