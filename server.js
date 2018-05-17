@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('./passport')
 
 // update the config folder with your un and pw. Make sure the DB is created first before server is running
-
+global.db = db;
 
 
 ////////////// Configuration //////////////////
@@ -68,8 +68,8 @@ db.sequelize.sync({
         .all([newUnitPromise, newAdminPromise, newTenantPromise])
         .then(([newUnit, newAdmin, newTenant]) => {
             newUnit.addUsers([newAdmin, newTenant]);
-            newAdmin.addUnit(newUnit);
-            newTenant.addUnit(newUnit);
+            // newAdmin.addUnit(newUnit).then(()=>
+            //     newTenant.addUnit(newUnit))
         });
 
     const sequelizeSessionStore = new SessionStore({
