@@ -59,14 +59,20 @@ db.sequelize.sync({
     });
     var newPaymentPromise = db.Payment.create({
         amount: 500,
+        paid: true,
+        due_date: '2018-05-17 00:58:52',
+        UnitId: 1
+    });
+    var newPaymentPromise2 = db.Payment.create({
+        amount: 500,
         paid: false,
         due_date: '2018-05-17 00:58:52',
         UnitId: 1
-    })
+    });
 
     Promise
-        .all([newUnitPromise, newAdminPromise, newTenantPromise])
-        .then(([newUnit, newAdmin, newTenant]) => {
+        .all([newUnitPromise, newAdminPromise, newTenantPromise, newPaymentPromise])
+        .then(([newUnit, newAdmin, newTenant, newPayment]) => {
             newUnit.addUsers([newAdmin, newTenant]);
             // newAdmin.addUnit(newUnit).then(()=>
             //     newTenant.addUnit(newUnit))
