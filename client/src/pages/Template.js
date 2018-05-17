@@ -54,7 +54,10 @@ class Template extends React.Component {
                             {/* <NavLinkItem to='/'>
                                 Login
                             </NavLinkItem> */}
-                            <LoginLink onClick={() => this.onLoginClicked()} />
+                            <LoginLink
+                                onLogin={() => this.onLoginClicked()}
+                                onLogout={() => this.onLogoutClicked()}
+                            />
                         </NavbarNav>
                     </Container>
                 </Navbar>
@@ -67,10 +70,16 @@ class Template extends React.Component {
     }
 
     onLoginClicked() {
-
         this.showModal(
             <Login />,
             "Log In"
+        );
+    }
+    onLogoutClicked() {
+
+        this.showModal(
+            <p>will be implemented some day</p>,
+            "Log Out"
         );
     }
 

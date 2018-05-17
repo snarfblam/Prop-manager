@@ -24,8 +24,8 @@ db.sequelize.sync({
     force: true
 }).then(() => {
     db.Unit.create({
-      unitName: "Big Office",
-      rate: 90
+        unitName: "Big Office",
+        rate: 90
     });
 
     const sequelizeSessionStore = new SessionStore({
@@ -42,7 +42,7 @@ db.sequelize.sync({
     app.use(passport.initialize())
     app.use(passport.session()) // will call the deserializeUser
     app.use(apiRoutes)
-    
+
 }).then(() => {
     ////////////// Routing ////////////////////////
     app.use('/auth', require('./auth'));
