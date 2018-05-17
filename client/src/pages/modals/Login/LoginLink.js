@@ -33,7 +33,7 @@ class LoginLink extends React.Component {
                     onLogout(e, this.props.onLogout);
                 }}>Log out</a>
             ),
-            "user": (
+            "admin": (
                 <a href='/logout' onClick={(e) => {
                     onLogout(e, this.props.onLogout);
                 }}>Log out</a>
@@ -57,7 +57,8 @@ class LoginLink extends React.Component {
         //         onLogin(e, this.props.onLogin);
         //     }}>Login</a>
         // );
-        return this.stateContent[this.props.loggedAs];
+        return this.stateContent[this.props.loggedAs] || this.stateContent['logged out'];
+        alert(this.props.loggedAs);
     }
     
 }

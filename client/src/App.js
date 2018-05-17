@@ -12,6 +12,7 @@ import Tenant from './pages/Tenant';
 import TenantActivate from './pages/TenantActivate';
 import { Modal, ModalState } from './components/Modal';
 import * as api from './api';
+import Axios from 'axios';
 
 var knownRoles = ['logged out', 'tenant', 'admin'];
 function toKnownRole(role) {
@@ -93,6 +94,11 @@ class App extends Component {
                 }
                 match={match}
                 loggedAs={this.state.role}
+                onLogOut={() => {
+                    Axios.post('/auth/logout', {}).then(() => {
+                        this.setState({ role: 'logged out' });
+                    });
+                }}
             />
         );
     }

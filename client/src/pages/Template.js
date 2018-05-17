@@ -13,6 +13,7 @@ import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../compo
 import './page.css'
 import LoginLink from './modals/Login/LoginLink';
 import Login from './modals/Login'
+import Axios from 'axios';
 
 
 class Template extends React.Component {
@@ -78,11 +79,12 @@ class Template extends React.Component {
         );
     }
     onLogoutClicked() {
-
-        this.showModal(
-            <p>will be implemented some day</p>,
-            "Log Out"
-        );
+        // window.location.href = '/auth/logout';
+        Axios.post('/auth/logout', {}).then(this.props.onLogOut());
+        // this.showModal(
+        //     <p>will be implemented some day</p>,
+        //     "Log Out"
+        // );
     }
 
     // getNavItems() {
