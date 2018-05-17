@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('./passport')
 
 // update the config folder with your un and pw. Make sure the DB is created first before server is running
-
+global.db = db;
 
 
 ////////////// Configuration //////////////////
@@ -23,11 +23,11 @@ app.use(cookieParser());
 db.sequelize.sync({
     force: true
 }).then(() => {
-    db.Unit.create({
+    var newUnitPromise = db.Unit.create({
         unitName: "Big Office",
         rate: 90
     });
-    db.User.create({
+    var newAdminPromise = db.User.create({
         fullname: "admin j. user",
         role: "admin",
         activationCode: "admin",
@@ -42,12 +42,41 @@ db.sequelize.sync({
         state: "CA",
         zip: 90210,
     });
-    db.Payment.create({
+    var newTenantPromise = db.User.create({
+        fullname: "Freddy McTenant",
+        role: "tenant",
+        activationCode: "tenant",
+        authtype: null,
+        local_username: null,
+        local_password: null,
+        googleId: null,
+        phone: "000-000-0000",
+        email: "fake@mail.com",
+        address: "none",
+        city: "none",
+        state: "CA",
+        zip: 90210,
+    });
+    var newPaymentPromise = db.Payment.create({
+        amount: 500,
+        paid: true,
+        due_date: '2018-05-17 00:58:52',
+        UnitId: 1
+    });
+    var newPaymentPromise2 = db.Payment.create({
         amount: 500,
         paid: false,
         due_date: '2018-05-17 00:58:52',
         UnitId: 1
-    })
+    });
+
+    Promise
+        .all([newUnitPromise, newAdminPromise, newTenantPromise, newPaymentPromise])
+        .then(([newUnit, newAdmin, newTenant, newPayment]) => {
+            newUnit.addUsers([newAdmin, newTenant]);
+            // newAdmin.addUnit(newUnit).then(()=>
+            //     newTenant.addUnit(newUnit))
+        });
 
     const sequelizeSessionStore = new SessionStore({
         db: db.sequelize,
