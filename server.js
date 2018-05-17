@@ -27,6 +27,21 @@ db.sequelize.sync({
         unitName: "Big Office",
         rate: 90
     });
+    db.User.create({
+        fullname: "admin j. user",
+        role: "admin",
+        activationCode: "admin",
+        authtype: null,
+        local_username: null,
+        local_password: null,
+        googleId: null,
+        phone: "000-000-0000",
+        email: "fake@web.com",
+        address: "none",
+        city: "none",
+        state: "CA",
+        zip: 90210,
+    });
 
     const sequelizeSessionStore = new SessionStore({
         db: db.sequelize,
