@@ -27,6 +27,12 @@ db.sequelize.sync({
       unitName: "Big Office",
       rate: 90
     });
+    db.Payment.create({
+        amount: 500,
+        paid: false,
+        due_date: '2018-05-17 00:58:52',
+        UnitId: 1
+    })
 
     const sequelizeSessionStore = new SessionStore({
         db: db.sequelize,
