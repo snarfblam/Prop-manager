@@ -32,7 +32,7 @@
     "passport-google-oauth20": "^1.0.0",
     "request": "^2.85.0",
     "sequelize": "^4.37.7",
-    "stripe": "^5.9.0",
+    "stripe": "^5.10.0",
     "uuid": "^3.2.1"
   }
 }
