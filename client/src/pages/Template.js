@@ -14,6 +14,7 @@ import './page.css'
 import LoginLink from './modals/Login/LoginLink';
 import Login from './modals/Login'
 
+
 class Template extends React.Component {
     constructor(props) {
         super(props)
@@ -55,6 +56,7 @@ class Template extends React.Component {
                                 Login
                             </NavLinkItem> */}
                             <LoginLink
+                                loggedAs={this.props.loggedAs}    
                                 onLogin={() => this.onLoginClicked()}
                                 onLogout={() => this.onLogoutClicked()}
                             />

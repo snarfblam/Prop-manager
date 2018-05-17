@@ -8,19 +8,19 @@ import * as api from '../../../api';
  *      onLogout: function -
  */
 
-var knownRoles = ['logged out', 'tenant', 'admin'];
-function toKnownRole(role) {
-    if (knownRoles.includes(role)) return role;
-    return knownRoles[0];
-}
+// var knownRoles = ['logged out', 'tenant', 'admin'];
+// function toKnownRole(role) {
+//     if (knownRoles.includes(role)) return role;
+//     return knownRoles[0];
+// }
 
 class LoginLink extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            role: 'logged out', // should only be values listed in knownRoles
-        }
+        // this.state = {
+        //     role: 'logged out', // should only be values listed in knownRoles
+        // }
 
         this.stateContent = {
             "logged out": (
@@ -41,15 +41,15 @@ class LoginLink extends React.Component {
         };
     }
 
-    componentDidMount() {
-        api
-            .getUserStatus()
-            .then(response => {
-                this.setState({
-                    role: toKnownRole(response.status),
-                });
-            });
-    }
+    // componentDidMount() {
+    //     api
+    //         .getUserStatus()
+    //         .then(response => {
+    //             this.setState({
+    //                 role: toKnownRole(response.status),
+    //             });
+    //         });
+    // }
 
     render() {
         // return (
@@ -57,7 +57,7 @@ class LoginLink extends React.Component {
         //         onLogin(e, this.props.onLogin);
         //     }}>Login</a>
         // );
-        return this.stateContent[this.state.role];
+        return this.stateContent[this.props.loggedAs];
     }
     
 }

@@ -11,6 +11,13 @@ import AdminUsers from './pages/AdminUsers';
 import Tenant from './pages/Tenant';
 import TenantActivate from './pages/TenantActivate';
 import { Modal, ModalState } from './components/Modal';
+import * as api from './api';
+
+var knownRoles = ['logged out', 'tenant', 'admin'];
+function toKnownRole(role) {
+    if (knownRoles.includes(role)) return role;
+    return knownRoles[0];
+}
 
 
 class App extends Component {
@@ -19,9 +26,19 @@ class App extends Component {
 
         this.state = {
             modal: new ModalState(false, null, "Hi, I'm a modal"),
+            role: 'logged out',
         };
     }
 
+    componentDidMount() {
+        api
+            .getUserStatus()
+            .then(response => {
+                this.setState({
+                    role: toKnownRole(response.status),
+                });
+            });
+    }
 
     onLoginClicked() {
         this.setState({
@@ -35,7 +52,7 @@ class App extends Component {
         return (
             <BrowserRouter>
                 <div className="App">
-                    <Route exact path='/' render={() => this.renderPage(Landing)} />
+                    <Route exact path='/' render={() => this.renderLanding()} />
                     <Route exact path='/admin/overview' render={() => this.renderPage(AdminOverview)} />
                     <Route exact path='/admin/units' render={() => this.renderPage(AdminUnits)} />
                     <Route exact path='/admin/maint' render={() => this.renderPage(AdminMaint)} />
@@ -48,6 +65,16 @@ class App extends Component {
                 </div>
             </BrowserRouter>
         );
+    }
+
+    renderLanding(props) {
+        if (this.state.role == 'admin') {
+            return this.renderPage(AdminOverview, props);
+        } else if (this.state.role == 'tenant') {
+            return this.renderPage(Tenant, props);
+        } else {
+            return this.renderPage(Landing, props);
+        }
     }
 
     renderPage(Page, props) {
@@ -65,6 +92,7 @@ class App extends Component {
                     this.setState({ modal: this.state.modal.hide() })
                 }
                 match={match}
+                loggedAs={this.state.role}
             />
         );
     }
