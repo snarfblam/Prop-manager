@@ -1,4 +1,5 @@
 import React from 'react';
+// eslint-disable-next-line
 import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
