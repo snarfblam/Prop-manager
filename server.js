@@ -24,8 +24,23 @@ db.sequelize.sync({
     force: true
 }).then(() => {
     db.Unit.create({
-      unitName: "Big Office",
-      rate: 90
+        unitName: "Big Office",
+        rate: 90
+    });
+    db.User.create({
+        fullname: "admin j. user",
+        role: "admin",
+        activationCode: "admin",
+        authtype: null,
+        local_username: null,
+        local_password: null,
+        googleId: null,
+        phone: "000-000-0000",
+        email: "fake@web.com",
+        address: "none",
+        city: "none",
+        state: "CA",
+        zip: 90210,
     });
 
     const sequelizeSessionStore = new SessionStore({
@@ -42,7 +57,7 @@ db.sequelize.sync({
     app.use(passport.initialize())
     app.use(passport.session()) // will call the deserializeUser
     app.use(apiRoutes)
-    
+
 }).then(() => {
     ////////////// Routing ////////////////////////
     app.use('/auth', require('./auth'));

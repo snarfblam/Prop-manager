@@ -51,4 +51,19 @@ function getUnitList() {
         .get('/api/getUnitList');
 }
 
-export { createNewUser, activateUser, getUnitList };
+/**
+ * Polls the server for the user's login status. Resolves to 
+ * {status: 'logged out' | 'tenant' | 'admin'}
+ */
+function getUserStatus() {
+    return axios
+        .get('/api/userStatus')
+        .catch(err => {
+            console.log(err);
+            return { data: { status: 'logged out' } };
+        })
+        .then(response => {
+            return response.data;
+        });
+}
+export { createNewUser, activateUser, getUnitList, getUserStatus };
