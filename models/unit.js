@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   });
   Unit.associate = function(models) {
-    // Unit.belongsTo(models.User, {
+    // Unit.hasMany(models.User, {
     //   foreignKey: {
     //     allowNull: true //please change back to false
     //   }
@@ -20,12 +20,12 @@ module.exports = function(sequelize, DataTypes) {
 
     // connecting/ the maintenance aka one to many
     Unit.hasMany(models.Maintenance, {
-      onDelete: "cascade"
+    //   onDelete: "cascade"
     });
 
     // connecting the payment aka one to many
     Unit.hasMany(models.Payment, {
-      onDelete: "cascade"
+    //   onDelete: "cascade"
     });
 
     Unit.belongsToMany(models.User, {

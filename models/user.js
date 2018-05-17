@@ -77,9 +77,9 @@ module.exports = function(sequelize, DataTypes) {
   });
 
   User.associate = function(models) {
-    User.hasMany(models.Unit, {
-      onDelete: "cascade"
-    });
+    // User.hasMany(models.Unit, {
+    //   onDelete: "cascade"
+    // });
     
     User.belongsToMany(models.Unit, {
       through: 'User_unit'
