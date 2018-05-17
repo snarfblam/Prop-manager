@@ -117,16 +117,6 @@ var router = express.Router();
 
     });
 
-    // POST - Login with google (provided by passport)
-    router.post('/api/loginGoogle', (req, res, next) => {
-
-    });
-
-    // POST - Logout user (provided by passport)
-    router.post('/api/logout', (req, res, next) => {
-
-    });
-
     // GET - Gets a user's log-in status: {status: 'logged out' | 'tenant' | 'admin' }
     router.get("/api/userStatus", (req, res, next) => {
         var user = req.user;
@@ -164,33 +154,5 @@ var router = express.Router();
             });
     });
 }
-
-
-//Creates the Strip modal for Credit card transaction that takes the card and email for from the person making the payment
-router.post("/charge/card", (req, res) => {
-    //TODO: Currently "amount" is statically set to $5. Amount needs to be linked to the database to get the users rent payment amount.
-
-    let amount = 500;
-
-    stripe.customers.create({
-        email: req.body.email,
-        card: req.body.id
-    })
-        .then(customer =>
-            stripe.charges.create({
-                amount,
-                description: "Sample Charge",
-                currency: "usd",
-                customer: customer.id
-            }))
-        .then(charge => {
-            console.log("successful payment");
-            res.send(charge)
-        })
-        .catch(err => {
-            console.log("Error:", err);
-            res.status(500).send({ error: "Purchase Failed" });
-        });
-});
 
 module.exports = router;
