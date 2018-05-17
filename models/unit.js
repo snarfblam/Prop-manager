@@ -8,24 +8,28 @@ module.exports = function(sequelize, DataTypes) {
     },
     rate: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true //please change back to false
     }
   });
   Unit.associate = function(models) {
-    Unit.belongsTo(models.User, {
-      foreignKey: {
-        allowNull: false
-      }
-    });
+    // Unit.hasMany(models.User, {
+    //   foreignKey: {
+    //     allowNull: true //please change back to false
+    //   }
+    // });
 
     // connecting/ the maintenance aka one to many
     Unit.hasMany(models.Maintenance, {
-      onDelete: "cascade"
+    //   onDelete: "cascade"
     });
 
     // connecting the payment aka one to many
     Unit.hasMany(models.Payment, {
-      onDelete: "cascade"
+    //   onDelete: "cascade"
+    });
+
+    Unit.belongsToMany(models.User, {
+      through: 'User_unit'
     });
 
   };

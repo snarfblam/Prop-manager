@@ -22,6 +22,6 @@ function handleTokenCard(token) {
   })
   .then(output => {
     if (output.status === "succeeded")
-      document.getElementById("shop").innerHTML = "<p>Purchase complete!</p>";
+      document.getElementById("shop").innerHTML = "<p>Rent Payment complete!</p>";
   })
 }

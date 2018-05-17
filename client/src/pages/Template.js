@@ -13,12 +13,17 @@ import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../compo
 import './page.css'
 import LoginLink from './modals/Login/LoginLink';
 import Login from './modals/Login'
+import Axios from 'axios';
+
 
 class Template extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
         };
+
+        this.showModal = this.props.showModal;
+        this.hideModal = this.props.hideModal;
     }
  
     toNavItems(navList) {
@@ -51,7 +56,11 @@ class Template extends React.Component {
                             {/* <NavLinkItem to='/'>
                                 Login
                             </NavLinkItem> */}
-                            <LoginLink onClick={() => this.onLoginClicked()} />
+                            <LoginLink
+                                loggedAs={this.props.loggedAs}    
+                                onLogin={() => this.onLoginClicked()}
+                                onLogout={() => this.onLogoutClicked()}
+                            />
                         </NavbarNav>
                     </Container>
                 </Navbar>
@@ -64,11 +73,18 @@ class Template extends React.Component {
     }
 
     onLoginClicked() {
-
-        this.props.showModal(
+        this.showModal(
             <Login />,
             "Log In"
         );
+    }
+    onLogoutClicked() {
+        // window.location.href = '/auth/logout';
+        Axios.post('/auth/logout', {}).then(this.props.onLogOut());
+        // this.showModal(
+        //     <p>will be implemented some day</p>,
+        //     "Log Out"
+        // );
     }
 
     // getNavItems() {
