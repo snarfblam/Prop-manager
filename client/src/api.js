@@ -82,4 +82,10 @@ function getRentDue() {
         .then(response => response.data);
 }
 
-export { createNewUser, activateUser, getUnitList, getUserStatus, getRentDue };
+function getUserList() {
+    return axios
+        .get('/api/getUserlist')
+        .then(response => response.data);
+}
+
+export { createNewUser, activateUser, getUnitList, getUserStatus, getRentDue, getUserList };
