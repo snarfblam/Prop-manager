@@ -79,9 +79,39 @@ var router = express.Router();
             });
     });
 
-    // GET - gets rent amount that the tenant owes
+    /* GET - gets rent amount that the tenant owes
+        Returns array: {
+            unitId: number,
+            paymentId: number
+            unitName: string,
+            amount: number <dollars>,
+            due: Date,
+        } []
+    
+    */
     router.get('/api/rentAmount', (req, res, next) => {
+        if (req.user) {
+            req.user
+                .getUnits({include: [{model: db.Payment, where: {paid:true }}]})
+                .then(units => {
+                    var results = [];
 
+                    units.forEach(unit => {
+                        unit.Payments.forEach(payment => {
+                            results.push({
+                                unitId: unit.id,
+                                paymentId: payment.id,
+                                unitName: unit.unitName,
+                                amount: payment.amount,
+                                due: payment.due_date,
+                            });
+                        });
+                    });
+                    res.json(results);
+                });
+        } else {
+            res.json([]); // whole lotta nuffin
+        }
     });
 
     // GET - gets the tenant’s payment history
