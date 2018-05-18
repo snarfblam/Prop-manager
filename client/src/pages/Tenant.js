@@ -10,15 +10,20 @@ class Tenant extends Template {
     constructor(props) {
         super(props)
         this.state = {
-            message: ''
+            message: '',
+            ownedMaintRequest: ''
         };
 
         this.payRentWithCreditCard = this.payRentWithCreditCard.bind(this);
         this.submitMaintenanceRequest =this.submitMaintenanceRequest.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
+    componentDidMount = () => {
+        axios.get('/api/getOwnMaintRequest', function(maintRequest) {
+            this.setState({ownedMaintRequest: maintRequest});
+        })
+    }  
     
-
     payRentWithCreditCard = (ev) => {
         var checkoutHandler = StripeCheckout.configure({
             key: "pk_test_edJT25Bz1YVCJKIMvmBGCS5Y",
@@ -33,6 +38,7 @@ class Tenant extends Template {
     }
 
     handleTokenCard = (token) => {
+        token.paymentIDs = [1, 2, 3];
         fetch("/api/submitPayment", {
           method: "POST",
           headers: {"Content-Type": "application/json"},
@@ -90,6 +96,7 @@ class Tenant extends Template {
                         </Button>
                         <h3>Maintenance Requests</h3>
                         <p>[request table here]</p>
+                        <>
                         <form>
                             <label>
                                 What is Wrong ?
