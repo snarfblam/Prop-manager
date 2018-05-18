@@ -1,19 +1,21 @@
 import React from 'react';
+import axios from 'axios';
 import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
 import Button from '../components/Bootstrap/Button';
 declare var StripeCheckout;
 
-
 class Tenant extends Template {
     constructor(props) {
         super(props)
         this.state = {
-
+            message: ''
         };
 
         this.payRentWithCreditCard = this.payRentWithCreditCard.bind(this);
+        this.submitMaintenanceRequest =this.submitMaintenanceRequest.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
     
 
@@ -41,6 +43,9 @@ class Tenant extends Template {
               console.log("successful payment");
           }
         })
+        .catch(function (error) {
+            console.log(error);
+        });
       }
 
     getNavItems() {
@@ -50,6 +55,23 @@ class Tenant extends Template {
                 { path: '/tenant', text: 'Request Maintenance' },
         ];
     }
+
+
+    handleChange(event) {
+        this.setState({message: event.target.value});
+    }
+    
+    submitMaintenanceRequest(event) {
+        // alert('A name was submitted: ' + this.state.value);
+        event.preventDefault();
+        
+        axios.post('/api/postMaintRequest', {
+            message: this.state.message
+        }).then(function(resMaint) { 
+            console.log("Post Maintenance Request works!");
+        });
+    }
+
 
     getContent() {
         return (
@@ -68,8 +90,13 @@ class Tenant extends Template {
                         </Button>
                         <h3>Maintenance Requests</h3>
                         <p>[request table here]</p>
-                        <Button>Request Maintenance</Button>
-
+                        <form>
+                            <label>
+                                What is Wrong ?
+                                <input type="text" value={this.state.message} onChange={this.handleChange} />
+                            </label>                            
+                           <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
+                        </form>
                     </div>
         );
     }

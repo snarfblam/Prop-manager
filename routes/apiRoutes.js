@@ -8,12 +8,20 @@ const keyPublishable = stripeKeys.PUBLISHABLE_KEY;
 const keySecret = stripeKeys.SECRET_KEY;
 const stripe = require("stripe")(keySecret);
 
+
 var router = express.Router();
 
 { // Maintenance Requests
     // POST - Post a maintenance request to the database
     router.post('/api/postMaintRequest', (req, res, next) => {
-        
+        var data = req.body;
+        req.user.getUnits()
+        .then(function(dbUnits) {
+            data.UnitId = dbUnits[0].id;
+            db.Maintenance.create(data).then(function(dbMaint) {
+                res.json(dbMaint)
+            }) 
+        })
     });
 
     // POST - Mark a maintenance request as completed
