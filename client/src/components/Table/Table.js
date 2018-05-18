@@ -11,6 +11,8 @@
                 *: any              - Properties references by column names. Should be string or react element
             } []
         }
+        transform?: function(colName, value)
+                                    - Optional function to transform values displayed
 */
 
 import React from 'react';
@@ -33,7 +35,13 @@ export default props => (
                     <tr key={i}>
                         {props.data.columns.map((column, i) => (
                             <td key={i}>
-                                {row[column.name] || ''}
+                                {
+                                    props.transform ? (
+                                        props.transform(column.name, row[column.name])
+                                    ): (
+                                        row[column.name] || ''
+                                    )
+                                }
                             </td>
                         ))}
                     </tr>
