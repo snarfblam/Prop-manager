@@ -66,4 +66,18 @@ function getUserStatus() {
             return response.data;
         });
 }
-export { createNewUser, activateUser, getUnitList, getUserStatus };
+
+/** Requests a list of due rent payments from the server.
+        Resolves to array: {
+            unitId: number,
+            amount: number <dollars>,
+            due: Date
+        } []
+ */
+function getRentDue() {
+    return axios
+        .get('/api/rentAmount')
+        .then(response => response.data);
+}
+
+export { createNewUser, activateUser, getUnitList, getUserStatus, getRentDue };
