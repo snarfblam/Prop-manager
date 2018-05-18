@@ -70,8 +70,10 @@ function getUserStatus() {
 /** Requests a list of due rent payments from the server.
         Resolves to array: {
             unitId: number,
+            paymentId: number
+            unitName: string,
             amount: number <dollars>,
-            due: Date
+            due: Date,
         } []
  */
 function getRentDue() {
