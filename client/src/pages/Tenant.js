@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
@@ -8,10 +9,14 @@ import { Table } from '../components/Table';
 
 declare var StripeCheckout;
 
-
 class Tenant extends Template {
     constructor(props) {
         super(props)
+      
+        this.payRentWithCreditCard = this.payRentWithCreditCard.bind(this);
+        this.submitMaintenanceRequest =this.submitMaintenanceRequest.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.paymentTransform = this.paymentTransform.bind(this);
 
         this.rentColumns = [
             { name: 'unitName', label: 'Unit' },
@@ -26,10 +31,9 @@ class Tenant extends Template {
                 items: [],
             },
             totalDue: 0,
+            message: ''
         };
 
-        this.payRentWithCreditCard = this.payRentWithCreditCard.bind(this);
-        this.paymentTransform = this.paymentTransform.bind(this);
     }
 
     componentDidMount() {
@@ -66,12 +70,15 @@ class Tenant extends Template {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(token)
         })
-            .then(output => {
-                if (output.status === "succeeded") {
-                    console.log("successful payment");
-                }
-            })
-    }
+        .then(output => {
+          if (output.status === "succeeded") {
+              console.log("successful payment");
+          }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+      }
 
     /**
      * Converts values from this.state.paymentTable to JSX
@@ -105,6 +112,23 @@ class Tenant extends Template {
         ];
     }
 
+
+    handleChange(event) {
+        this.setState({message: event.target.value});
+    }
+    
+    submitMaintenanceRequest(event) {
+        // alert('A name was submitted: ' + this.state.value);
+        event.preventDefault();
+        
+        axios.post('/api/postMaintRequest', {
+            message: this.state.message
+        }).then(function(resMaint) { 
+            console.log("Post Maintenance Request works!");
+        });
+    }
+
+
     getContent() {
         return (
             <div>
@@ -126,8 +150,13 @@ class Tenant extends Template {
                 />
 
                 <h3>Maintenance Requests</h3>
-                <p>[request table here]</p>
-                <Button>Request Maintenance</Button>
+                <form>
+                  <label>
+                      What is Wrong ?
+                      <input type="text" value={this.state.message} onChange={this.handleChange} />
+                  </label>                            
+                 <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
+              </form>
 
             </div>
         );
