@@ -11,7 +11,7 @@
                 *: any              - Properties references by column names. Should be string or react element
             } []
         }
-        transform?: function(colName, value)
+        transform?: function(colName, value, item)
                                     - Optional function to transform values displayed
 */
 
@@ -37,7 +37,7 @@ export default props => (
                             <td key={i}>
                                 {
                                     props.transform ? (
-                                        props.transform(column.name, row[column.name])
+                                        props.transform(column.name, row[column.name], row)
                                     ): (
                                         row[column.name] || ''
                                     )
