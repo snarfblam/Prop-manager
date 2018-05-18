@@ -46,6 +46,10 @@ var router = express.Router();
     router.post('/api/submitPayment', (req, res, next) => {
         let amount = 500;
 
+        if (!req.user) {
+            return res.status(403).end();
+        }
+
         stripe.customers.create({
             email: req.body.email,
             card: req.body.id
@@ -84,13 +88,14 @@ var router = express.Router();
     router.get('/api/rentAmount', (req, res, next) => {
         if (req.user) {
             req.user
-                .getUnits({include: [{model: db.Payment, where: {paid:true }}]})
+                .getUnits({include: [{model: db.Payment, where: {paid:false }}]})
                 .then(units => {
                     var results = [];
 
                     units.forEach(unit => {
                         unit.Payments.forEach(payment => {
                             results.push({
+                                id: payment.id,
                                 unitId: unit.id,
                                 paymentId: payment.id,
                                 unitName: unit.unitName,
