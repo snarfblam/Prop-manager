@@ -200,7 +200,7 @@ var router = express.Router();
     });
 }
 
-// Surprise routes: Routes nobody planned on! (oops...)
+// Units
 {
     // GET - Returns list of units, in the form of 
     // { 
@@ -217,6 +217,7 @@ var router = express.Router();
                     units: units.map(unit => ({
                         unitName: unit.unitName,
                         id: unit.id,
+                        rate: unit.rate,
                     }))
                 });
             }).catch(err => {
@@ -224,6 +225,7 @@ var router = express.Router();
                 res.status(500).end();
             });
     });
+
 }
 
 module.exports = router;
