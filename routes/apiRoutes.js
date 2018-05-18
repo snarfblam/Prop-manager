@@ -155,6 +155,39 @@ var router = express.Router();
 
     });
 
+    // GET - Returns an array of users
+    router.get('/api/getUserlist', (req, res, next) => {
+        if (req.user && req.user.role == 'admin') {
+            db.User
+                .findAll({})
+                .then(users => {
+                    var userlist = users.map(user => ({
+                        id: user.id,
+                        fullname: user.fullname,
+                        role: user.role,
+                        activated: !user.activationCode,
+                        phone: user.phone,
+                        email: user.email,
+                        authtype: user.authtype || getAccountType(user),
+                        address: user.address,
+                        city: user.city,
+                        state: user.state,
+                        zip: user.zip,
+                    }));
+
+                    res.json(userlist);
+                });
+        } else {
+            return res.status(403).end(); // forbidden
+        }
+
+        function getAccountType(userModel) {
+            if (userModel.googleId) return 'google';
+            if (userModel.local_username) return 'local';
+            return 'other';
+        }
+    });
+
     // GET - Gets a user's log-in status: {status: 'logged out' | 'tenant' | 'admin' }
     router.get("/api/userStatus", (req, res, next) => {
         var user = req.user;
