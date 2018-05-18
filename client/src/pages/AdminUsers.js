@@ -13,16 +13,33 @@ class AdminUsers extends Template {
         super(props)
         this.state = {
             userList: [
-                { value: 'would be an id 1', text: 'Anthony' },
-                { value: 'would be an id 2', text: 'Don' },
-                { value: 'would be an id 3', text: 'Clark' },
+                { value: '0', text: 'Loading' },
             ],
-            selectedUserId: 'would be an id 2', // should correspond to a userList value
+            selectedUserId: '0', // should correspond to a userList value
             newUserData: {}, // Temporarily store new-user-form data so we can re-populate the form on the modal if there is an error
         };
 
+        this.cachedUsers = { "0": {}};
         this.onNewUserSubmit = this.onNewUserSubmit.bind(this);
         this.showNewUserModal = this.showNewUserModal.bind(this);
+    }
+
+    componentDidMount() {
+        api.getUserList()
+            .then(userlist => {
+                console.log(userlist);
+                this.cachedUsers = {};
+                userlist.forEach(user => this.cachedUsers[user.id] = user);
+                var newUserSelectionList = userlist.map(user => ({ value: user.id, text: user.fullname }));
+                var selectedUserId = userlist[0].id;
+
+                this.setState({
+                    userList: newUserSelectionList,
+                    selectedUserId: selectedUserId,
+                })
+            }).catch(err => {
+                console.log(err);
+            })
     }
 
     showNewUserModal() {
@@ -82,19 +99,25 @@ class AdminUsers extends Template {
     }
 
     getContent() {
+        console.log(this.cachedUsers);
+        var displayedUser = this.cachedUsers[this.state.selectedUserId];
+        var displayedItems = [
+            { name: 'Account Type', value: displayedUser.role },
+            { name: 'Name', value: displayedUser.fullname },
+            { name: 'Email', value: displayedUser.email},
+            { name: 'Phone', value: displayedUser.phone},
+            { name: 'Address', value: displayedUser.address},
+            { name: 'City', value: `${displayedUser.city} ${displayedUser.state} ${displayedUser.zip}`},
+            // { name: 'Unit(s)', value:  displayedUser.},
+            { name: 'Auth Type', value:  displayedUser.authtype},
+        ]
+
         var data = {
             columns: [
                 { name: 'name', label: 'Name' },
                 { name: 'value', label: 'Value' },
             ],
-            items: [
-                { name: 'Name', value: 'Don' },
-                { name: 'Email', value: 'don@gmail.com' },
-                { name: 'Address', value: 'Street Lane Drive' },
-                { name: 'City', value: 'Portsmouth NH 03804' },
-                { name: 'Unit(s)', value: '103' },
-                { name: 'Auth Type', value: 'Google' },
-            ]
+            items: displayedItems,
         };
 
         return (
