@@ -4,6 +4,7 @@ import Template from './Template';
 import './page.css'
 import { Select } from '../components/Bootstrap';
 import { Table } from '../components/Table';
+import * as api from '../api';
 
 class AdminUnits extends Template {
     constructor(props) {
@@ -11,10 +12,26 @@ class AdminUnits extends Template {
         this.state = {
             // unitNames: ['101', '102', '103', '104', '201', '202'],
             // selectedUnit: '103',
+            units: [],
         };
+
+        this.tableTransform = this.tableTransform.bind(this);
     }
 
+    componentDidMount() {
+        api.getUnitList()
+            .then(response => {
+                console.log(response);
+                this.setState({ units: response.data.units });
+            }).catch(err => {
+                console.log(err);
+            });
+    }
 
+    tableTransform(col, val, item) {
+        if (col == 'rate') return '$' + val.toFixed(2);
+        return val;
+    }
 
     getNavItems() {
         return [
@@ -29,15 +46,11 @@ class AdminUnits extends Template {
     getContent() {
         var data = {
             columns: [
-                { name: 'unit', label: 'Unit' },
-                { name: 'tenants', label: 'Tenant(s)' },
-                { name: 'rent', label: 'Rent' },
+                { name: 'unitName', label: 'Unit' },
+                // { name: 'tenants', label: 'Tenant(s)' },
+                { name: 'rate', label: 'Rent' },
             ],
-            items: [
-                { unit: 101, tenants: 'Clark', rent: '$0'},
-                { unit: 102, tenants: 'Anthony', rent: '$42'},
-                { unit: 103, tenants: 'Don', rent: '$9001' },
-            ]
+            items: this.state.units,
         };
 
         return (
@@ -48,7 +61,7 @@ class AdminUnits extends Template {
                     value={this.state.selectedUnit}
                     onChange={() => { }}
                 /> */}
-                <Table data={data}/>    
+                <Table data={data} transform={this.tableTransform}/>    
                 
             </div>
         );

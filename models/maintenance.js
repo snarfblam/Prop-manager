@@ -10,6 +10,7 @@ module.exports = function(sequelize, DataTypes) {
       status: {
         allowNull: false,
           type: DataTypes.BOOLEAN,  
+          defaultValue: true //true is an open maintenance request and false is a closed maintenance request
       }
     });
       

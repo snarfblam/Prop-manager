@@ -61,8 +61,8 @@ db.sequelize.sync({
         zip: 90210,
     });
     var newPaymentPromise = db.Payment.create({
-        amount: 500,
-        paid: true,
+        amount: 450,
+        paid: false,
         due_date: '2018-05-17 00:58:52',
         UnitId: 1
     });

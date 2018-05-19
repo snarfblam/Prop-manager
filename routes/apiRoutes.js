@@ -8,12 +8,20 @@ const keyPublishable = stripeKeys.PUBLISHABLE_KEY;
 const keySecret = stripeKeys.SECRET_KEY;
 const stripe = require("stripe")(keySecret);
 
+
 var router = express.Router();
 
 { // Maintenance Requests
     // POST - Post a maintenance request to the database
     router.post('/api/postMaintRequest', (req, res, next) => {
-        
+        var data = req.body;
+        req.user.getUnits()
+            .then(function (dbUnits) {
+                data.UnitId = dbUnits[0].id;
+                db.Maintenance.create(data).then(function (dbMaint) {
+                    res.json(dbMaint)
+                })
+            })
     });
 
     // POST - Mark a maintenance request as completed
@@ -23,12 +31,20 @@ var router = express.Router();
 
     // GET - User gets all of their maintenance requests
     router.get('/api/getOwnMaintRequest', (req, res, next) => {
-
+        req.user.getUnits().then(function(dbUnits) {            
+            db.Maintenance.findAll({
+                where: {
+                    UnitId: dbUnits[0].id
+                }
+            }).then(function(dbMaint) {
+                res.json(dbMaint)
+            }) 
+        })
     });
 
     // GET -  Admin gets all of the maintenance requests that are open
     router.get('/api/getAllMaintRequests', (req, res, next) => {
-
+        
     });
 }
 
@@ -36,36 +52,88 @@ var router = express.Router();
     // POST - submits payment to stripe from tenant page
     //Creates the Strip modal for Credit card transaction that takes the card and email for from the person making the payment
     router.post('/api/submitPayment', (req, res, next) => {
-        let amount = 500;
+        // let amount = 500;
 
-        stripe.customers.create({
-            email: req.body.email,
-            card: req.body.id
-        }).then(customer =>
-            stripe.charges.create({
-                amount,
-                description: "Rent Payment",
-                currency: "usd",
-                customer: customer.id
-            })).then(charge => {
+        var invoiceList = req.body.invoiceList || [];
+
+        db.Payment.findAll({
+            where: {
+                id: invoiceList,
+                paid: false
+            }
+        }).then(payments => {
+            var totalDollars = payments.reduce((sum, pmt) => sum + pmt.amount, 0);
+            var totalCents = totalDollars * 100;
+
+            if (totalCents === 0) {
+                return res.json({ status: 'zero payment' });
+            };
+
+            stripe.customers.create({
+                email: req.body.email,
+                card: req.body.id
+            }).then(customer =>
+                stripe.charges.create({
+                    amount: totalCents,
+                    description: "Rent Payment",
+                    currency: "usd",
+                    customer: customer.id
+                })
+            ).then(charge => {
                 console.log("successful payment");
-                db.Payment.findOne( { where: {Unitid: 1} }).then(function(dbpayment) {
-                    if(dbpayment) {
-                        dbpayment.updateAttributes({
-                            paid: true
-                        })
-                    }                    
-                }) 
-                res.send(charge)
+                res.send({
+                    amount: charge.amount,
+                    status: charge.status,
+                    paid: charge.paid,
+                    currency: charge.currency,
+                    description: charge.description,
+                })
+
+                // Mark all specified invoices as paid
+                db.Payment.update({ paid: true }, { where: { id: invoiceList } })
+                    .then(console.log) // log updated rows
+                    .catch(console.log) // log errors
             }).catch(err => {
                 console.log("Error:", err);
                 res.status(500).send({ error: "Purchase Failed" });
             });
+        });
     });
 
-    // GET - gets rent amount that the tenant owes
+    /* GET - gets rent amount that the tenant owes
+        Returns array: {
+            unitId: number,
+            paymentId: number
+            unitName: string,
+            amount: number <dollars>,
+            due: Date,
+        } []
+    
+    */
     router.get('/api/rentAmount', (req, res, next) => {
+        if (req.user) {
+            req.user
+                .getUnits({ include: [{ model: db.Payment, where: { paid: false } }] })
+                .then(units => {
+                    var results = [];
 
+                    units.forEach(unit => {
+                        unit.Payments.forEach(payment => {
+                            results.push({
+                                id: payment.id,
+                                unitId: unit.id,
+                                paymentId: payment.id,
+                                unitName: unit.unitName,
+                                amount: payment.amount,
+                                due: payment.due_date,
+                            });
+                        });
+                    });
+                    res.json(results);
+                });
+        } else {
+            res.json([]); // whole lotta nuffin
+        }
     });
 
     // GET - gets the tenant’s payment history
@@ -117,6 +185,39 @@ var router = express.Router();
 
     });
 
+    // GET - Returns an array of users
+    router.get('/api/getUserlist', (req, res, next) => {
+        if (req.user && req.user.role == 'admin') {
+            db.User
+                .findAll({})
+                .then(users => {
+                    var userlist = users.map(user => ({
+                        id: user.id,
+                        fullname: user.fullname,
+                        role: user.role,
+                        activated: !user.activationCode,
+                        phone: user.phone,
+                        email: user.email,
+                        authtype: user.authtype || getAccountType(user),
+                        address: user.address,
+                        city: user.city,
+                        state: user.state,
+                        zip: user.zip,
+                    }));
+
+                    res.json(userlist);
+                });
+        } else {
+            return res.status(403).end(); // forbidden
+        }
+
+        function getAccountType(userModel) {
+            if (userModel.googleId) return 'google';
+            if (userModel.local_username) return 'local';
+            return 'other';
+        }
+    });
+
     // GET - Gets a user's log-in status: {status: 'logged out' | 'tenant' | 'admin' }
     router.get("/api/userStatus", (req, res, next) => {
         var user = req.user;
@@ -129,7 +230,7 @@ var router = express.Router();
     });
 }
 
-// Surprise routes: Routes nobody planned on! (oops...)
+// Units
 {
     // GET - Returns list of units, in the form of 
     // { 
@@ -146,6 +247,7 @@ var router = express.Router();
                     units: units.map(unit => ({
                         unitName: unit.unitName,
                         id: unit.id,
+                        rate: unit.rate,
                     }))
                 });
             }).catch(err => {
@@ -153,6 +255,7 @@ var router = express.Router();
                 res.status(500).end();
             });
     });
+
 }
 
 module.exports = router;

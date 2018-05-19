@@ -27,9 +27,10 @@ class Template extends React.Component {
     }
  
     toNavItems(navList) {
+        var index = 0;
         return navList.map(item => {
             if (item.path && item.text) {
-                return <NavLinkItem to={item.path} key={item.path}>{item.text}</NavLinkItem>
+                return <NavLinkItem to={item.path} key={index++}>{item.text}</NavLinkItem>
             } else {
                 return item;
             }
