@@ -45,7 +45,7 @@ class Tenant extends Template {
             maintTable: {
                 columns: this.maintRequestColumns,
                 items: []
-            }
+            },
             processingPayment: false,
         };
 
