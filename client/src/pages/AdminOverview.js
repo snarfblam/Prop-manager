@@ -5,6 +5,7 @@ import Table from '../components/Table';
 import Template from './Template';
 import './page.css';
 import * as api from '../api';
+import Spinner from './modals/Spinner';
 
 class AdminOverview extends Template {
     constructor(props) {
@@ -23,8 +24,8 @@ class AdminOverview extends Template {
             { name: 'paid', label: 'Paid' },
         ];
         this.state = {
-            maintItems: [],
-            paymentItems: [],
+            maintItems: null,
+            paymentItems: null,
         };
     }
 
@@ -41,7 +42,6 @@ class AdminOverview extends Template {
     }
 
     transformPaymentItems(col, value, item) {
-        console.log(col, value);
         if (col === 'unit') {
             return item.Unit.unitName;
         } else if (col === 'paid') {
@@ -79,23 +79,40 @@ class AdminOverview extends Template {
             <div>
                 <h1>Overview</h1>
                 <h2>Maintenance</h2>
-                <Table
-                    data={{
-                        columns: this.maintColumns,
-                        items: this.state.maintItems,
-                    }}
-                    transform={this.transformMaintItems}
-                />
+                {this.getMaintTable()}
                 <h2>Payments</h2>
-                <Table
-                    data={{
-                        columns: this.paymentColumns,
-                        items: this.state.paymentItems,
-                    }}
-                    transform={this.transformPaymentItems}
-                />
+                {this.getPaymentTable()}    
+                
             </div>
         );
+    }
+
+    getMaintTable() {
+        if (this.state.maintItems == null) return <Spinner />;
+
+        return (
+            <Table
+                data={{
+                    columns: this.maintColumns,
+                    items: this.state.maintItems || [],
+                }}
+                transform={this.transformMaintItems}
+            />
+        ) ;
+    }
+
+    getPaymentTable() {
+        if (this.state.paymentItems == null) return <Spinner />;
+
+        return (
+            <Table
+                data={{
+                    columns: this.paymentColumns,
+                    items: this.state.paymentItems || [],
+                }}
+                transform={this.transformPaymentItems}
+            />
+        ) ;
     }
 }
 
