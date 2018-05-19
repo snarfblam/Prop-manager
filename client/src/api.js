@@ -92,4 +92,17 @@ function getOwnMaintRequest () {
     return axios.get("/api/getOwnMaintRequest").then(response => response.data);
 }
 
-export { createNewUser, activateUser, getUnitList, getUserStatus, getRentDue, getUserList, getOwnMaintRequest };
+/**
+ * Gets all maintenance requests from the server
+ * @param {{open?: boolean} } options
+ */
+function getAllMaintRequests(options) {
+    var requestOptions = {};
+    if (options.open != undefined) requestOptions.where = { status: options.open };
+
+    return axios
+        .post("/api/getAllMaintRequests", requestOptions)
+        .then(response => response.data);
+}
+
+export { createNewUser, activateUser, getUnitList, getUserStatus, getRentDue, getUserList, getOwnMaintRequest, getAllMaintRequests };

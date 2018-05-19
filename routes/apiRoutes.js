@@ -52,12 +52,16 @@ var router = express.Router();
         })
     });
 
-    // GET -  Admin gets all of the maintenance requests that are open
-    router.get('/api/getAllMaintRequests', (req, res, next) => {
+    // POST -  Admin gets all of the maintenance requests that are open
+    /* Request body: {
+        where?: {status?: boolean} // status = true for open maint requests
+    }
+    */
+    router.post('/api/getAllMaintRequests', (req, res, next) => {
+        var where = (req.body || {}).where || {};
+
         db.Maintenance.findAll({
-            where: {
-                status: true
-            }
+            where: where,
         }).then(function(dbMaint) {
             res.json(dbMaint)
         }) 
