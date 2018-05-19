@@ -58,6 +58,11 @@ var router = express.Router();
     }
     */
     router.post('/api/getAllMaintRequests', (req, res, next) => {
+        // Only allowed for logged-in admins
+        if (!req.user || req.user.role != 'admin') {
+            return res.status(403).end();
+        }
+        
         var where = (req.body || {}).where || {};
 
         db.Maintenance.findAll({
@@ -65,7 +70,10 @@ var router = express.Router();
             include: [db.Unit],
         }).then(function(dbMaint) {
             res.json(dbMaint)
-        }) 
+        }).catch(err => {
+            res.status(500).end();
+            console.log(err);
+        });
     });
 }
 
@@ -162,9 +170,28 @@ var router = express.Router();
 
     });
 
-    // GET - gets all of the payment history for the admin
-    router.get('/api/allPayments', (req, res, next) => {
+    // POST - gets all of the payment history for the admin
+    /* Request body: {
+           where?: {paid?: boolean} 
+       }
+    */
+    router.post('/api/allPayments', (req, res, next) => {
+        // Only allowed for logged-in admins
+        if (!req.user || req.user.role != 'admin') {
+            return res.status(403).end();
+        }
 
+        var where = (req.body || {}).where || {};
+
+        db.Payment.findAll({
+            where: where,
+            include: [db.Unit],
+        }).then(payments => {
+            res.json(payments);
+        }).catch(err => {
+            res.status(500).end();
+            console.log(err);
+        });
     });
 }
 
