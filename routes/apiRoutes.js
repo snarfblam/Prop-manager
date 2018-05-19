@@ -16,12 +16,12 @@ var router = express.Router();
     router.post('/api/postMaintRequest', (req, res, next) => {
         var data = req.body;
         req.user.getUnits()
-        .then(function(dbUnits) {
-            data.UnitId = dbUnits[0].id;
-            db.Maintenance.create(data).then(function(dbMaint) {
-                res.json(dbMaint)
-            }) 
-        })
+            .then(function (dbUnits) {
+                data.UnitId = dbUnits[0].id;
+                db.Maintenance.create(data).then(function (dbMaint) {
+                    res.json(dbMaint)
+                })
+            })
     });
 
     // POST - Mark a maintenance request as completed
@@ -68,31 +68,52 @@ var router = express.Router();
     // POST - submits payment to stripe from tenant page
     //Creates the Strip modal for Credit card transaction that takes the card and email for from the person making the payment
     router.post('/api/submitPayment', (req, res, next) => {
-        let amount = 500;
+        // let amount = 500;
 
-        stripe.customers.create({
-            email: req.body.email,
-            card: req.body.id
-        }).then(customer =>
-            stripe.charges.create({
-                amount,
-                description: "Rent Payment",
-                currency: "usd",
-                customer: customer.id
-            })).then(charge => {
+        var invoiceList = req.body.invoiceList || [];
+
+        db.Payment.findAll({
+            where: {
+                id: invoiceList,
+                paid: false
+            }
+        }).then(payments => {
+            var totalDollars = payments.reduce((sum, pmt) => sum + pmt.amount, 0);
+            var totalCents = totalDollars * 100;
+
+            if (totalCents === 0) {
+                return res.json({ status: 'zero payment' });
+            };
+
+            stripe.customers.create({
+                email: req.body.email,
+                card: req.body.id
+            }).then(customer =>
+                stripe.charges.create({
+                    amount: totalCents,
+                    description: "Rent Payment",
+                    currency: "usd",
+                    customer: customer.id
+                })
+            ).then(charge => {
                 console.log("successful payment");
-                db.Payment.findOne( { where: {Unitid: 1} }).then(function(dbpayment) {
-                    if(dbpayment) {
-                        dbpayment.updateAttributes({
-                            paid: true
-                        })
-                    }                    
-                }) 
-                res.send(charge)
+                res.send({
+                    amount: charge.amount,
+                    status: charge.status,
+                    paid: charge.paid,
+                    currency: charge.currency,
+                    description: charge.description,
+                })
+
+                // Mark all specified invoices as paid
+                db.Payment.update({ paid: true }, { where: { id: invoiceList } })
+                    .then(console.log) // log updated rows
+                    .catch(console.log) // log errors
             }).catch(err => {
                 console.log("Error:", err);
                 res.status(500).send({ error: "Purchase Failed" });
             });
+        });
     });
 
     /* GET - gets rent amount that the tenant owes
@@ -108,13 +129,14 @@ var router = express.Router();
     router.get('/api/rentAmount', (req, res, next) => {
         if (req.user) {
             req.user
-                .getUnits({include: [{model: db.Payment, where: {paid:true }}]})
+                .getUnits({ include: [{ model: db.Payment, where: { paid: false } }] })
                 .then(units => {
                     var results = [];
 
                     units.forEach(unit => {
                         unit.Payments.forEach(payment => {
                             results.push({
+                                id: payment.id,
                                 unitId: unit.id,
                                 paymentId: payment.id,
                                 unitName: unit.unitName,

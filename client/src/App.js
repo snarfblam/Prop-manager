@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Landing from './pages/Landing';
 import AdminOverview from './pages/AdminOverview';
@@ -9,6 +9,7 @@ import AdminMaint from './pages/AdminMaint';
 import AdminPayments from './pages/AdminPayments';
 import AdminUsers from './pages/AdminUsers';
 import Tenant from './pages/Tenant';
+import NotFound from './pages/NotFound';
 import TenantActivate from './pages/TenantActivate';
 import { Modal, ModalState } from './components/Modal';
 import * as api from './api';
@@ -53,6 +54,7 @@ class App extends Component {
         return (
             <BrowserRouter>
                 <div className="App">
+                <Switch>    
                     <Route exact path='/' render={() => this.renderLanding()} />
                     <Route exact path='/admin/overview' render={() => this.renderPage(AdminOverview)} />
                     <Route exact path='/admin/units' render={() => this.renderPage(AdminUnits)} />
@@ -60,8 +62,9 @@ class App extends Component {
                     <Route exact path='/admin/payments' render={() => this.renderPage(AdminPayments)} />
                     <Route exact path='/admin/users' render={() => this.renderPage(AdminUsers)} />
                     <Route path='/tenant/activate/:code' render={(props) => this.renderPage(TenantActivate, props)} />
-                    <Route exact path='/tenant' render={(x, y) => this.renderPage(Tenant,x,y)} />
-
+                    <Route exact path='/tenant' render={() => this.renderPage(Tenant)} />
+                    <Route path='*' render={() => this.renderPage(NotFound)} />
+                </Switch>
                     <Modal state={this.state.modal} onRequestClose={() => this.setState({ modal: this.state.modal.hide() })} />
                 </div>
             </BrowserRouter>

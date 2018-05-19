@@ -1,5 +1,8 @@
 ////////////// Modules ////////////////////////
 require('dotenv').config()
+const moment = require('moment');
+moment().format();
+const cron = require('node-cron');
 const express = require('express');
 const path = require('path');
 const db = require('./models');
@@ -58,8 +61,8 @@ db.sequelize.sync({
         zip: 90210,
     });
     var newPaymentPromise = db.Payment.create({
-        amount: 500,
-        paid: true,
+        amount: 450,
+        paid: false,
         due_date: '2018-05-17 00:58:52',
         UnitId: 1
     });
@@ -76,6 +79,40 @@ db.sequelize.sync({
             newUnit.addUsers([newAdmin, newTenant]);
             // newAdmin.addUnit(newUnit).then(()=>
             //     newTenant.addUnit(newUnit))
+        }).then(() => {
+            cron.schedule('0-59 * * * *', function(){
+                console.log('running a task every minute');
+                db.Unit
+                .findAll({})
+                .then(units => {
+                    let timeOfTheMos = moment(moment().format("YYYY-MM")).format("YYYY-MM-DD HH:mm:ss.SSS");
+                    console.log(timeOfTheMos);
+                    units.map(unit => {
+                        db.Payment.findOrCreate({
+                            where: {
+                                id: unit.id,
+                                due_date: {$gte: timeOfTheMos}
+                            },
+                            defaults: {
+                                UnitId: unit.id, 
+                                paid: false,
+                                amount: 500,
+                                due_date: timeOfTheMos
+                            }
+                        }).spread((payRec, created) => {
+                            console.log(payRec.get({
+                                plain: true
+                            }))
+                            if(created){
+                                console.log(`Payment Record created. Due date: ${timeOfTheMos} Unit: ${unit.id}`)
+                            } else {
+                                console.log(`Payment Record was prviously created for Unit: ${unit.id}`)
+                            }
+                        })
+
+                    })
+                }).catch(console.error)
+            });
         });
 
     const sequelizeSessionStore = new SessionStore({
@@ -88,7 +125,7 @@ db.sequelize.sync({
         resave: false,
         saveUninitialized: false,
     }));
-
+``
     app.use(passport.initialize())
     app.use(passport.session()) // will call the deserializeUser
     app.use(apiRoutes)
@@ -106,4 +143,4 @@ db.sequelize.sync({
     app.listen(PORT, () => {
         console.log('Listening on port ' + PORT);
     });
-})
+});
