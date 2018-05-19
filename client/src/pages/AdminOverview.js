@@ -32,7 +32,7 @@ class AdminOverview extends Template {
         if (col === 'unit') {
             return item.Unit.unitName;
         } else if (col === 'status') {
-            return value ? "no" : "yes";
+            return value ? "No" : "Yes";
         } else if (col === 'createdAt') {
             return (new Date(value)).toLocaleDateString();
         } else {    

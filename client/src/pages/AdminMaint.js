@@ -35,21 +35,33 @@ class AdminMaint extends Template {
     componentDidMount() {        
         this.requestMaintData();
     }
+
+    completeMaintItem = (id) => {
+        api
+            .completeMaintRequest(id)
+            .then(response => {
+                this.requestMaintData(); // refresh table here
+        })
+    }
+
         /**
      * Converts values from this.state.paymentTable to JSX
      * @param {*} col - column name
      * @param {*} value - column value
      * @param {*} item - item being displayed
      */
-    maintRequestTransform (col,value,item) {
+    maintRequestTransform = (col,value,item) => {
+        var ackButton = <Button onClick={() => this.completeMaintItem(item.id)}><Fas icon='check' />&emsp;Done</Button>
         if (col == 'message') {
             return value
+        } else if (col === 'unit') {
+            return item.Unit.unitName;
         } else if (col == 'status') {
             if (value) {
-                return value = "Open"
+                return ackButton // value = "Open"                
             } else {
                 return value = "Completed"
-            }            
+            }  
         } else if (col== 'createdAt') {
             return new Date(value).toLocaleDateString();
         } 
@@ -78,20 +90,20 @@ class AdminMaint extends Template {
     
 
     getContent() {
-        var ackButton = <Button><Fas icon='check' />&emsp;Done</Button>
-        var data = {
-            columns: [
-                { name: 'unit', label: 'Unit' },
-                { name: 'date', label: 'Date' },
-                { name: 'message', label: 'Message' },
-                { name: 'status', label: '' },
-            ],
-            items: [
-                { unit: 103, date: '5/10/2018', message: 'Just saying hi!', status: ackButton },
-                { unit: 101, date: '5/8/2018', message: 'heater is on fire, please send help', status: ackButton },
-                { unit: 102, date: '4/29/2018', message: 'roof is leaking, documents ruined, electronics destroyed, seeking compensation. lawsuit pending, please await legal correspondence.', status: ackButton }
-            ]
-        };
+
+        // var data = {
+        //     columns: [
+        //         { name: 'unit', label: 'Unit' },
+        //         { name: 'date', label: 'Date' },
+        //         { name: 'message', label: 'Message' },
+        //         { name: 'status', label: '' },
+        //     ],
+        //     items: [
+        //         { unit: 103, date: '5/10/2018', message: 'Just saying hi!', status: ackButton },
+        //         { unit: 101, date: '5/8/2018', message: 'heater is on fire, please send help', status: ackButton },
+        //         { unit: 102, date: '4/29/2018', message: 'roof is leaking, documents ruined, electronics destroyed, seeking compensation. lawsuit pending, please await legal correspondence.', status: ackButton }
+        //     ]
+        // };
 
         return (
             <div>
