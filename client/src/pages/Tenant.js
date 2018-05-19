@@ -34,12 +34,27 @@ class Tenant extends Template {
             },
             checkedPaymentIds: [], // : number[]
             totalDue: 0,
-            message: ''
+            message: '',
+            processingPayment: false,
         };
 
     }
 
     componentDidMount() {
+        this.requestRentData();
+    }
+
+    requestRentData() {
+        this.setState({
+            paymentTable: {
+                columns: this.rentColumns,
+                items: [],
+            },
+            totalDue: 0,
+            checkedPaymentIds: [],
+            processingPayment: false,
+        });
+
         api
             .getRentDue()
             .then(invoices => {
@@ -53,6 +68,7 @@ class Tenant extends Template {
                     },
                     totalDue: totalDue,
                     checkedPaymentIds: checkedPayments,
+                    processingPayment: false,
                 });
             });
     }
@@ -71,17 +87,20 @@ class Tenant extends Template {
     }
 
     handleTokenCard = (token) => {
+        token.invoiceList = this.state.checkedPaymentIds;
+        
+        this.setState({ processingPayment: true });
         fetch("/api/submitPayment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(token)
-        })
-        .then(output => {
-          if (output.status === "succeeded") {
-              console.log("successful payment");
-          }
-        })
-        .catch(function (error) {
+        }).then(output => {
+            this.setState({ processingPayment: false });
+            if (output.status === "succeeded") {
+                this.setState({ processingPayment: false });
+                console.log("successful payment");
+            }
+        }).catch(function (error) {
             console.log(error);
         });
     }
@@ -129,6 +148,7 @@ class Tenant extends Template {
                 type='checkbox'
                 checked={this.state.checkedPaymentIds.includes(item.id)}
                 onChange={this.paymentCheckChanged}
+                disabled={this.state.processingPayment}
                 name={item.id}
             />;
         } else if (col == 'amount') {
@@ -183,7 +203,7 @@ class Tenant extends Template {
                     Total:  <span className='rent-amount'>{this.formatDollars(this.state.totalDue || 0)}</span>
                     <br />
                     <Button
-                        disabled={this.state.totalDue === 0}    
+                        disabled={this.state.processingPayment || (this.state.totalDue === 0)}    
                         onClick={this.payRentWithCreditCard}
                     >
                         Pay Now
