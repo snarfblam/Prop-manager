@@ -17,12 +17,17 @@ class Tenant extends Template {
         this.submitMaintenanceRequest =this.submitMaintenanceRequest.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.paymentTransform = this.paymentTransform.bind(this);
+        this.maintRequestTransform = this.maintRequestTransform.bind(this);
 
         this.rentColumns = [
             { name: 'unitName', label: 'Unit' },
             { name: 'amount', label: 'Amount' },
             { name: 'due', label: 'Due' },
             { name: 'payButton', label: 'Pay' },
+        ]
+        this.maintRequestColumns = [
+            { name: 'message', label: 'Message' },
+            { name: 'status', label: 'Status' }
         ]
 
         this.state = {
@@ -32,7 +37,11 @@ class Tenant extends Template {
                 items: [],
             },
             totalDue: 0,
-            message: ''
+            message: '',
+            maintTable: {
+                columns: this.maintRequestColumns,
+                items: []
+            }
         };
 
     }
@@ -54,6 +63,14 @@ class Tenant extends Template {
                     totalDue: totalDue,
                 });
             });
+        api.getOwnMaintRequest().then(maintRequests => {
+            this.setState({
+                maintTable: {
+                    columns: this.maintRequestColumns,
+                    items: maintRequests
+                }
+            });
+        });
     }
 
     payRentWithCreditCard = (ev) => {
@@ -92,7 +109,18 @@ class Tenant extends Template {
      * @param {*} value - column value
      * @param {*} item - item being displayed
      */
-    paymentTransform(col, value, item) {
+    maintRequestTransform (col,value,item) {
+        if (col == 'message') {
+            return value
+        } else if (col == 'status') {
+            if (value) {
+                return value = "Open"
+            } else {
+                return value = "Completed"
+            }            
+        } 
+    }
+     paymentTransform(col, value, item) {
         if (col == 'payButton') {
             return <Button>Pay</Button>;
         } else if (col == 'amount') {
@@ -163,7 +191,10 @@ class Tenant extends Template {
                   </label>                            
                  <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
               </form>
-
+                <Table
+                    data={this.state.maintTable}
+                    transform={this.maintRequestTransform}
+                />            
             </div>
         );
     }
