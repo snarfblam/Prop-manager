@@ -125,7 +125,6 @@ class AdminUsers extends Template {
                 <Container><Row className='row justify-content-center'><Col size='12 sm-8 md-6'>
                     <Select items={this.state.userList} value={this.state.selectedUserId} onChange={(e) => { this.setState({ selectedUserId: e.target.value }) }} />
                 </Col></Row></Container>
-                <h3>Information</h3>
                 <Table data={data} />
                 <hr />
                 <Button onClick={this.showNewUserModal}>Create New User </Button>
