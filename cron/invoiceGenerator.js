@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const db = require('../models');
+const moment = require('moment');
 
 /**
  * Schedules the invoice generator
@@ -15,7 +16,7 @@ function schedule() {
                 units.map(unit => {
                     db.Payment.findOrCreate({
                         where: {
-                            id: unit.id,
+                            UnitId: unit.id,
                             due_date: { $gte: timeOfTheMos }
                         },
                         defaults: {
