@@ -1,7 +1,7 @@
 import React from 'react';
 import Template from './Template';
 import './page.css'
-import { Select } from '../components/Bootstrap';
+import { Select, Container, Col, Row } from '../components/Bootstrap';
 import { Table } from '../components/Table';
 import Button from '../components/Bootstrap/Button';
 import NewUser from './modals/NewUser/NewUser';
@@ -122,8 +122,9 @@ class AdminUsers extends Template {
         return (
             <div>
                 <h1>Users</h1>
-                <Select items={this.state.userList} value={this.state.selectedUserId} onChange={(e) => { this.setState({ selectedUserId: e.target.value }) }} />
-                <h3>Information</h3>
+                <Container><Row className='row justify-content-center'><Col size='12 sm-8 md-6'>
+                    <Select items={this.state.userList} value={this.state.selectedUserId} onChange={(e) => { this.setState({ selectedUserId: e.target.value }) }} />
+                </Col></Row></Container>
                 <Table data={data} />
                 <hr />
                 <Button onClick={this.showNewUserModal}>Create New User </Button>
