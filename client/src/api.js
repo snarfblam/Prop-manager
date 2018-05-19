@@ -88,4 +88,8 @@ function getUserList() {
         .then(response => response.data);
 }
 
-export { createNewUser, activateUser, getUnitList, getUserStatus, getRentDue, getUserList };
+function getOwnMaintRequest () {
+    return axios.get("/api/getOwnMaintRequest").then(response => response.data);
+}
+
+export { createNewUser, activateUser, getUnitList, getUserStatus, getRentDue, getUserList, getOwnMaintRequest };
