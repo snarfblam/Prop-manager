@@ -52,15 +52,28 @@ var router = express.Router();
         })
     });
 
-    // GET -  Admin gets all of the maintenance requests that are open
-    router.get('/api/getAllMaintRequests', (req, res, next) => {
+    // POST -  Admin gets all of the maintenance requests that are open
+    /* Request body: {
+        where?: {status?: boolean} // status = true for open maint requests
+    }
+    */
+    router.post('/api/getAllMaintRequests', (req, res, next) => {
+        // Only allowed for logged-in admins
+        if (!req.user || req.user.role != 'admin') {
+            return res.status(403).end();
+        }
+        
+        var where = (req.body || {}).where || {};
+
         db.Maintenance.findAll({
-            where: {
-                status: true
-            }
+            where: where,
+            include: [db.Unit],
         }).then(function(dbMaint) {
             res.json(dbMaint)
-        }) 
+        }).catch(err => {
+            res.status(500).end();
+            console.log(err);
+        });
     });
 }
 
@@ -157,9 +170,28 @@ var router = express.Router();
 
     });
 
-    // GET - gets all of the payment history for the admin
-    router.get('/api/allPayments', (req, res, next) => {
+    // POST - gets all of the payment history for the admin
+    /* Request body: {
+           where?: {paid?: boolean} 
+       }
+    */
+    router.post('/api/allPayments', (req, res, next) => {
+        // Only allowed for logged-in admins
+        if (!req.user || req.user.role != 'admin') {
+            return res.status(403).end();
+        }
 
+        var where = (req.body || {}).where || {};
+
+        db.Payment.findAll({
+            where: where,
+            include: [db.Unit],
+        }).then(payments => {
+            res.json(payments);
+        }).catch(err => {
+            res.status(500).end();
+            console.log(err);
+        });
     });
 }
 
