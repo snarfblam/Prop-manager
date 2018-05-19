@@ -99,18 +99,17 @@ class AdminUsers extends Template {
     }
 
     getContent() {
-        console.log(this.cachedUsers);
         var displayedUser = this.cachedUsers[this.state.selectedUserId];
-        var displayedItems = [
+        var displayedItems = displayedUser ? [
             { name: 'Account Type', value: displayedUser.role },
             { name: 'Name', value: displayedUser.fullname },
-            { name: 'Email', value: displayedUser.email},
-            { name: 'Phone', value: displayedUser.phone},
-            { name: 'Address', value: displayedUser.address},
-            { name: 'City', value: `${displayedUser.city} ${displayedUser.state} ${displayedUser.zip}`},
+            { name: 'Email', value: displayedUser.email },
+            { name: 'Phone', value: displayedUser.phone },
+            { name: 'Address', value: displayedUser.address },
+            { name: 'City', value: `${displayedUser.city} ${displayedUser.state} ${displayedUser.zip}` },
             // { name: 'Unit(s)', value:  displayedUser.},
-            { name: 'Auth Type', value:  displayedUser.authtype},
-        ]
+            { name: 'Auth Type', value: displayedUser.authtype },
+        ] : [];
 
         var data = {
             columns: [

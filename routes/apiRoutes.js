@@ -26,7 +26,17 @@ var router = express.Router();
 
     // POST - Mark a maintenance request as completed
     router.post('/api/completeMaintRequest', (req, res, next) => {
-
+        
+        db.Maintenance.findById(req.body.id).then(function(dbMaint){
+            if(dbMaint) {
+                dbMaint.updateAttributes({
+                    status: false // false means closed
+                })
+            }
+            res.sendStatus(200)
+        }).catch(function(error) {
+            if(error) throw error;
+        })
     });
 
     // GET - User gets all of their maintenance requests
@@ -44,7 +54,13 @@ var router = express.Router();
 
     // GET -  Admin gets all of the maintenance requests that are open
     router.get('/api/getAllMaintRequests', (req, res, next) => {
-        
+        db.Maintenance.findAll({
+            where: {
+                status: true
+            }
+        }).then(function(dbMaint) {
+            res.json(dbMaint)
+        }) 
     });
 }
 
