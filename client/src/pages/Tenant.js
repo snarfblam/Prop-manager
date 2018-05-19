@@ -115,7 +115,6 @@ class Tenant extends Template {
 
     /** Formats a number as a dollar amount */
     formatDollars(value) {
-        console.log(value, '<--', typeof value);
         return '$' + parseFloat(value).toFixed(2);
     }
 
