@@ -242,8 +242,7 @@ class Tenant extends Template {
             console.log("Post Maintenance Request works!");
             this.requestMaintData();        
         });
-        this.setState({ message: '' });                       
-        
+        this.setState({ message: '' });                          
     }
 
 
@@ -262,7 +261,6 @@ class Tenant extends Template {
                     <Button
                         disabled={this.state.processingPayment || (this.state.totalDue === 0)}
                         onClick={this.payRentWithCreditCard}
-
                     >
                         Pay Now
                     </Button>

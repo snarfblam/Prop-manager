@@ -6,6 +6,7 @@ import './page.css'
 import { Table } from '../components/Table';
 import Button from '../components/Bootstrap/Button';
 import Fas from '../components/Fas';
+import * as api from '../api';
 
 class AdminMaint extends Template {
     constructor(props) {
@@ -14,10 +15,55 @@ class AdminMaint extends Template {
         this.filterOptions = [
             {name: 'complete', label: 'Completed', checked: true},
             {name: 'incomplete', label: 'Not completed'}, 
-        ]; 
+        ];
+        this.maintRequestColumns = [
+            { name: 'message', label: 'Message' },
+            { name: 'unit', label: 'Unit' },
+            { name: 'createdAt', label: 'Date Submited'},
+            { name: 'status', label: 'Status'}
+        ] 
+
         this.state = {
             filterState: new CheckListState(this.filterOptions),
+            maintTable: {
+                columns: this.maintRequestColumns,
+                items: []
+            }
         };
+
+    }
+    componentDidMount() {        
+        this.requestMaintData();
+    }
+        /**
+     * Converts values from this.state.paymentTable to JSX
+     * @param {*} col - column name
+     * @param {*} value - column value
+     * @param {*} item - item being displayed
+     */
+    maintRequestTransform (col,value,item) {
+        if (col == 'message') {
+            return value
+        } else if (col == 'status') {
+            if (value) {
+                return value = "Open"
+            } else {
+                return value = "Completed"
+            }            
+        } else if (col== 'createdAt') {
+            return new Date(value).toLocaleDateString();
+        } 
+    }
+    
+    requestMaintData() {
+        api.getAllMaintRequests().then(maintRequests => {
+            this.setState({
+                maintTable: {
+                    columns: this.maintRequestColumns,
+                    items: maintRequests
+                }
+            });
+        });
     }
 
     getNavItems() {
@@ -29,6 +75,7 @@ class AdminMaint extends Template {
             { path: '/admin/users', text: 'Users' },
         ];
     }
+    
 
     getContent() {
         var ackButton = <Button><Fas icon='check' />&emsp;Done</Button>
@@ -42,7 +89,7 @@ class AdminMaint extends Template {
             items: [
                 { unit: 103, date: '5/10/2018', message: 'Just saying hi!', status: ackButton },
                 { unit: 101, date: '5/8/2018', message: 'heater is on fire, please send help', status: ackButton },
-                { unit: 102, date: '4/29/2018', message: 'roof is leaking, documents ruined, electronics destroyed, seeking compensation. lawsuit pending, please await legal correspondence.', status: ackButton },
+                { unit: 102, date: '4/29/2018', message: 'roof is leaking, documents ruined, electronics destroyed, seeking compensation. lawsuit pending, please await legal correspondence.', status: ackButton }
             ]
         };
 
@@ -57,7 +104,8 @@ class AdminMaint extends Template {
                         filterState: newState
                     })}
                 />    
-                <Table data={data} />
+                {/* <Table data={this.state.maintTable} /> */}
+                <Table data={this.state.maintTable} transform={this.maintRequestTransform} />  
             </div>
         );
     }
