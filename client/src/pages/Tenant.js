@@ -29,6 +29,7 @@ class Tenant extends Template {
         ]
 
         this.state = {
+            ownedMaintRequest: '',
             paymentTable: {
                 columns: this.rentColumns,
                 items: [],
@@ -43,6 +44,10 @@ class Tenant extends Template {
 
     componentDidMount() {
         this.requestRentData();
+
+        axios.get('/api/getOwnMaintRequest', maintRequest => { // changed to arrow functino to preserve 'this'
+            this.setState({ownedMaintRequest: maintRequest});
+        });
     }
 
     requestRentData() {
@@ -215,6 +220,7 @@ class Tenant extends Template {
                     <Button
                         disabled={this.state.processingPayment || (this.state.totalDue === 0)}
                         onClick={this.payRentWithCreditCard}
+
                     >
                         Pay Now
                     </Button>

@@ -31,12 +31,20 @@ var router = express.Router();
 
     // GET - User gets all of their maintenance requests
     router.get('/api/getOwnMaintRequest', (req, res, next) => {
-
+        req.user.getUnits().then(function(dbUnits) {            
+            db.Maintenance.findAll({
+                where: {
+                    UnitId: dbUnits[0].id
+                }
+            }).then(function(dbMaint) {
+                res.json(dbMaint)
+            }) 
+        })
     });
 
     // GET -  Admin gets all of the maintenance requests that are open
     router.get('/api/getAllMaintRequests', (req, res, next) => {
-
+        
     });
 }
 
