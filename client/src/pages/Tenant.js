@@ -26,30 +26,22 @@ class Tenant extends Template {
         ]
 
         this.state = {
-<<<<<<< HEAD
-            message: '',
-            ownedMaintRequest: ''
-=======
+            ownedMaintRequest: '',
             paymentTable: {
                 columns: this.rentColumns,
                 items: [],
             },
             totalDue: 0,
             message: ''
->>>>>>> c01befa4f4c80c7634681e258af9047b24201012
         };
 
     }
-<<<<<<< HEAD
-    componentDidMount = () => {
-        axios.get('/api/getOwnMaintRequest', function(maintRequest) {
-            this.setState({ownedMaintRequest: maintRequest});
-        })
-    }  
-    
-=======
 
     componentDidMount() {
+        axios.get('/api/getOwnMaintRequest', function(maintRequest) {
+            this.setState({ownedMaintRequest: maintRequest});
+        });
+    
         api
             .getRentDue()
             .then(invoices => {
@@ -64,7 +56,6 @@ class Tenant extends Template {
             });
     }
 
->>>>>>> c01befa4f4c80c7634681e258af9047b24201012
     payRentWithCreditCard = (ev) => {
         var checkoutHandler = StripeCheckout.configure({
             key: "pk_test_edJT25Bz1YVCJKIMvmBGCS5Y",
@@ -152,22 +143,7 @@ class Tenant extends Template {
                     <br />
                     <Button
                         onClick={this.payRentWithCreditCard}
-<<<<<<< HEAD
-                        >
-                        Pay Rent
-                        </Button>
-                        <h3>Maintenance Requests</h3>
-                        <p>[request table here]</p>
-                        <>
-                        <form>
-                            <label>
-                                What is Wrong ?
-                                <input type="text" value={this.state.message} onChange={this.handleChange} />
-                            </label>                            
-                           <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
-                        </form>
-                    </div>
-=======
+
                     >
                         Pay Now
                     </Button>
@@ -189,7 +165,6 @@ class Tenant extends Template {
               </form>
 
             </div>
->>>>>>> c01befa4f4c80c7634681e258af9047b24201012
         );
     }
 }
