@@ -62,6 +62,7 @@ var router = express.Router();
 
         db.Maintenance.findAll({
             where: where,
+            include: [db.Unit],
         }).then(function(dbMaint) {
             res.json(dbMaint)
         }) 
