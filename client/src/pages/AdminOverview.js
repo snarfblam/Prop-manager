@@ -6,6 +6,7 @@ import Template from './Template';
 import './page.css';
 import * as api from '../api';
 import Spinner from './modals/Spinner';
+import { Link } from 'react-router-dom';
 
 class AdminOverview extends Template {
     constructor(props) {
@@ -79,10 +80,12 @@ class AdminOverview extends Template {
             <div>
                 <h1>Overview</h1>
                 <h2>Maintenance</h2>
+                <p><Link to='/admin/maint'>View all maintenance items</Link></p>
                 {this.getMaintTable()}
                 <h2>Payments</h2>
+                <p><Link to='/admin/payments'>View all invoices</Link></p>
                 {this.getPaymentTable()}    
-                
+                 
             </div>
         );
     }
