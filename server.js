@@ -12,6 +12,8 @@ const SessionStore = require('express-session-sequelize')(expressSession.Store)
 const cookieParser = require('cookie-parser');
 const passport = require('./passport')
 
+const invoiceJob = require('./cron/invoiceGenerator');
+
 // update the config folder with your un and pw. Make sure the DB is created first before server is running
 global.db = db;
 
@@ -80,39 +82,7 @@ db.sequelize.sync({
             // newAdmin.addUnit(newUnit).then(()=>
             //     newTenant.addUnit(newUnit))
         }).then(() => {
-            cron.schedule('0-59 * * * *', function(){
-                console.log('running a task every minute');
-                db.Unit
-                .findAll({})
-                .then(units => {
-                    let timeOfTheMos = moment(moment().format("YYYY-MM")).format("YYYY-MM-DD HH:mm:ss.SSS");
-                    console.log(timeOfTheMos);
-                    units.map(unit => {
-                        db.Payment.findOrCreate({
-                            where: {
-                                id: unit.id,
-                                due_date: {$gte: timeOfTheMos}
-                            },
-                            defaults: {
-                                UnitId: unit.id, 
-                                paid: false,
-                                amount: 500,
-                                due_date: timeOfTheMos
-                            }
-                        }).spread((payRec, created) => {
-                            console.log(payRec.get({
-                                plain: true
-                            }))
-                            if(created){
-                                console.log(`Payment Record created. Due date: ${timeOfTheMos} Unit: ${unit.id}`)
-                            } else {
-                                console.log(`Payment Record was prviously created for Unit: ${unit.id}`)
-                            }
-                        })
-
-                    })
-                }).catch(console.error)
-            });
+            invoiceJob.schedule();    
         });
 
     const sequelizeSessionStore = new SessionStore({
