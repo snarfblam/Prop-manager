@@ -30,7 +30,8 @@ class Tenant extends Template {
         ]
         this.maintRequestColumns = [
             { name: 'message', label: 'Message' },
-            { name: 'status', label: 'Status' }
+            { name: 'status', label: 'Status' },
+            { name: 'createdAt', label: 'Date Submited'}
         ]
 
         this.state = {
@@ -53,9 +54,17 @@ class Tenant extends Template {
 
     componentDidMount() {
         this.requestRentData();
+        this.requestMaintData();
+    }
 
-        axios.get('/api/getOwnMaintRequest', maintRequest => { // changed to arrow functino to preserve 'this'
-            this.setState({ownedMaintRequest: maintRequest});
+    requestMaintData() {
+        api.getOwnMaintRequest().then(maintRequests => {
+            this.setState({
+                maintTable: {
+                    columns: this.maintRequestColumns,
+                    items: maintRequests
+                }
+            });
         });
     }
 
@@ -69,7 +78,7 @@ class Tenant extends Template {
             checkedPaymentIds: [],
             processingPayment: false,
         });
-
+    
         api
             .getRentDue()
             .then(invoices => {
@@ -86,14 +95,14 @@ class Tenant extends Template {
                     processingPayment: false,
                 });
             });
-        api.getOwnMaintRequest().then(maintRequests => {
-            this.setState({
-                maintTable: {
-                    columns: this.maintRequestColumns,
-                    items: maintRequests
-                }
-            });
-        });
+        // api.getOwnMaintRequest().then(maintRequests => {
+        //     this.setState({
+        //         maintTable: {
+        //             columns: this.maintRequestColumns,
+        //             items: maintRequests
+        //         }
+        //     });
+        // });
     }
 
     payRentWithCreditCard = (ev) => {
@@ -183,6 +192,8 @@ class Tenant extends Template {
             } else {
                 return value = "Completed"
             }            
+        } else if (col== 'createdAt') {
+            return new Date(value).toLocaleDateString();
         } 
     }
      paymentTransform(col, value, item) {
@@ -227,9 +238,11 @@ class Tenant extends Template {
 
         axios.post('/api/postMaintRequest', {
             message: this.state.message
-        }).then(function (resMaint) {
+        }).then((resMaint) => {
             console.log("Post Maintenance Request works!");
+            this.requestMaintData();        
         });
+        this.setState({ message: '' });                          
     }
 
 
@@ -248,7 +261,6 @@ class Tenant extends Template {
                     <Button
                         disabled={this.state.processingPayment || (this.state.totalDue === 0)}
                         onClick={this.payRentWithCreditCard}
-
                     >
                         Pay Now
                     </Button>
@@ -258,11 +270,14 @@ class Tenant extends Template {
                 <h3>Maintenance Requests</h3>
                 <form>
                     <label>
-                        What is Wrong ?
-                      <input type="text" value={this.state.message} onChange={this.handleChange} />
-                  </label>                            
-                 <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
-              </form>
+                        Please explain your request for maintenance:
+                        <br></br>
+                        <input type="text" value={this.state.message} onChange={this.handleChange} />
+                    </label>
+                    <br></br>
+                    <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
+                </form>
+                <hr></hr>
                 <Table
                     data={this.state.maintTable}
                     transform={this.maintRequestTransform}

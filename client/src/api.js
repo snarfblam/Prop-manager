@@ -98,10 +98,24 @@ function getOwnMaintRequest () {
  */
 function getAllMaintRequests(options) {
     var requestOptions = {};
-    if (options.open != undefined) requestOptions.where = { status: options.open };
+    if(options){
+        if (options.open != undefined) requestOptions.where = { status: options.open };
+    }
 
     return axios
         .post("/api/getAllMaintRequests", requestOptions)
+        .then(response => response.data);
+}
+
+
+function completeMaintRequest(id) {
+    // var requestOptions = {};
+    // if(options){
+    //     if (options.open != undefined) requestOptions.where = { status: options.open };
+    // }
+
+    return axios
+        .post("/api/completeMaintRequest", { id : id })
         .then(response => response.data);
 }
 
@@ -122,5 +136,5 @@ function getAllPayments(options) {
 export {
     createNewUser, activateUser, getUnitList,
     getUserStatus, getRentDue, getUserList,
-    getOwnMaintRequest, getAllMaintRequests, getAllPayments
+    getOwnMaintRequest, getAllMaintRequests, getAllPayments, completeMaintRequest
 };
