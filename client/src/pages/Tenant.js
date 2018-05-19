@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+// eslint-disable-next-line
 import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
@@ -12,11 +13,13 @@ declare var StripeCheckout;
 class Tenant extends Template {
     constructor(props) {
         super(props)
-      
+
         this.payRentWithCreditCard = this.payRentWithCreditCard.bind(this);
-        this.submitMaintenanceRequest =this.submitMaintenanceRequest.bind(this);
+        this.submitMaintenanceRequest = this.submitMaintenanceRequest.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.paymentTransform = this.paymentTransform.bind(this);
+        this.paymentCheckChanged = this.paymentCheckChanged.bind(this);
+        this.requestRentData = this.requestRentData.bind(this);
 
         this.rentColumns = [
             { name: 'unitName', label: 'Unit' },
@@ -26,45 +29,56 @@ class Tenant extends Template {
         ]
 
         this.state = {
-<<<<<<< HEAD
+            ownedMaintRequest: '',
+            paymentTable: {
+                columns: this.rentColumns,
+                items: [],
+            },
+            checkedPaymentIds: [], // : number[]
+            totalDue: 0,
             message: '',
-            ownedMaintRequest: ''
-=======
+            processingPayment: false,
+        };
+
+    }
+
+    componentDidMount() {
+        this.requestRentData();
+
+        axios.get('/api/getOwnMaintRequest', maintRequest => { // changed to arrow functino to preserve 'this'
+            this.setState({ownedMaintRequest: maintRequest});
+        });
+    }
+
+    requestRentData() {
+        this.setState({
             paymentTable: {
                 columns: this.rentColumns,
                 items: [],
             },
             totalDue: 0,
-            message: ''
->>>>>>> c01befa4f4c80c7634681e258af9047b24201012
-        };
+            checkedPaymentIds: [],
+            processingPayment: false,
+        });
 
-    }
-<<<<<<< HEAD
-    componentDidMount = () => {
-        axios.get('/api/getOwnMaintRequest', function(maintRequest) {
-            this.setState({ownedMaintRequest: maintRequest});
-        })
-    }  
-    
-=======
-
-    componentDidMount() {
         api
             .getRentDue()
             .then(invoices => {
                 var totalDue = invoices.reduce((acc, item) => acc + item.amount, 0);
+                var checkedPayments = invoices.map(invoice => invoice.id);
+
                 this.setState({
                     paymentTable: {
                         columns: this.rentColumns,
                         items: invoices,
                     },
                     totalDue: totalDue,
+                    checkedPaymentIds: checkedPayments,
+                    processingPayment: false,
                 });
             });
     }
 
->>>>>>> c01befa4f4c80c7634681e258af9047b24201012
     payRentWithCreditCard = (ev) => {
         var checkoutHandler = StripeCheckout.configure({
             key: "pk_test_edJT25Bz1YVCJKIMvmBGCS5Y",
@@ -78,22 +92,64 @@ class Tenant extends Template {
         });
     }
 
+    
+
     handleTokenCard = (token) => {
-        token.paymentIDs = [1, 2, 3];
-        fetch("/api/submitPayment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(token)
-        })
-        .then(output => {
-          if (output.status === "succeeded") {
-              console.log("successful payment");
-          }
-        })
-        .catch(function (error) {
-            console.log(error);
+        token.invoiceList = this.state.checkedPaymentIds;
+
+        this.setState({ processingPayment: true });
+
+        axios.post("/api/submitPayment", token)
+            .then(response => {
+                var output = response.data;
+                
+                console.log(output);
+
+                this.requestRentData(); // Refresh rent due table
+                if (output.status === "succeeded") {
+                    console.log("successful payment");
+                    this.showModal(<p>Your payments has been submitted.</p>, "Payment");
+                } else {
+                    throw Error('')
+                }
+            }).catch(error => {
+                console.log(error);
+
+                this.requestRentData();
+                this.showModal(<p>There was an error with your payment.</p>, "Error");
         });
-      }
+    }
+
+    paymentCheckChanged(event) {
+        var checked = event.target.checked || false;
+        var id = parseInt(event.target.name);
+
+        var checkedIds = this.state.checkedPaymentIds.slice();
+
+        if (checked) { // Ensure it's in the list
+            if (!this.state.checkedPaymentIds.includes(id)) {
+                checkedIds.push(id);
+            }
+        } else { // Ensure it's NOT in the list
+            var indexOf = checkedIds.indexOf(id);
+            if (indexOf >= 0) checkedIds.splice(indexOf, 1);
+        }
+
+        var selectedPayments =
+            this.state.paymentTable.items.filter(item => checkedIds.includes(item.id));
+
+        this.setState({
+            checkedPaymentIds: checkedIds,
+            totalDue: selectedPayments.reduce((total, item) => total + item.amount, 0)
+        });
+    }
+
+    getSelectedPayments() {
+        var allShownPayments = this.state.paymentTable.items.slice();
+        var allCheckedPayments = allShownPayments.filter(payment => this.state.checkedPaymentIds.includes(payment.id));
+
+        return allCheckedPayments;
+    }
 
     /**
      * Converts values from this.state.paymentTable to JSX
@@ -103,7 +159,13 @@ class Tenant extends Template {
      */
     paymentTransform(col, value, item) {
         if (col == 'payButton') {
-            return <Button>Pay</Button>;
+            return <input
+                type='checkbox'
+                checked={this.state.checkedPaymentIds.includes(item.id)}
+                onChange={this.paymentCheckChanged}
+                disabled={this.state.processingPayment}
+                name={item.id}
+            />;
         } else if (col == 'amount') {
             return this.formatDollars(value);
         } else if (col == 'due') {
@@ -128,16 +190,16 @@ class Tenant extends Template {
 
 
     handleChange(event) {
-        this.setState({message: event.target.value});
+        this.setState({ message: event.target.value });
     }
-    
+
     submitMaintenanceRequest(event) {
         // alert('A name was submitted: ' + this.state.value);
         event.preventDefault();
-        
+
         axios.post('/api/postMaintRequest', {
             message: this.state.message
-        }).then(function(resMaint) { 
+        }).then(function (resMaint) {
             console.log("Post Maintenance Request works!");
         });
     }
@@ -147,49 +209,34 @@ class Tenant extends Template {
         return (
             <div>
                 <h3>Rent Due</h3>
+
+                <Table
+                    data={this.state.paymentTable}
+                    transform={this.paymentTransform}
+                />
                 <p>
                     Total:  <span className='rent-amount'>{this.formatDollars(this.state.totalDue || 0)}</span>
                     <br />
                     <Button
+                        disabled={this.state.processingPayment || (this.state.totalDue === 0)}
                         onClick={this.payRentWithCreditCard}
-<<<<<<< HEAD
-                        >
-                        Pay Rent
-                        </Button>
-                        <h3>Maintenance Requests</h3>
-                        <p>[request table here]</p>
-                        <>
-                        <form>
-                            <label>
-                                What is Wrong ?
-                                <input type="text" value={this.state.message} onChange={this.handleChange} />
-                            </label>                            
-                           <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
-                        </form>
-                    </div>
-=======
+
                     >
                         Pay Now
                     </Button>
 
                 </p>
 
-                <Table
-                    data={this.state.paymentTable}
-                    transform={this.paymentTransform}
-                />
-
                 <h3>Maintenance Requests</h3>
                 <form>
-                  <label>
-                      What is Wrong ?
+                    <label>
+                        What is Wrong ?
                       <input type="text" value={this.state.message} onChange={this.handleChange} />
-                  </label>                            
-                 <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
-              </form>
+                    </label>
+                    <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
+                </form>
 
             </div>
->>>>>>> c01befa4f4c80c7634681e258af9047b24201012
         );
     }
 }
