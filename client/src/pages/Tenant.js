@@ -184,20 +184,20 @@ class Tenant extends Template {
      * @param {*} item - item being displayed
      */
     maintRequestTransform (col,value,item) {
-        if (col == 'message') {
+        if (col === 'message') {
             return value
-        } else if (col == 'status') {
+        } else if (col === 'status') {
             if (value) {
                 return value = "Open"
             } else {
                 return value = "Completed"
             }            
-        } else if (col== 'createdAt') {
+        } else if (col === 'createdAt') {
             return new Date(value).toLocaleDateString();
         } 
     }
      paymentTransform(col, value, item) {
-        if (col == 'payButton') {
+        if (col === 'payButton') {
             return <input
                 type='checkbox'
                 checked={this.state.checkedPaymentIds.includes(item.id)}
@@ -205,9 +205,9 @@ class Tenant extends Template {
                 disabled={this.state.processingPayment}
                 name={item.id}
             />;
-        } else if (col == 'amount') {
+        } else if (col === 'amount') {
             return this.formatDollars(value);
-        } else if (col == 'due') {
+        } else if (col === 'due') {
             return new Date(value).toLocaleDateString();
         } else {
             return value;

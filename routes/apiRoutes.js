@@ -288,14 +288,23 @@ var router = express.Router();
     //    } []
     // }
     router.get('/api/getUnitList', (req, res, next) => {
+        // Admin-only route
+        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+
         db.Unit
-            .findAll({})
+            .findAll({
+                include: [db.User],
+            })
             .then(units => {
                 res.json({
                     units: units.map(unit => ({
                         unitName: unit.unitName,
                         id: unit.id,
                         rate: unit.rate,
+                        users: unit.Users.map(user => ({
+                            id: user.id,
+                            fullname: user.fullname,
+                        })),
                     }))
                 });
             }).catch(err => {
@@ -304,6 +313,92 @@ var router = express.Router();
             });
     });
 
+    // POST - Creates a unit.
+    /*  Request body: {
+            unitName: string,
+            rate: int,
+            users: id[]
+        }
+        Returns: {
+            id: id
+        }
+    */  
+    router.post('/api/createUnit', (req, res, next) => {
+        // Admin-only route
+        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+        
+        // Find users first
+        var ids = req.body.users;
+        var userPromises = ids.map(id => db.User.findById(id));
+        var unit, users;
+
+        Promise.all(userPromises)
+            .then(foundUsers => {
+                users = foundUsers;
+                return db.Unit.create({
+                    unitName: req.body.unitName,
+                    rate: req.body.rate,
+                });
+            }).then(createdUnit => {
+                unit = createdUnit;
+                return unit.addUsers(users);
+            }).then(() => { 
+                res.json({ id: unit.id });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send();
+            });
+    });
+
+    // POST - Edits a unit.
+    /*  Request body: {
+            id: id,
+            unitName?: string,
+            rate?: int,
+            users?: id[]
+        }
+        Returns: {
+            id: id
+        }
+    */ 
+    router.post('/api/editUnit', (req, res, next) => {
+        // Admin-only route
+        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+        if (!req.body.id) return res.status(500).send('invalid id').end();
+
+        var values = {};
+        if (req.body.unitName) values.unitName = req.body.unitName;
+        if (req.body.rate) values.rate = req.body.rate;
+        if (req.body.users) values.UserIds = req.body.users;
+
+        var unit;
+        db.Unit
+            .findById(req.body.id)
+            .then(foundUnit => {
+                if (foundUnit == null) throw Error('unit not found');
+                unit = foundUnit;
+                return unit.update(values);
+            }).then(unit => {
+                if (req.body.users) {
+                    return unit.setUsers(req.body.users);
+                }
+            }).then(() => {
+                res.json({ id: req.body.id });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send(err.toString()).end();
+
+            });
+
+        // db.Unit.update(values, { where: { id: req.body.id } })
+        //     .then(([affectedCount, affectedRows]) => {
+        //         if (affectedCount == 0) return res.status(500).end();
+        //         res.json({ id: req.body.id });
+        //     }).catch(err => {
+        //         console.log(err);
+        //         res.status(500).end();
+        //     });
+    });
 }
 
 module.exports = router;

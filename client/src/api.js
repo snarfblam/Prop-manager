@@ -23,6 +23,57 @@ function createNewUser(userData) {
 }
 
 /**
+ * Sends a request to the server to create a new unit. Expects {
+ *     unitName: string,
+ *     rate: int,
+ *     users: id[],
+ * }
+ *  Returns a promise that resolves to one of:
+ *  success -> {id: number}
+ *  failure -> {error: string}
+ * @param {any} userData - A list of user properties required for a user account
+ * @returns {Promise<any>}
+ */
+function createNewUnit(unitData) {
+    return axios
+        .post('/api/createUnit', unitData)
+        .then(response => {
+            if (response.status != 200) throw Error('Could not access server to create unit.');
+            if (!response.data || !response.data.id) throw Error('Unexpected response from server');
+            return response.data;
+        }).catch(err => { 
+            console.log(err);
+            return { error: (err || {}).toString() };
+        });
+}
+
+/**
+ * Sends a request to the server to create a new unit. Expects {
+ *     unitName: string,
+ *     rate: int,
+ *     users: id[],
+ * }
+ *  Returns a promise that resolves to one of:
+ *  success -> {id: number}
+ *  failure -> {error: string}
+ */
+function editUnit(id, unitData) {
+    var data = { ...unitData, id: id };
+    if (data.user) data.users = [data.user];
+    
+    return axios
+        .post('/api/editUnit', data)
+        .then(response => {
+            if (response.status != 200) throw Error('Could not access server to create unit.');
+            if (!response.data || !response.data.id) throw Error('Unexpected response from server');
+            return response.data;
+        }).catch(err => { 
+            console.log(err);
+            return { error: (err || {}).toString() };
+        });
+}
+
+/**
  * Assigns an activation code to a user. This must be done prior to the user's first login to allow the user to activate.
  * Resolves to {status: 'success'} or {error: string}
  * @param {{activationCode: string}} activationData - Object containing data necessary to activate an account
@@ -48,7 +99,8 @@ function activateUser(activationData) {
  */
 function getUnitList() {
     return axios
-        .get('/api/getUnitList');
+        .get('/api/getUnitList')
+        .then(response => response.data);
 }
 
 /**
@@ -136,5 +188,6 @@ function getAllPayments(options) {
 export {
     createNewUser, activateUser, getUnitList,
     getUserStatus, getRentDue, getUserList,
-    getOwnMaintRequest, getAllMaintRequests, getAllPayments, completeMaintRequest
+    getOwnMaintRequest, getAllMaintRequests, getAllPayments,
+    createNewUnit, editUnit, completeMaintRequest
 };
