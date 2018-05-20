@@ -57,15 +57,15 @@ class NewUser extends React.Component {
 
     componentDidMount() {
         api.getUnitList().then(result => {
-            console.log(result);
-            console.log({
-                unitList: result.units.map(unit => ({
-                    value: unit.id,
-                    text: unit.unitName,
-                }))
-            });
+            // console.log(result);
+            // console.log({
+            //     unitList: result.units.map(unit => ({
+            //         value: unit.id,
+            //         text: unit.unitName,
+            //     }))
+            // });
             this.setState({
-                unitList: result.data.units.map(unit => ({
+                unitList: result.units.map(unit => ({
                     value: unit.id,
                     text: unit.unitName,
                 }))
