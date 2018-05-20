@@ -288,14 +288,23 @@ var router = express.Router();
     //    } []
     // }
     router.get('/api/getUnitList', (req, res, next) => {
+        // Admin-only route
+        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+
         db.Unit
-            .findAll({})
+            .findAll({
+                include: [db.User],
+            })
             .then(units => {
                 res.json({
                     units: units.map(unit => ({
                         unitName: unit.unitName,
                         id: unit.id,
                         rate: unit.rate,
+                        users: unit.Users.map(user => ({
+                            id: user.id,
+                            fullname: user.fullname,
+                        })),
                     }))
                 });
             }).catch(err => {
