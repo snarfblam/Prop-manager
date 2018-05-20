@@ -118,7 +118,6 @@ class AdminUnits extends Template {
     }
 
     onEditUnitSubmit(data) {
-        debugger;
         var id = this.editingUnit.id;
         api.editUnit(id, data)
             .then(result => {

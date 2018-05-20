@@ -55,7 +55,14 @@ class NewUnit extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         var unitData = nextProps.initialData;
-        this.setState(unitData);
+        
+        this.setState({
+            errors: {},
+            unitName: '',
+            rate: 0,
+            ...unitData
+        });
+        
     }
 
     onSubmit(e) {
