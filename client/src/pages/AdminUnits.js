@@ -15,6 +15,12 @@ class AdminUnits extends Template {
             units: [],
         };
 
+        this.unitColumns = [
+            { name: 'unitName', label: 'Unit' },
+            { name: 'rate', label: 'Rent' },
+            { name: 'users', label: 'Tenant(s)' },
+        ];
+
         this.tableTransform = this.tableTransform.bind(this);
     }
 
@@ -30,6 +36,7 @@ class AdminUnits extends Template {
 
     tableTransform(col, val, item) {
         if (col == 'rate') return '$' + val.toFixed(2);
+        if (col == 'users') return val.map(user => user.fullname).join(', ');
         return val;
     }
 
@@ -45,11 +52,7 @@ class AdminUnits extends Template {
 
     getContent() {
         var data = {
-            columns: [
-                { name: 'unitName', label: 'Unit' },
-                // { name: 'tenants', label: 'Tenant(s)' },
-                { name: 'rate', label: 'Rent' },
-            ],
+            columns: this.unitColumns,
             items: this.state.units,
         };
 
