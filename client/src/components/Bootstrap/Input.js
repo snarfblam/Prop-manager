@@ -17,20 +17,27 @@ export default props => (
             </span>
         </label>
         <div className='input-group'>
-            {getInputInnerLabel(props.innerLabel, 'prepend')}    
+            {getInputInnerLabel(props.innerPrepend, 'prepend')}    
             <input
-                className='form-control'
-                type={props.password ? 'password' : 'text'}
+                className={getInputClass(props)}
+                type={props.password ? 'password' : (props.type || 'text')}
                 name={props.name}
                 id={'input-' + props.name}
                 value={props.value}
                 onChange={props.onChange}
                 placeholder={props.placeholder}
                 />
-            {getInputInnerLabel(props.innerLabel, 'append')}    
+            {getInputInnerLabel(props.innerAppend, 'append')}    
         </div>    
     </div>    
 );
+
+function getInputClass(props) {
+    var result = 'form-control';
+    if (props.align == 'center') result += ' text-center';
+    if (props.align == 'right') result += ' text-right';
+    return result;
+}
 
 function getInputInnerLabel(labelText, type) {
     if (!labelText) return null;
