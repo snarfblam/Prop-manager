@@ -59,7 +59,7 @@ class NewUser extends React.Component {
         api.getUnitList().then(result => {
             console.log(result);
             console.log({
-                unitList: result.data.units.map(unit => ({
+                unitList: result.units.map(unit => ({
                     value: unit.id,
                     text: unit.unitName,
                 }))

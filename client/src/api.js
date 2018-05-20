@@ -48,7 +48,8 @@ function activateUser(activationData) {
  */
 function getUnitList() {
     return axios
-        .get('/api/getUnitList');
+        .get('/api/getUnitList')
+        .then(response => response.data);
 }
 
 /**
