@@ -28,7 +28,7 @@ class App extends Component {
 
         this.state = {
             modal: new ModalState(false, null, "Hi, I'm a modal"),
-            role: 'logged out',
+            role: '',
         };
     }
 
@@ -76,8 +76,10 @@ class App extends Component {
             return this.renderPage(AdminOverview, props);
         } else if (this.state.role == 'tenant') {
             return this.renderPage(Tenant, props);
-        } else {
+        } else if (this.state.role == 'logged out') {
             return this.renderPage(Landing, props);
+        } else {
+            return <div />
         }
     }
 

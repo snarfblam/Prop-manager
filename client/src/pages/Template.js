@@ -14,6 +14,7 @@ import './page.css'
 import LoginLink from './modals/Login/LoginLink';
 import Login from './modals/Login'
 import Axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 
 class Template extends React.Component {
@@ -24,6 +25,7 @@ class Template extends React.Component {
 
         this.showModal = this.props.showModal;
         this.hideModal = this.props.hideModal;
+        this.redirect = null;
     }
  
     toNavItems(navList) {
@@ -37,8 +39,15 @@ class Template extends React.Component {
         });
     }
 
+    redirectTo = (path) => {
+        this.setState({ redirect: path });
+    };
 
     render() {
+        if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />;
+        }
+
         return (
             <div>
                 <Navbar>
@@ -82,6 +91,7 @@ class Template extends React.Component {
     onLogoutClicked() {
         // window.location.href = '/auth/logout';
         Axios.post('/auth/logout', {}).then(this.props.onLogOut());
+        this.redirectTo('/');
         // this.showModal(
         //     <p>will be implemented some day</p>,
         //     "Log Out"
