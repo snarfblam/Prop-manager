@@ -220,11 +220,20 @@ var router = express.Router();
 
     // POST - Activates a user
     router.post('/api/activateUser', (req, res, next) => {
-        if (req.body.activationCode) {
-            req.session.activationCode = req.body.activationCode;
-            res.json({ result: 'success' });
+        if (req.body.activationCode && !req.user) {
+            db.User.findOne({ where: { activationCode: req.body.activationCode } })
+                .then(user => {
+                    if (user) {
+                        req.session.activationCode = req.body.activationCode;
+                        res.json({ result: 'success' });
+                    } else {
+                        req.session.activationCode = null;
+                        res.json({ result: 'error' });
+                    }
+                });
+            
         } else {
-            res.status(500).end();
+            res.json({ result: 'error' });
         }
     });
 
