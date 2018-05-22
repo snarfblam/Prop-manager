@@ -9,7 +9,7 @@ import Fas from '../Fas';
 //      .password?
 //      .placeholder
 export default props => (
-    <div className='form-group'>
+    <div className={props.className ? ('form-group ' + props.className) : 'form-group'}>
         <label htmlFor={'input-' + props.name}>
             {props.label}
             <span className={props.errorText ? 'input-error-text' : 'input-error-text-hidden'}>
