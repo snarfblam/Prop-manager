@@ -7,6 +7,7 @@ import './page.css'
 import Button from '../components/Bootstrap/Button';
 import * as api from '../api';
 import { Table } from '../components/Table';
+import RequestAch from './modals/RequestAch';
 
 declare var StripeCheckout;
 
@@ -118,6 +119,9 @@ class Tenant extends Template {
         });
     }
 
+    payRentWithACH = (ev) => {
+        this.showModal(<RequestAch />)
+    }
     
 
     handleTokenCard = (token) => {
@@ -262,9 +266,15 @@ class Tenant extends Template {
                         disabled={this.state.processingPayment || (this.state.totalDue === 0)}
                         onClick={this.payRentWithCreditCard}
                     >
-                        Pay Now
+                        Pay by card
                     </Button>
-
+                    &emsp;
+                    <Button
+                        disabled={this.state.processingPayment || (this.state.totalDue === 0)}
+                        onClick={this.payRentWithACH}
+                    >
+                        Pay by ACH
+                    </Button>
                 </p>
 
                 <h3>Maintenance Requests</h3>

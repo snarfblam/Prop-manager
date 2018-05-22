@@ -16,6 +16,8 @@ class AdminMaint extends Template {
             {name: 'complete', label: 'Completed', checked: true},
             {name: 'incomplete', label: 'Not completed'}, 
         ];
+
+
         this.maintRequestColumns = [
             { name: 'message', label: 'Message' },
             { name: 'unit', label: 'Unit' },

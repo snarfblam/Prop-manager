@@ -4,7 +4,7 @@ import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container, CheckList, Chec
 import Template from './Template';
 import './page.css'
 import { Table } from '../components/Table';
-
+import * as api from '../api';
 class AdminPayments extends Template {
     constructor(props) {
         super(props)
@@ -14,7 +14,23 @@ class AdminPayments extends Template {
         ]; 
         this.state = {
             filterState: new CheckListState(this.filterOptions),
+            paymentItems: [
+                { unit: '103', due: '5/1/2018', amount: '$9001.00', payment: 'xxxx-xxxx-xxxx-4096'},
+                { unit: '102', due: '5/1/2018', amount: '$42.00', payment: 'xxxx-xxxx-xxxx-2048'},
+                { unit: '101', due: '5/1/2018', amount: '$0.01', payment: 'NOT PAID'},
+                { unit: '103', due: '4/1/2018', amount: '$9001.00', payment: 'xxxx-xxxx-xxxx-4096'},
+                { unit: '102', due: '4/1/2018', amount: '$42.00', payment: 'xxxx-xxxx-xxxx-2048'},
+                { unit: '101', due: '4/1/2018', amount: '$0.01', payment: 'xxxx-xxxx-xxxx-1024'},
+            ],
         };
+
+    }
+
+    componentDidMount() {
+        // var options = {};
+        // if(this.state.filterState.)
+        // api.getAllPayments();
+        console.log(this.state.filterState);
     }
 
     getNavItems() {
@@ -35,14 +51,7 @@ class AdminPayments extends Template {
                 { name: 'amount', label: 'Amount' },
                 { name: 'payment', label: 'Payment' },
             ],
-            items: [
-                { unit: '103', due: '5/1/2018', amount: '$9001.00', payment: 'xxxx-xxxx-xxxx-4096'},
-                { unit: '102', due: '5/1/2018', amount: '$42.00', payment: 'xxxx-xxxx-xxxx-2048'},
-                { unit: '101', due: '5/1/2018', amount: '$0.01', payment: 'NOT PAID'},
-                { unit: '103', due: '4/1/2018', amount: '$9001.00', payment: 'xxxx-xxxx-xxxx-4096'},
-                { unit: '102', due: '4/1/2018', amount: '$42.00', payment: 'xxxx-xxxx-xxxx-2048'},
-                { unit: '101', due: '4/1/2018', amount: '$0.01', payment: 'xxxx-xxxx-xxxx-1024'},
-            ]
+            items: this.state.paymentItems,
         };
 
         return (
