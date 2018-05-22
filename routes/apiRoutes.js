@@ -389,15 +389,6 @@ var router = express.Router();
                 res.status(500).send(err.toString()).end();
 
             });
-
-        // db.Unit.update(values, { where: { id: req.body.id } })
-        //     .then(([affectedCount, affectedRows]) => {
-        //         if (affectedCount == 0) return res.status(500).end();
-        //         res.json({ id: req.body.id });
-        //     }).catch(err => {
-        //         console.log(err);
-        //         res.status(500).end();
-        //     });
     });
 }
 
