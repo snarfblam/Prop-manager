@@ -98,15 +98,18 @@ var router = express.Router();
                 return res.json({ status: 'zero payment' });
             };
 
-            stripe.customers.create({
-                email: req.body.email,
-                card: req.body.id
-            }).then(customer =>
+
+            // stripe.customers.create({
+            //     email: req.body.email,
+            //     card: req.body.id,
+            getStripeCustomer(req, req.body.email, req.body.id)
+            .then(customer =>
                 stripe.charges.create({
                     amount: totalCents,
                     description: "Rent Payment",
                     currency: "usd",
-                    customer: customer.id
+                    customer: customer.id,
+                    
                 })
             ).then(charge => {
                 console.log("successful payment");
@@ -128,6 +131,28 @@ var router = express.Router();
             });
         });
     });
+
+    function getStripeCustomer(request, email, card) {
+        var user = request.user;
+        if (!user) throw Error('User not logged in');
+
+        if (user.stripeCustToken) {
+            return stripe.customers.retrieve(user.stripeCustToken);
+        } else {
+            return stripe.customers.create({
+                email: email,
+                card: card
+            }).then(customer => {
+                user.update({
+                    stripeCustToken: customer.id
+                }).catch(err => console.error);
+
+                return customer;
+            });
+        }
+
+        return 
+    }
 
     /* GET - gets rent amount that the tenant owes
         Returns array: {

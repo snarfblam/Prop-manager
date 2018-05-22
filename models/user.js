@@ -73,7 +73,21 @@ module.exports = function(sequelize, DataTypes) {
       validate: {
         notEmpty: true
       }
-    }
+    },
+      stripeCustToken: {
+          allowNull: true,
+          type: DataTypes.STRING,
+      },
+      stripeACHToken: {
+          allowNull: true,
+          type: DataTypes.STRING,
+      },
+      stripeACHVerified: {
+          allowNull: false,
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+      },
+
   });
 
   User.associate = function(models) {
