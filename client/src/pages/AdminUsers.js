@@ -7,14 +7,13 @@ import Button from '../components/Bootstrap/Button';
 import NewUser from './modals/NewUser/NewUser';
 import Spinner from './modals/Spinner'
 import * as api from '../api';
+import Pane from '../components/Pane';
 
 class AdminUsers extends Template {
     constructor(props) {
         super(props)
         this.state = {
-            userList: [
-                { value: '0', text: 'Loading' },
-            ],
+            userList: null,
             selectedUserId: '0', // should correspond to a userList value
             newUserData: {}, // Temporarily store new-user-form data so we can re-populate the form on the modal if there is an error
         };
@@ -25,9 +24,12 @@ class AdminUsers extends Template {
     }
 
     componentDidMount() {
+        this.getUserList();
+    }
+
+    getUserList() {
         api.getUserList()
             .then(userlist => {
-                console.log(userlist);
                 this.cachedUsers = {};
                 userlist.forEach(user => this.cachedUsers[user.id] = user);
                 var newUserSelectionList = userlist.map(user => ({ value: user.id, text: user.fullname }));
@@ -39,7 +41,7 @@ class AdminUsers extends Template {
                 })
             }).catch(err => {
                 console.log(err);
-            })
+            });
     }
 
     showNewUserModal() {
@@ -79,19 +81,15 @@ class AdminUsers extends Template {
                     );
                     this.setState({ newUserData: {} });
                 }
+
+                this.getUserList();
             });
 
 
     }
 
     getNavItems() {
-        return [
-            { path: '/admin/overview', text: 'Overview' },
-            { path: '/admin/units', text: 'Units' },
-            { path: '/admin/maint', text: 'Maintenance' },
-            { path: '/admin/payments', text: 'Payments' },
-            { path: '/admin/users', text: 'Users' },
-        ];
+        return this.adminNavLinks;
     }
 
     getContent() {
@@ -116,15 +114,23 @@ class AdminUsers extends Template {
         };
 
         return (
-            <div>
-                <h1>Users</h1>
-                <Container><Row className='row justify-content-center'><Col size='12 sm-8 md-6'>
-                    <Select items={this.state.userList} value={this.state.selectedUserId} onChange={(e) => { this.setState({ selectedUserId: e.target.value }) }} />
-                </Col></Row></Container>
-                <Table data={data} />
-                <hr />
-                <Button onClick={this.showNewUserModal}>Create New User </Button>
-            </div>
+            <Container>
+                <Pane>
+                    <h3>Users</h3>
+                    {(this.state.userList == null) ? (
+                        <Spinner />
+                    ): (
+                        <div>
+                            <Container><Row className='row justify-content-center'><Col size='12 sm-8 md-6'>
+                                <Select items={this.state.userList} value={this.state.selectedUserId} onChange={(e) => { this.setState({ selectedUserId: e.target.value }) }} />
+                            </Col></Row></Container>
+                            <Table data={data} />
+                            <hr />
+                            <Button onClick={this.showNewUserModal}>Create New User </Button>
+                        </div>      
+                    )}
+                </Pane>
+            </Container>
         );
     }
 }

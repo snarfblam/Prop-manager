@@ -2,7 +2,8 @@ import React from 'react';
 // import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
-import { Select } from '../components/Bootstrap';
+import { Select, Container } from '../components/Bootstrap';
+import Pane from '../components/Pane';
 import { Table } from '../components/Table';
 import * as api from '../api';
 import Button from '../components/Bootstrap/Button';
@@ -17,7 +18,7 @@ class AdminUnits extends Template {
         this.state = {
             // unitNames: ['101', '102', '103', '104', '201', '202'],
             // selectedUnit: '103',
-            units: [],
+            units: null,
             newUnitData: {},
         };
 
@@ -43,7 +44,6 @@ class AdminUnits extends Template {
 
 
     requestUnitData() {
-        this.setState({ units: [] });
         api.getUnitList()
             .then(response => {
                 this.setState({ units: response.units });
@@ -57,7 +57,7 @@ class AdminUnits extends Template {
             <NewUnit
                 onSubmit={this.onNewUnitSubmit}
                 initialData={this.state.newUnitData} />
-            , "New User"
+            , "Add Unit"
         );
     }
 
@@ -145,13 +145,7 @@ class AdminUnits extends Template {
     }
 
     getNavItems() {
-        return [
-            { path: '/admin/overview', text: 'Overview' },
-            { path: '/admin/units', text: 'Units' },
-            { path: '/admin/maint', text: 'Maintenance' },
-            { path: '/admin/payments', text: 'Payments' },
-            { path: '/admin/users', text: 'Users' },
-        ];
+        return this.adminNavLinks;
     }
 
     getContent() {
@@ -161,17 +155,20 @@ class AdminUnits extends Template {
         };
 
         return (
-            <div>
-                <h1>Units</h1>
-                {/* <Select
-                    items={this.state.unitNames}
-                    value={this.state.selectedUnit}
-                    onChange={() => { }}
-                /> */}
-                <Table data={data} transform={this.tableTransform}/>    
-                <p />
-                <Button onClick={this.showNewUnitModal}>Add New Unit</Button>
-            </div>
+            <Container>
+                <Pane>
+                    <h3>Units</h3>
+                    {(this.state.units == null) ? (
+                        <Spinner />
+                    ) : (
+                        <div>    
+                            <Table data={data} transform={this.tableTransform} />    
+                            <p />
+                            <Button onClick={this.showNewUnitModal}>Add New Unit</Button>
+                        </div>        
+                    )}
+                </Pane>
+            </Container>
         );
     }
 }

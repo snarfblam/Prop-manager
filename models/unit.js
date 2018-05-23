@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
       len: { args: 1,
               msg: "Must have a Unit Name"}
     },
-    rate: {
+    rate: { // Rate of 0 means invoices will not be generated
       type: DataTypes.INTEGER,
       allowNull: true //please change back to false
     }

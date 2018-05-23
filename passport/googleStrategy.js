@@ -62,6 +62,8 @@ const strategy = new GoogleStrategy(
                         userMatch.googleId = id;
                         return userMatch.save();
                     }).then(userMatch => {
+                        req.session.activationCode = null;
+                        
                         if (userMatch instanceof Error) {
                             return done(userMatch, false);
                         } else {
