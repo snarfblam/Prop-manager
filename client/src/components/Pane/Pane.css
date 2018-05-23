@@ -9,6 +9,7 @@
     /* margin:1em; */
     max-width: calc(100% - 2em);
     border-top: 6px solid #b4b8d8;
+    border-bottom: 6px solid #e8e8ff;
 }
 
 .pane h3 {

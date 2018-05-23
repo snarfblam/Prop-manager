@@ -69,7 +69,7 @@ class RequestAch extends React.Component{
                         <Row>
                             <p className='col-12 col-xl-6 mx-auto'>
                                 You do not have a bank account associated with your rented unit on this site. 
-                                Submit your account information to enable ACH payments.
+                                Submit your account information to request ACH service.
                                 You will need to follow the directions emailed to you to verify this account
                                 before using it for payments.
                             </p>    
@@ -84,7 +84,7 @@ class RequestAch extends React.Component{
                         <Row>
                             <p className='col-12 col-xl-6 mx-auto'>
                                 Your account information will be used to collect future payments. 
-                                Individual payments will only be collected from this account at your request. 
+                                Individual payments will only be collected from this account only at your request. 
                                 The account information is stored and processed by a third party (<a target='_blank' href='https://stripe.com/us/privacy'>Stripe</a>).
                             </p>    
                         </Row>        
