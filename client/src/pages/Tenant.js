@@ -120,7 +120,18 @@ class Tenant extends Template {
     }
 
     payRentWithACH = (ev) => {
-        this.showModal(<RequestAch />)
+        api.payACH()
+            .then(response => {
+                if (response.result == 'paid') {
+                    this.showModal(<p>Your payment has been submitted via ACH.</p>, 'Payment Submitted');
+                } else if (response.result == 'needs verification') {
+                    this.showModal(<p>Your account has not been verified. Please see the email that was sent when you requested ACH service.</p>, 'ACH Not Verified');
+                } else if (response.result == 'needs setup') {
+                    this.showModal(<RequestAch />, 'Request ACH Service');
+                } else {
+                    this.showModal(<p>There was an error submitting the request. Please contact your property manager for more information.</p>, 'Error');
+                }
+            });
     }
     
 

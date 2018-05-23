@@ -15,10 +15,12 @@ import React from 'react';
 //      .value
 //      .label
 export default props => (
-    <div className='form-group'>
+    <div className={'form-group ' + props.className}>
+        {props.label ? (
         <label htmlFor={'input-' + props.name}>
             {props.label}    
-        </label>
+            </label>
+        ) : (null)}        
         <select className='form-control' type='text' name={props.name} id={'input-' + props.name} value={props.value} onChange={props.onChange}>
             {props.children}
             {(props.items || []).map((item, index) => (
