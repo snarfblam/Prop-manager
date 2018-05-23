@@ -121,6 +121,18 @@ class Tenant extends Template {
         });
     }
 
+    requestACH = (data) => {
+        api.setupACH(data)
+            .then(response => {
+                if (response.result == 'success') {
+                    this.showModal(<p>Your account details have been submitted. An email will be sent with instructions to verify the account.</p>, "Account Submitted");
+                } else {
+                    console.log(response.result.error || 'setupACH returned an unexpected value');
+                    this.showModal(<p>There was an error submitting your account information.</p>, "Error");
+                }
+            });
+    }
+
     payRentWithACH = (ev) => {
         api.payACH()
             .then(response => {
@@ -129,7 +141,7 @@ class Tenant extends Template {
                 } else if (response.result == 'needs verification') {
                     this.showModal(<p>Your account has not been verified. Please see the email that was sent when you requested ACH service.</p>, 'ACH Not Verified');
                 } else if (response.result == 'needs setup') {
-                    this.showModal(<RequestAch />, 'Request ACH Service');
+                    this.showModal(<RequestAch onRequestAch={this.requestACH} />, 'Request ACH Service');
                 } else {
                     this.showModal(<p>There was an error submitting the request. Please contact your property manager for more information.</p>, 'Error');
                 }

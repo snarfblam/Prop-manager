@@ -11,6 +11,9 @@ class RequestAch extends React.Component{
 
         this.state = {
             accountType: 'individual',
+            accountName: '',
+            accountRouting: '',
+            accountNumber: '',
             errors: {},
         };
     }
@@ -48,6 +51,14 @@ class RequestAch extends React.Component{
         }
 
         this.setState({ errors: errors });
+        var noErrors = (Object.getOwnPropertyNames(errors).length == 0);
+
+        if (noErrors && this.props.onRequestAch) this.props.onRequestAch({
+            name: this.state.accountName,
+            accountType: this.state.accountType,
+            accountNumber: this.state.accountNumber,
+            accountRouting: this.state.accountRouting,
+        });
     }
 
     render() {
