@@ -14,6 +14,7 @@ import TenantActivate from './pages/TenantActivate';
 import { Modal, ModalState } from './components/Modal';
 import * as api from './api';
 import Axios from 'axios';
+import TenantVerifyACH from './pages/TenantVerifyACH';
 
 var knownRoles = ['logged out', 'tenant', 'admin'];
 function toKnownRole(role) {
@@ -62,6 +63,7 @@ class App extends Component {
                     <Route exact path='/admin/payments' render={(props) => this.renderPage(AdminPayments, props)} />
                     <Route exact path='/admin/users' render={(props) => this.renderPage(AdminUsers, props)} />
                     <Route path='/tenant/activate/:code' render={(props) => this.renderPage(TenantActivate, props)} />
+                    <Route path='/tenant/verifyach/' render={(props) => this.renderPage(TenantVerifyACH, props)} />
                     <Route exact path='/tenant' render={(props) => this.renderPage(Tenant, props)} />
                     <Route path='*' render={(props) => this.renderPage(NotFound, props)} />
                 </Switch>
