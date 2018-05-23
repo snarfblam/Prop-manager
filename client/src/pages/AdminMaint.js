@@ -7,6 +7,8 @@ import { Table } from '../components/Table';
 import Button from '../components/Bootstrap/Button';
 import Fas from '../components/Fas';
 import * as api from '../api';
+import Pane from '../components/Pane';
+import Spinner from './modals/Spinner';
 
 class AdminMaint extends Template {
     constructor(props) {
@@ -16,6 +18,8 @@ class AdminMaint extends Template {
             {name: 'complete', label: 'Completed',  },
             {name: 'incomplete', label: 'Not Completed', checked: true}, 
         ];
+
+
         this.maintRequestColumns = [
             { name: 'message', label: 'Message' },
             { name: 'unit', label: 'Unit' },
@@ -27,7 +31,7 @@ class AdminMaint extends Template {
             filterState: new CheckListState(this.filterOptions),
             maintTable: {
                 columns: this.maintRequestColumns,
-                items: []
+                items: null,
             },
             maintTableNeedsToRefeash: false
         };
@@ -109,13 +113,7 @@ class AdminMaint extends Template {
     }
 
     getNavItems() {
-        return [
-            { path: '/admin/overview', text: 'Overview' },
-            { path: '/admin/units', text: 'Units' },
-            { path: '/admin/maint', text: 'Maintenance' },
-            { path: '/admin/payments', text: 'Payments' },
-            { path: '/admin/users', text: 'Users' },
-        ];
+        return this.adminNavLinks;
     }
     
 
@@ -136,23 +134,29 @@ class AdminMaint extends Template {
         // };
 
         return (
-            <div>
-                <h2>Maintenance Requests</h2>
-                <CheckList 
-                    items={this.filterOptions}
-                    state={this.state.filterState}
-                    inline
-                    onChange={newState => {
-                        
-                        this.setState({
-                        filterState: newState,
-                        maintTableNeedsToRefeash: true
-                    })}}
-                />    
-                {/* <Table data={this.state.maintTable} /> */}
-                <Table data={this.state.maintTable} transform={this.maintRequestTransform} />  
-            </div>
+            <Container>
+                <Pane size='12'>
+                    <h3>Maintenance Requests</h3>
+                    <CheckList 
+                        items={this.filterOptions}
+                        state={this.state.filterState}
+                        inline
+                        onChange={newState => this.setState({
+                          filterState: newState,
+                          maintTableNeedsToRefeash: true
+                        })}
+                    />    
+                    {/* <Table data={this.state.maintTable} /> */}
+                    {this.getMaintTable()}
+                </Pane>    
+            </Container>
         );
+    }
+
+    getMaintTable() {
+        if (this.state.maintTable.items == null) return <Spinner />;
+        if (this.state.maintTable.items.length === 0) return <p>No items to display</p>;
+        return <Table data={this.state.maintTable} transform={this.maintRequestTransform} />;
     }
 }
 

@@ -14,6 +14,7 @@ import TenantActivate from './pages/TenantActivate';
 import { Modal, ModalState } from './components/Modal';
 import * as api from './api';
 import Axios from 'axios';
+import TenantVerifyACH from './pages/TenantVerifyACH';
 
 var knownRoles = ['logged out', 'tenant', 'admin'];
 function toKnownRole(role) {
@@ -28,7 +29,7 @@ class App extends Component {
 
         this.state = {
             modal: new ModalState(false, null, "Hi, I'm a modal"),
-            role: 'logged out',
+            role: '',
         };
     }
 
@@ -55,15 +56,16 @@ class App extends Component {
             <BrowserRouter>
                 <div className="App">
                 <Switch>    
-                    <Route exact path='/' render={() => this.renderLanding()} />
-                    <Route exact path='/admin/overview' render={() => this.renderPage(AdminOverview)} />
-                    <Route exact path='/admin/units' render={() => this.renderPage(AdminUnits)} />
-                    <Route exact path='/admin/maint' render={() => this.renderPage(AdminMaint)} />
-                    <Route exact path='/admin/payments' render={() => this.renderPage(AdminPayments)} />
-                    <Route exact path='/admin/users' render={() => this.renderPage(AdminUsers)} />
+                    <Route exact path='/' render={(props) => this.renderLanding(props)} />
+                    <Route exact path='/admin/overview' render={(props) => this.renderPage(AdminOverview, props)} />
+                    <Route exact path='/admin/units' render={(props) => this.renderPage(AdminUnits, props)} />
+                    <Route exact path='/admin/maint' render={(props) => this.renderPage(AdminMaint, props)} />
+                    <Route exact path='/admin/payments' render={(props) => this.renderPage(AdminPayments, props)} />
+                    <Route exact path='/admin/users' render={(props) => this.renderPage(AdminUsers, props)} />
                     <Route path='/tenant/activate/:code' render={(props) => this.renderPage(TenantActivate, props)} />
-                    <Route exact path='/tenant' render={() => this.renderPage(Tenant)} />
-                    <Route path='*' render={() => this.renderPage(NotFound)} />
+                    <Route path='/tenant/verifyach/' render={(props) => this.renderPage(TenantVerifyACH, props)} />
+                    <Route exact path='/tenant' render={(props) => this.renderPage(Tenant, props)} />
+                    <Route path='*' render={(props) => this.renderPage(NotFound, props)} />
                 </Switch>
                     <Modal state={this.state.modal} onRequestClose={() => this.setState({ modal: this.state.modal.hide() })} />
                 </div>
@@ -76,8 +78,10 @@ class App extends Component {
             return this.renderPage(AdminOverview, props);
         } else if (this.state.role == 'tenant') {
             return this.renderPage(Tenant, props);
-        } else {
+        } else if (this.state.role == 'logged out') {
             return this.renderPage(Landing, props);
+        } else {
+            return <div />
         }
     }
 

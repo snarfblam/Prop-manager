@@ -3,7 +3,7 @@ import NavLink from './NavLink';
 import NavItem from './NavItem';
 
 export default props => (
-    <NavItem>
+    <NavItem active={props.active}>
         <NavLink to={props.to}>
             {props.children}    
         </NavLink>

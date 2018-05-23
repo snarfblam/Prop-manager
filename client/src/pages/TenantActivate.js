@@ -6,6 +6,7 @@ import './page.css'
 import GoogleSvg from '../components/svg/GoogleSvg';
 import Button from '../components/Bootstrap/Button';
 import Spinner from './modals/Spinner';
+import Pane from '../components/Pane'
 import * as api from '../api';
 
 class TenantActivate extends Template {
@@ -23,28 +24,35 @@ class TenantActivate extends Template {
     createSubStates() {
         this.subStates = {
             verified:
-                <div>
-                    <h2>Activate your account</h2>
-                    <hr />
-                    <p>
-                        Activate your account with
-                            </p>
-                    <a className='login-link' href='/auth/google'>
-                        <button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
-                    </a>
+                <Container>
+                    <Pane>
+                        <h3>Activate with Google</h3>
+                        <p>
+                            Activate your account with
+                                </p>
+                        <a className='login-link' href='/auth/google'>
+                            <button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
+                        </a>
+                    </Pane>
 
-                    <hr />
-                    <p>Create a local account</p>
-                    <Form className="container-400">
+                    <Pane>
+                        <h3>Create Username and Password</h3>
+                        <Form className="container-400">
                         <Input
-                            password
-                            name='pass'
-                            value='steven'
-                            label='Password'
-                        />
-                        <Button>Create Account</Button>
-                    </Form>
-                </div>,
+                                name='username'
+                                value=''
+                                label='User'
+                            />
+                        <Input
+                                password
+                                name='pass'
+                                value=''
+                                label='Password'
+                            />
+                            <Button>Create Account</Button>
+                        </Form>
+                    </Pane>    
+                </Container>,
             checking:
                 <div>
                     <p>Accessing your account</p>
@@ -77,11 +85,7 @@ class TenantActivate extends Template {
     }
 
     getNavItems() {
-        return [
-            { path: '/tenant', text: 'Home' },
-            { path: '/tenant', text: 'Pay Rent' },
-            { path: '/tenant', text: 'Request Maintenance' },
-        ];
+        return [...(this.tenantNavLinks), { path: this.props.match.path, text: 'Activate Account' }];
     }
 
     getContent() {

@@ -4,6 +4,8 @@ import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container, CheckList, Chec
 import Template from './Template';
 import './page.css'
 import { Table } from '../components/Table';
+import * as api from '../api';
+import Pane from '../components/Pane';
 
 class AdminPayments extends Template {
     constructor(props) {
@@ -14,17 +16,27 @@ class AdminPayments extends Template {
         ]; 
         this.state = {
             filterState: new CheckListState(this.filterOptions),
+            paymentItems: [
+                { unit: '103', due: '5/1/2018', amount: '$9001.00', payment: 'xxxx-xxxx-xxxx-4096'},
+                { unit: '102', due: '5/1/2018', amount: '$42.00', payment: 'xxxx-xxxx-xxxx-2048'},
+                { unit: '101', due: '5/1/2018', amount: '$0.01', payment: 'NOT PAID'},
+                { unit: '103', due: '4/1/2018', amount: '$9001.00', payment: 'xxxx-xxxx-xxxx-4096'},
+                { unit: '102', due: '4/1/2018', amount: '$42.00', payment: 'xxxx-xxxx-xxxx-2048'},
+                { unit: '101', due: '4/1/2018', amount: '$0.01', payment: 'xxxx-xxxx-xxxx-1024'},
+            ],
         };
+
+    }
+
+    componentDidMount() {
+        // var options = {};
+        // if(this.state.filterState.)
+        // api.getAllPayments();
+        console.log(this.state.filterState);
     }
 
     getNavItems() {
-        return [
-            { path: '/admin/overview', text: 'Overview' },
-            { path: '/admin/units', text: 'Units' },
-            { path: '/admin/maint', text: 'Maintenance' },
-            { path: '/admin/payments', text: 'Payments' },
-            { path: '/admin/users', text: 'Users' },
-        ];
+        return this.adminNavLinks;
     }
 
     getContent() {
@@ -35,22 +47,17 @@ class AdminPayments extends Template {
                 { name: 'amount', label: 'Amount' },
                 { name: 'payment', label: 'Payment' },
             ],
-            items: [
-                { unit: '103', due: '5/1/2018', amount: '$9001.00', payment: 'xxxx-xxxx-xxxx-4096'},
-                { unit: '102', due: '5/1/2018', amount: '$42.00', payment: 'xxxx-xxxx-xxxx-2048'},
-                { unit: '101', due: '5/1/2018', amount: '$0.01', payment: 'NOT PAID'},
-                { unit: '103', due: '4/1/2018', amount: '$9001.00', payment: 'xxxx-xxxx-xxxx-4096'},
-                { unit: '102', due: '4/1/2018', amount: '$42.00', payment: 'xxxx-xxxx-xxxx-2048'},
-                { unit: '101', due: '4/1/2018', amount: '$0.01', payment: 'xxxx-xxxx-xxxx-1024'},
-            ]
+            items: this.state.paymentItems,
         };
 
         return (
-            <div>
-                <h1>Payments</h1>
-                <CheckList inline items={this.filterOptions} state={this.state.filterState} onChange={state => this.setState({filterState: state})} />
-                <Table data={data} />
-            </div>
+            <Container>
+                <Pane size='12'>
+                    <h3>Payments</h3>
+                    <CheckList inline items={this.filterOptions} state={this.state.filterState} onChange={state => this.setState({filterState: state})} />
+                    <Table data={data} />
+                </Pane>    
+            </Container>
         );
     }
 }

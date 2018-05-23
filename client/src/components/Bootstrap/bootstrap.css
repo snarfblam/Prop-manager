@@ -8,3 +8,42 @@
 .input-error-text-hidden{
     display:none;
 }
+
+.activeNavTab {
+    position: relative;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    bottom: -2px;
+    border-bottom: 8px solid #e8ecf1;
+    margin-bottom: -12px;
+    padding-left: .5em;
+    padding-right: .5em;
+    border-top: 4px solid #8c90b3;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+.activeNavTab,
+.navbar-dark .navbar-nav .activeNavTab .nav-link,
+.navbar-nav .nav-item .activeNavTab.nav-link,
+.navbar-nav .nav-item .activeNavTab.nav-link:hover,
+.navbar-nav .nav-item .activeNavTab.nav-link:active,
+.navbar-nav .nav-item .activeNavTab.nav-link:focus
+  {
+    background: #e8ecf1;
+    color: black;
+}
+
+@media screen and (max-width: 991px) {
+    .activeNavTab {
+        position: initial;
+        /* border-top-left-radius: 6px; */
+        /* border-top-right-radius: 6px; */
+        border-radius: 6px;
+        bottom: 0px;
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-left: .5em;
+        padding-right: .5em;
+        border-top: none;
+    }
+}

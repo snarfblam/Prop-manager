@@ -60,7 +60,7 @@ function createNewUnit(unitData) {
 function editUnit(id, unitData) {
     var data = { ...unitData, id: id };
     if (data.user) data.users = [data.user];
-    
+
     return axios
         .post('/api/editUnit', data)
         .then(response => {
@@ -185,9 +185,56 @@ function getAllPayments(options) {
         .then(response => response.data);
 }
 
+/**
+ * Sends a request to pay invoice(s) via ACH. Returns {
+ *      result: 'paid' | 'needs setup' | 'needs verification' | 'error'
+ *      error?: string
+ * }.
+ * @param {number[]} invoiceNumbers - ID for Payment records to be paid
+ }
+ */
+function payACH(invoiceNumbers) {
+    return axios
+        .post('/api/payACH', { invoiceList: invoiceNumbers })
+        .catch(err => {
+            console.log(err);
+            return { result: 'error', error: err.toString() };
+        });
+}
+
+/**
+ * Requests an account be associated with the user for ACH transfers. Returns {
+ *      result: 'success' | 'error',
+ *      error?: string
+ * }
+ * @param {{name: string, accountType: string, accountNumber: string, accountRouting: string}} accountDetails - Account information
+ */
+function setupACH(accountDetails) {
+    return axios
+        .post('/api/setupACH', accountDetails)
+        .catch(err => {
+            console.log(err);
+            return { result: 'error', error: err.toString() };
+        });
+}
+
+/**
+ * Requests an account be verified for ACH.
+ * @param {number[]} amounts - Amount of each verification deposit made by stripe
+ */
+function verifyACH(amounts) {
+    return axios
+        .post('/api/verifyACH', amounts)
+        .catch(err => {
+            console.log(err);
+            return { result: 'error', error: err.toString() };
+        });
+}
+
 export {
     createNewUser, activateUser, getUnitList,
     getUserStatus, getRentDue, getUserList,
     getOwnMaintRequest, getAllMaintRequests, getAllPayments,
-    createNewUnit, editUnit, completeMaintRequest
+    createNewUnit, editUnit, completeMaintRequest,
+    payACH, setupACH, verifyACH,
 };
