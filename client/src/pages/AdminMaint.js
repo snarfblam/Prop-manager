@@ -77,7 +77,7 @@ class AdminMaint extends Template {
                 maintTable: {
                     columns: this.maintRequestColumns,
                     items: maintRequests
-                }
+                },
             });
         });
     }

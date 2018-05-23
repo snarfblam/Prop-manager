@@ -307,7 +307,13 @@ var router = express.Router();
             res.json({ status: 'logged out' });
         } else {
             var role = user.role || 'tenant'; // assume the most restrictive account type if not present
-            res.json({ status: role });
+            res.json({
+                status: role,
+                email: user.email,
+                stripeToken: user.stripeCustToken,
+                stripeACHVerified: user.stripeACHVerified,
+                authtype: user.authtype,
+            });
         }
     });
 }

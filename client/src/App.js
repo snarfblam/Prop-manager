@@ -30,15 +30,20 @@ class App extends Component {
         this.state = {
             modal: new ModalState(false, null, "Hi, I'm a modal"),
             role: '',
+            user: null,
         };
     }
 
+    getUser() {
+        return this.state.user;
+    }
     componentDidMount() {
         api
             .getUserStatus()
             .then(response => {
                 this.setState({
                     role: toKnownRole(response.status),
+                    user: response,
                 });
             });
     }
