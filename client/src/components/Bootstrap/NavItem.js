@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default props => (
-    <li className="nav-item">
+    <li className={props.active ? "nav-item activeNavTab" : "nav-item"}>
         {props.children}    
     </li>
 )

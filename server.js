@@ -104,6 +104,7 @@ db.sequelize.sync({
     ////////////// Routing ////////////////////////
     app.use('/auth', require('./auth'));
     app.use('/static', express.static(path.join(__dirname, 'client', 'build', 'static')));
+    app.use('/img', express.static(path.join(__dirname, 'client', 'build', 'img')));
     app.get('*', (req, res) => {
         var indexPath = path.join(__dirname, 'client', 'build', 'index.html');
         res.sendfile(indexPath);

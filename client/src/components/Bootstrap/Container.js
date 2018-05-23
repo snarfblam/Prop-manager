@@ -5,7 +5,7 @@
 import React from 'react';
 
 export default props => (
-    <div className="container">
+    <div className={"container" + (props.className ? (' ' + props.className) : '')}>
         {props.children}
     </div>
 );

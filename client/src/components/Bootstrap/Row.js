@@ -1,11 +1,13 @@
 import React from 'react';
 
 export default props => (
-    <div className={'row' + formatClassname(props.className)}>
+    <div className={getClassName(props)}>
         {props.children}    
     </div>
 )
 
-function formatClassname(clsStr) {
-    return clsStr ? (' ' + clsStr) : '';
+function getClassName(props) {
+    var result = 'row ' + (props.className || '');
+    if (props.center) result += ' justify-content-center';
+    return result;
 }

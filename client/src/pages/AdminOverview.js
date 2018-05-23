@@ -1,11 +1,12 @@
 import React from 'react';
 // eslint-disable-next-line
-import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
+import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container, Row, Col } from '../components/Bootstrap';
 import Table from '../components/Table';
 import Template from './Template';
 import './page.css';
 import * as api from '../api';
 import Spinner from './modals/Spinner';
+import Pane from '../components/Pane';
 import { Link } from 'react-router-dom';
 
 class AdminOverview extends Template {
@@ -66,25 +67,27 @@ class AdminOverview extends Template {
     }
 
     getNavItems() {
-        return [
-            { path: '/admin/overview', text: 'Overview' },
-            { path: '/admin/units', text: 'Units'},
-            { path: '/admin/maint', text: 'Maintenance' },
-            { path: '/admin/payments', text: 'Payments'},
-            { path: '/admin/users', text: 'Users' },
-        ];
+        return this.adminNavLinks;
     }
 
     getContent() {
         return (
             <div>
                 <h1>Overview</h1>
-                <h2>Maintenance</h2>
-                <p><Link to='/admin/maint'>View all maintenance items</Link></p>
-                {this.getMaintTable()}
-                <h2>Payments</h2>
-                <p><Link to='/admin/payments'>View all invoices</Link></p>
-                {this.getPaymentTable()}    
+                <Container>
+                    <Pane size='12'>
+                        <h3>Maintenance</h3>
+                        {this.getMaintTable()}
+                        <p><Link to='/admin/maint'>View all maintenance items</Link></p>
+                    </Pane>
+                </Container>    
+                <Container>
+                    <Pane size='12'>
+                        <h3>Payments</h3>
+                        {this.getPaymentTable()}    
+                        <p><Link to='/admin/payments'>View all invoices</Link></p>
+                    </Pane>
+                </Container>    
                  
             </div>
         );
@@ -93,6 +96,7 @@ class AdminOverview extends Template {
     getMaintTable() {
         if (this.state.maintItems == null) return <Spinner />;
 
+        if(this.state.maintItems.length == 0) return <p>No open maintenance requests.</p>
         return (
             <Table
                 data={{
@@ -107,6 +111,8 @@ class AdminOverview extends Template {
     getPaymentTable() {
         if (this.state.paymentItems == null) return <Spinner />;
 
+        if(this.state.paymentItems.length == 0) return <p>No payment records.</p>
+        
         return (
             <Table
                 data={{

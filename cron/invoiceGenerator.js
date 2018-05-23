@@ -12,31 +12,30 @@ function schedule() {
             .findAll({})
             .then(units => {
                 let timeOfTheMos = moment(moment().format("YYYY-MM")).format("YYYY-MM-DD HH:mm:ss.SSS");
-                console.log(timeOfTheMos);
+                // console.log(timeOfTheMos);
                 units.map(unit => {
-                    db.Payment.findOrCreate({
-                        where: {
-                            UnitId: unit.id,
-                            due_date: { $gte: timeOfTheMos }
-                        },
-                        defaults: {
-                            UnitId: unit.id,
-                            paid: false,
-                            amount: unit.rate,
-                            due_date: timeOfTheMos
-                        }
-                    }).spread((payRec, created) => {
-                        console.log(payRec.get({
-                            plain: true
-                        }))
-                        if (created) {
-                            console.log(`Payment Record created. Due date: ${timeOfTheMos} Unit: ${unit.id}`)
-                        } else {
-                            console.log(`Payment Record was prviously created for Unit: ${unit.id}`)
-                        }
-                    })
+                    if (unit.rate) { // Don't create payments for units with a rate of 0
+                        db.Payment.findOrCreate({
+                            where: {
+                                UnitId: unit.id,
+                                due_date: { $gte: timeOfTheMos }
+                            },
+                            defaults: {
+                                UnitId: unit.id,
+                                paid: false,
+                                amount: unit.rate,
+                                due_date: timeOfTheMos
+                            }
+                        }).spread((payRec, created) => {
+                            if (created) {
+                                console.log(`Payment Record created. Due date: ${timeOfTheMos} Unit: ${unit.id}.`, payRec.get({ plain: true }));
+                                // } else {
+                                //     console.log(`Payment Record was prviously created for Unit: ${unit.id}`)
+                            }
+                        })
 
-                })
+                    }
+                });
             }).catch(console.error)
     });
 }
