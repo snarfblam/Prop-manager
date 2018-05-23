@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 // eslint-disable-next-line
-import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container } from '../components/Bootstrap';
+import { Navbar, NavbarBrand, NavbarNav, NavLinkItem, Container, Input } from '../components/Bootstrap';
 import Template from './Template';
 import './page.css'
 import Button from '../components/Bootstrap/Button';
@@ -269,6 +269,7 @@ class Tenant extends Template {
                         data={this.state.paymentTable}
                         transform={this.paymentTransform}
                     />
+                    <hr />
                     <p>
                         Total:  <span className='rent-amount'>{this.formatDollars(this.state.totalDue || 0)}</span>
                         <br />
@@ -293,7 +294,7 @@ class Tenant extends Template {
                         <label>
                             Please explain your request for maintenance:
                             <br></br>
-                            <input type="text" value={this.state.message} onChange={this.handleChange} />
+                            <Input type="text" value={this.state.message} onChange={this.handleChange} />
                         </label>
                         <br></br>
                         <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>

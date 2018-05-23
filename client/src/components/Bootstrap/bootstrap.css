@@ -18,7 +18,9 @@
     margin-bottom: -12px;
     padding-left: .5em;
     padding-right: .5em;
-    border-top: 4px solid #8c90b3
+    border-top: 4px solid #8c90b3;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 .activeNavTab,
 .navbar-dark .navbar-nav .activeNavTab .nav-link,
