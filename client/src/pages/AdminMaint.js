@@ -13,8 +13,8 @@ class AdminMaint extends Template {
         super(props)
 
         this.filterOptions = [
-            {name: 'complete', label: 'Completed', checked: true},
-            {name: 'incomplete', label: 'Not completed'}, 
+            {name: 'complete', label: 'Completed',  },
+            {name: 'incomplete', label: 'Not Completed', }, 
         ];
         this.maintRequestColumns = [
             { name: 'message', label: 'Message' },
@@ -68,7 +68,17 @@ class AdminMaint extends Template {
     }
     
     requestMaintData() {
-        api.getAllMaintRequests().then(maintRequests => {
+        let where = {};
+        
+        console.log("THis is the  Check box State", this.state.filterState)
+        // if (!this.state.filterState.complete) {
+        //     where.open = false
+        // }
+        // if (this.state.filterState.incomplete) {
+        //     where.open = true;
+        // }
+
+        api.getAllMaintRequests(where).then(maintRequests => {
             this.setState({
                 maintTable: {
                     columns: this.maintRequestColumns,
@@ -112,9 +122,12 @@ class AdminMaint extends Template {
                     items={this.filterOptions}
                     state={this.state.filterState}
                     inline
-                    onChange={newState => this.setState({
+                    onChange={newState => {
+                        
+                        this.setState({
                         filterState: newState
-                    })}
+                    }) 
+                    this.requestMaintData();}}
                 />    
                 {/* <Table data={this.state.maintTable} /> */}
                 <Table data={this.state.maintTable} transform={this.maintRequestTransform} />  
