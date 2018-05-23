@@ -1,7 +1,8 @@
 .table-cmp-container {
     /* border: 1px solid lightgray; */
     /* border-radius: 8px; */
-    width: fit-content;
+    width: 100%;
+    /* width: fit-content; */
     overflow: hidden;
     margin-left: auto;
     margin-right: auto;
