@@ -8,6 +8,7 @@ const keyPublishable = stripeKeys.PUBLISHABLE_KEY;
 const keySecret = stripeKeys.SECRET_KEY;
 const stripe = require("stripe")(keySecret);
 
+const emailSnd = require('../mail/emailActivation')
 
 var router = express.Router();
 
@@ -225,6 +226,7 @@ var router = express.Router();
     router.post('/api/createUser', (req, res, next) => {
         var data = req.body;
         data.activationCode = uuidv1();
+        emailSnd.sendInv(data); // Send the user data and the uuid to the tenant through email
         data.UnitId = data.unit;
         data.role = 'tenant';
         db.Unit.findOne({ where: { id: data.UnitId } }).then(function (findUnit) {
