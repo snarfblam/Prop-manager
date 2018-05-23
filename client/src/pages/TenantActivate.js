@@ -85,7 +85,7 @@ class TenantActivate extends Template {
     }
 
     getNavItems() {
-        return this.tenantNavLinks;
+        return [...(this.tenantNavLinks), { path: this.props.match.path, text: 'Activate Account' }];
     }
 
     getContent() {
