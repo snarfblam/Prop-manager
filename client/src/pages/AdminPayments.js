@@ -5,6 +5,8 @@ import Template from './Template';
 import './page.css'
 import { Table } from '../components/Table';
 import * as api from '../api';
+import Pane from '../components/Pane';
+
 class AdminPayments extends Template {
     constructor(props) {
         super(props)
@@ -34,13 +36,7 @@ class AdminPayments extends Template {
     }
 
     getNavItems() {
-        return [
-            { path: '/admin/overview', text: 'Overview' },
-            { path: '/admin/units', text: 'Units' },
-            { path: '/admin/maint', text: 'Maintenance' },
-            { path: '/admin/payments', text: 'Payments' },
-            { path: '/admin/users', text: 'Users' },
-        ];
+        return this.adminNavLinks;
     }
 
     getContent() {
@@ -55,11 +51,13 @@ class AdminPayments extends Template {
         };
 
         return (
-            <div>
-                <h1>Payments</h1>
-                <CheckList inline items={this.filterOptions} state={this.state.filterState} onChange={state => this.setState({filterState: state})} />
-                <Table data={data} />
-            </div>
+            <Container>
+                <Pane size='12'>
+                    <h3>Payments</h3>
+                    <CheckList inline items={this.filterOptions} state={this.state.filterState} onChange={state => this.setState({filterState: state})} />
+                    <Table data={data} />
+                </Pane>    
+            </Container>
         );
     }
 }

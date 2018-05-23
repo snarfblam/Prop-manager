@@ -26,13 +26,36 @@ class Template extends React.Component {
         this.showModal = this.props.showModal;
         this.hideModal = this.props.hideModal;
         this.redirect = null;
+
+        this.adminNavLinks = [
+            { path: '/admin/overview', text: 'Overview', altPaths: ['/'] },
+            { path: '/admin/units', text: 'Units' },
+            { path: '/admin/maint', text: 'Maintenance' },
+            { path: '/admin/payments', text: 'Payments' },
+            { path: '/admin/users', text: 'Users' },
+        ];
+        this.tenantNavLinks = [
+            { path: '/tenant', text: 'Home', altPaths: ['/'] },
+            // { path: '/tenant', text: 'Pay Rent' },
+            // { path: '/tenant', text: 'Request Maintenance' },
+        ];
     }
  
     toNavItems(navList) {
         var index = 0;
+        var thisPath = (this.props.match || {}).path || '';
         return navList.map(item => {
+            var active = (thisPath === item.path);
+            if (item.altPaths) active = (active || item.altPaths.includes(thisPath));
+
+            var className = active ? 'activeNavTab' : null;
+
             if (item.path && item.text) {
-                return <NavLinkItem to={item.path} key={index++}>{item.text}</NavLinkItem>
+                if (active) {
+                    return <NavLinkItem active to={item.path} key={index++}>{item.text}</NavLinkItem>
+                } else {
+                    return <NavLinkItem to={item.path} key={index++}>{item.text}</NavLinkItem>
+                }
             } else {
                 return item;
             }
@@ -106,6 +129,8 @@ class Template extends React.Component {
     // getContent() {
     //     throw Error("getNavItems not implemented");
     // }
+
+    
 }
 
 export default Template;

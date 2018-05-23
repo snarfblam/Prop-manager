@@ -77,11 +77,7 @@ class TenantActivate extends Template {
     }
 
     getNavItems() {
-        return [
-            { path: '/tenant', text: 'Home' },
-            { path: '/tenant', text: 'Pay Rent' },
-            { path: '/tenant', text: 'Request Maintenance' },
-        ];
+        return this.tenantNavLinks;
     }
 
     getContent() {

@@ -8,6 +8,8 @@ import Button from '../components/Bootstrap/Button';
 import * as api from '../api';
 import { Table } from '../components/Table';
 import RequestAch from './modals/RequestAch';
+import Pane from '../components/Pane';
+import Spinner from './modals/Spinner';
 
 declare var StripeCheckout;
 
@@ -235,11 +237,7 @@ class Tenant extends Template {
     }
 
     getNavItems() {
-        return [
-            { path: '/tenant', text: 'Home' },
-            { path: '/tenant', text: 'Pay Rent' },
-            { path: '/tenant', text: 'Request Maintenance' },
-        ];
+        return this.tenantNavLinks;
     }
 
 
@@ -263,47 +261,58 @@ class Tenant extends Template {
 
     getContent() {
         return (
-            <div>
-                <h3>Rent Due</h3>
+            <Container>
+                <Pane>
+                    <h3>Rent Due</h3>
 
-                <Table
-                    data={this.state.paymentTable}
-                    transform={this.paymentTransform}
-                />
-                <p>
-                    Total:  <span className='rent-amount'>{this.formatDollars(this.state.totalDue || 0)}</span>
-                    <br />
-                    <Button
-                        disabled={this.state.processingPayment || (this.state.totalDue === 0)}
-                        onClick={this.payRentWithCreditCard}
-                    >
-                        Pay by card
-                    </Button>
-                    &emsp;
-                    <Button
-                        disabled={this.state.processingPayment || (this.state.totalDue === 0)}
-                        onClick={this.payRentWithACH}
-                    >
-                        Pay by ACH
-                    </Button>
-                </p>
-
-                <h3>Maintenance Requests</h3>
-                <form>
-                    <label>
-                        Please explain your request for maintenance:
+                    <Table
+                        data={this.state.paymentTable}
+                        transform={this.paymentTransform}
+                    />
+                    <p>
+                        Total:  <span className='rent-amount'>{this.formatDollars(this.state.totalDue || 0)}</span>
+                        <br />
+                        <Button
+                            disabled={this.state.processingPayment || (this.state.totalDue === 0)}
+                            onClick={this.payRentWithCreditCard}
+                        >
+                            Pay by card
+                        </Button>
+                        &emsp;
+                        <Button
+                            disabled={this.state.processingPayment || (this.state.totalDue === 0)}
+                            onClick={this.payRentWithACH}
+                        >
+                            Pay by ACH
+                        </Button>
+                    </p>
+                </Pane>
+                <Pane>
+                    <h3>Maintenance Requests</h3>
+                    <form>
+                        <label>
+                            Please explain your request for maintenance:
+                            <br></br>
+                            <input type="text" value={this.state.message} onChange={this.handleChange} />
+                        </label>
                         <br></br>
-                        <input type="text" value={this.state.message} onChange={this.handleChange} />
-                    </label>
-                    <br></br>
-                    <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
-                </form>
-                <hr></hr>
-                <Table
-                    data={this.state.maintTable}
-                    transform={this.maintRequestTransform}
-                />            
-            </div>
+                        <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
+                    </form>
+                    <hr></hr>
+                    {this.getMaintTable()}
+                </Pane>    
+            </Container>
+        );
+    }
+
+    getMaintTable() {
+        if (this.state.maintTable.items === null) return <Spinner />;
+        if (this.state.maintTable.items.length === 0) return <p>You have no open maintenance items.</p>;
+        return (
+            <Table
+                data={this.state.maintTable}
+                transform={this.maintRequestTransform}
+            />
         );
     }
 }

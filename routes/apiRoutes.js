@@ -21,7 +21,7 @@ var router = express.Router();
                 db.Maintenance.create(data).then(function (dbMaint) {
                     res.json(dbMaint)
                 })
-            })
+            }).catch(console.log);
     });
 
     // POST - Mark a maintenance request as completed
