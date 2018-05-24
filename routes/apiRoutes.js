@@ -218,6 +218,89 @@ var router = express.Router();
             console.log(err);
         });
     });
+
+    router.post('/api/payACH', (req, res, next) => {
+        if(!req.user.stripeACHToken) {
+            return res.json({
+                result: 'needs setup'
+            })
+        } else if(!req.user.stripeACHVerified) {
+            return res.json({
+                result: 'needs verification'
+            })
+        } else {
+            var invoiceList = req.body.invoiceList || [];
+
+            db.Payment.findAll({
+                where: {
+                    id: invoiceList,
+                    paid: false
+                }
+            }).then(payments => {
+                var totalDollars = payments.reduce((sum, pmt) => sum + pmt.amount, 0);
+                var totalCents = totalDollars * 100;
+                var customerID = getStripeCustomer(req, req.user.email).id;
+                var tokenID = req.user.stripeACHToken;
+    
+                if (totalCents === 0) {
+                    return res.json({ status: 'zero payment' });
+                };
+    
+                stripe.charges.create({
+                    amount: totalCents,
+                    currency: "usd",
+                    source: tokenID, 
+                    customer: customerID,
+                    description: "Charge for 132 Chapel St. LLC"
+                }, 
+                    function(err, charge) {
+                        if(err) throw err;
+
+                        if(charge.paid == true) {
+                            res.json({
+                                result: 'paid'
+                            });
+                        }
+                    }
+                )
+            });
+        }
+    });
+    
+
+    router.post('api/setupACH', (req, res, next) => {
+        req.user.update({stripeACHToken: req.body, stripeACHVerified: false})
+        .then(
+            res.json({result: "success"})
+        ).catch(err => {
+            res.status(500).end();
+            console.log(err);
+        });
+    });
+
+    router.post('api/verifyACH'), (req, res, next) => {
+        var tokenID = req.user.stripeACHToken;
+        var customerID = getStripeCustomer(req, req.user.email).id;
+        var amount1 = req.body.amounts[0];
+        var amount2 = req.body.amounts[1];
+
+        stripe.customers.verifySource(
+            customerID,
+            tokenID,
+            {
+            amounts: [amount1, amount2]
+            },
+            function(err, bankAccount) {
+                if(err) throw err;
+                req.user.update({stripeACHVerified: true})
+            .then(
+                res.json({result: "success"})
+            ).catch(err => {
+                res.status(500).end();
+                console.log(err);
+            });
+        });
+    }
 }
 
 { // Users
