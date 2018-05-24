@@ -9,6 +9,7 @@ import AdminMaint from './pages/AdminMaint';
 import AdminPayments from './pages/AdminPayments';
 import AdminUsers from './pages/AdminUsers';
 import Tenant from './pages/Tenant';
+import TenantPayments from './pages/TenantPayments';
 import NotFound from './pages/NotFound';
 import TenantActivate from './pages/TenantActivate';
 import { Modal, ModalState } from './components/Modal';
@@ -70,6 +71,7 @@ class App extends Component {
                     <Route path='/tenant/activate/:code' render={(props) => this.renderPage(TenantActivate, props)} />
                     <Route path='/tenant/verifyach/' render={(props) => this.renderPage(TenantVerifyACH, props)} />
                     <Route exact path='/tenant' render={(props) => this.renderPage(Tenant, props)} />
+                    <Route exact path='/tenant/payments' render={(props) => this.renderPage(TenantPayments, props)} />
                     <Route path='*' render={(props) => this.renderPage(NotFound, props)} />
                 </Switch>
                     <Modal state={this.state.modal} onRequestClose={() => this.setState({ modal: this.state.modal.hide() })} />

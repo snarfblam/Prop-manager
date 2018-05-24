@@ -133,6 +133,7 @@ var router = express.Router();
         });
     });
 
+
     function getStripeCustomer(request, email, card) {
         var user = request.user;
         if (!user) throw Error('User not logged in');
@@ -180,10 +181,42 @@ var router = express.Router();
         } []
     
     */
+   
+   router.get('/api/getOwnUnitPayments', (req, res, next) => {
+        return getUserPayments(req, res, {  });
+   });
+    
     router.get('/api/rentAmount', (req, res, next) => {
+        // if (req.user) {
+        //     req.user
+        //         .getUnits({ include: [{ model: db.Payment, where: { paid: false } }] })
+        //         .then(units => {
+        //             var results = [];
+
+        //             units.forEach(unit => {
+        //                 unit.Payments.forEach(payment => {
+        //                     results.push({
+        //                         id: payment.id,
+        //                         unitId: unit.id,
+        //                         paymentId: payment.id,
+        //                         unitName: unit.unitName,
+        //                         amount: payment.amount,
+        //                         due: payment.due_date,
+        //                     });
+        //                 });
+        //             });
+        //             res.json(results);
+        //         });
+        // } else {
+        //     res.json([]); // whole lotta nuffin
+        // }
+        return getUserPayments(req, res, { paid: false });
+    });
+
+    function getUserPayments(req, res, where) {
         if (req.user) {
             req.user
-                .getUnits({ include: [{ model: db.Payment, where: { paid: false } }] })
+                .getUnits({ include: [{ model: db.Payment, where: where }] })
                 .then(units => {
                     var results = [];
 
@@ -196,6 +229,7 @@ var router = express.Router();
                                 unitName: unit.unitName,
                                 amount: payment.amount,
                                 due: payment.due_date,
+                                paid: payment.paid,
                             });
                         });
                     });
@@ -204,7 +238,7 @@ var router = express.Router();
         } else {
             res.json([]); // whole lotta nuffin
         }
-    });
+    }
 
     // GET - gets the tenant’s payment history
     router.get('/api/paymentHistory', (req, res, next) => {

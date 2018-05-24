@@ -41,14 +41,14 @@ class Tenant extends Template {
             ownedMaintRequest: '',
             paymentTable: {
                 columns: this.rentColumns,
-                items: [],
+                items: null,
             },
             checkedPaymentIds: [], // : number[]
             totalDue: 0,
             message: '',
             maintTable: {
                 columns: this.maintRequestColumns,
-                items: []
+                items: null
             },
             processingPayment: false,
         };
@@ -61,6 +61,13 @@ class Tenant extends Template {
     }
 
     requestMaintData() {
+        this.setState({
+            maintTable: {
+                columns: this.maintRequestColumns,
+                items: null
+            }
+        });
+
         api.getOwnMaintRequest().then(maintRequests => {
             this.setState({
                 maintTable: {
@@ -75,7 +82,7 @@ class Tenant extends Template {
         this.setState({
             paymentTable: {
                 columns: this.rentColumns,
-                items: [],
+                items: null,
             },
             totalDue: 0,
             checkedPaymentIds: [],
@@ -277,10 +284,7 @@ class Tenant extends Template {
                 <Pane>
                     <h3>Rent Due</h3>
 
-                    <Table
-                        data={this.state.paymentTable}
-                        transform={this.paymentTransform}
-                    />
+                    {this.getRentTable()}
                     <hr />
                     <p>
                         Total:  <span className='rent-amount'>{this.formatDollars(this.state.totalDue || 0)}</span>
@@ -315,6 +319,18 @@ class Tenant extends Template {
                     {this.getMaintTable()}
                 </Pane>    
             </Container>
+        );
+    }
+
+    getRentTable() {
+        if (this.state.paymentTable.items === null) return <Spinner />;
+        if (this.state.paymentTable.items.length === 0) return <p>You have no payments due.</p>;
+        
+        return (
+            <Table
+                data={this.state.paymentTable}
+                transform={this.paymentTransform}
+            />
         );
     }
 

@@ -134,6 +134,12 @@ function getRentDue() {
         .then(response => response.data);
 }
 
+function getAllOwnUnitPayments() {
+    return axios
+        .get('/api/getOwnUnitPayments')
+        .then(response => response.data);
+}
+
 function getUserList() {
     return axios
         .get('/api/getUserlist')
@@ -242,5 +248,5 @@ export {
     getOwnMaintRequest, getAllMaintRequests, getAllPayments,
     createNewUnit, editUnit, completeMaintRequest,
     payACH, setupACH, verifyACH,
-    markPaymentPaid, 
+    markPaymentPaid, getAllOwnUnitPayments,
 };
