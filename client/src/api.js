@@ -185,6 +185,11 @@ function getAllPayments(options) {
         .then(response => response.data);
 }
 
+function markPaymentPaid(id) {
+    return axios
+        .post('/api/markPaid', { id: id });
+}
+
 /**
  * Sends a request to pay invoice(s) via ACH. Returns {
  *      result: 'paid' | 'needs setup' | 'needs verification' | 'error'
@@ -237,4 +242,5 @@ export {
     getOwnMaintRequest, getAllMaintRequests, getAllPayments,
     createNewUnit, editUnit, completeMaintRequest,
     payACH, setupACH, verifyACH,
+    markPaymentPaid, 
 };

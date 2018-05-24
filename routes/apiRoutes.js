@@ -155,6 +155,21 @@ var router = express.Router();
         return 
     }
 
+        // POST - Mark a maintenance request as completed
+        router.post('/api/markPaid', (req, res, next) => {
+            if (!req.user || req.user.role != 'admin') return res.status(403).end();
+
+            db.Payment.findById(req.body.id).then(function(payment){
+                if(payment) {
+                    payment.updateAttributes({
+                        paid: true,
+                    })
+                }
+                res.sendStatus(200)
+            }).catch(function(error) {
+                if(error) throw error;
+            })
+        });
     /* GET - gets rent amount that the tenant owes
         Returns array: {
             unitId: number,
