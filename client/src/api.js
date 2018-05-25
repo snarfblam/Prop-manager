@@ -248,6 +248,12 @@ function getOwnUnits() {
         .then(response => response.data);
 }
 
+function getAppSettings() {
+    return axios
+        .get('/api/getSettings')
+        .then(response => response.data);
+}
+
 export {
     createNewUser, activateUser, getUnitList,
     getUserStatus, getRentDue, getUserList,
@@ -256,4 +262,5 @@ export {
     payACH, setupACH, verifyACH,
     markPaymentPaid, getAllOwnUnitPayments,
     getOwnUnits,
+    getAppSettings,
 };

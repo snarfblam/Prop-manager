@@ -7,6 +7,7 @@ const stripeKeys = keys.Stripe;
 const keyPublishable = stripeKeys.PUBLISHABLE_KEY;
 const keySecret = stripeKeys.SECRET_KEY;
 const stripe = require("stripe")(keySecret);
+const appSettings = require('../appSettings');
 
 const emailSnd = require('../mail/emailActivation')
 
@@ -493,6 +494,15 @@ var router = express.Router();
                 res.status(500).end();
             });
     });
+}
+
+// Settings 
+{
+    router.get('/api/getSettings', (req, res, next) => {
+        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+
+        res.json({ settings: appSettings.getAllSettings() });
+    })
 }
 
 module.exports = router;

@@ -10,6 +10,7 @@ function createDefaultAppSettings() {
         // Prepended to any relative paths (e.g. /tenant/activate/code) for display in UI or 
         // in email correspondance.Construct the full path using url.resolve(urlPrefix, relativePath)
         { name: 'urlPrefix', value: 'http://localhost:3001/' },
+        { name: 'appTitle', value: 'Tenant Service Portal' },
     ];
 
     return db.AppSetting
@@ -45,6 +46,13 @@ module.exports = {
      */
     getSetting: function (name) {
         return this.settings.find(setting => (setting.name == name));
+    },
+
+    /**
+     * Gets all app settings
+     */
+    getAllSettings: function () {
+        return [...(this.settings)];
     },
 
     /** Returns a promise which resolves to {name, value} when the database is updated.
