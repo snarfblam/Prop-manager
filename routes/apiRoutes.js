@@ -267,40 +267,53 @@ var router = express.Router();
         }
     });
     
-
-    router.post('api/setupACH', (req, res, next) => {
-        req.user.update({stripeACHToken: req.body, stripeACHVerified: false})
-        .then(
-            res.json({result: "success"})
-        ).catch(err => {
+    router.post('/api/setupACH', (req, res, next) => {
+        req.user.update({stripeACHToken: req.body.token.bank_account.id, stripeACHVerified: false})
+        .then(data => {
+            req.logIn(req.user, err => {
+                if(!err) {
+                    res.json({result: "success"})
+                }
+            })            
+        }).catch(err => {
             res.status(500).end();
             console.log(err);
         });
     });
 
-    router.post('api/verifyACH'), (req, res, next) => {
-        var tokenID = req.user.stripeACHToken;
-        var customerID = getStripeCustomer(req, req.user.email).id;
-        var amount1 = req.body.amounts[0];
-        var amount2 = req.body.amounts[1];
+    router.post('/api/verifyACH', (req, res, next) => {
+        getStripeCustomer(req, req.user.email)
+        .then(customer => {
+            var tokenID = req.user.stripeACHToken;
+            var amount1 = req.body[0];
+            var amount2 = req.body[1];
 
-        stripe.customers.verifySource(
-            customerID,
-            tokenID,
-            {
-            amounts: [amount1, amount2]
-            },
-            function(err, bankAccount) {
-                if(err) throw err;
-                req.user.update({stripeACHVerified: true})
-            .then(
-                res.json({result: "success"})
-            ).catch(err => {
-                res.status(500).end();
-                console.log(err);
+            stripe.customers.createSource(customer.id, {
+                source: tokenID
+            }, 
+            function(err, source) {
+                if (err) throw err
+                stripe.customers.verifySource(
+                    customer.id,
+                    tokenID,
+                    {
+                    amounts: [amount1, amount2]
+                    },
+                    function(err, bankAccount) {
+                        if(err) throw err;
+                        req.user.update({stripeACHVerified: true})
+                    .then(data => {
+                        res.json({result: "success"})
+                    }).catch(err => {
+                        res.status(500).end();
+                        console.log(err);
+                    });
+                });
             });
-        });
-    }
+
+           
+        })
+    })
 }
 
 { // Users

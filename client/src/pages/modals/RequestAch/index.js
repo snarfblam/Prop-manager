@@ -11,9 +11,9 @@ class RequestAch extends React.Component{
 
         this.state = {
             accountType: 'individual',
-            accountName: '',
-            accountRouting: '',
-            accountNumber: '',
+            accountName: 'Clark McDermith',
+            accountRouting: '110000000',
+            accountNumber: '000123456789',
             errors: {},
         };
     }
@@ -59,6 +59,7 @@ class RequestAch extends React.Component{
             accountNumber: this.state.accountNumber,
             accountRouting: this.state.accountRouting,
         });
+        
     }
 
     render() {
