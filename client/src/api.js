@@ -210,9 +210,9 @@ function payACH(invoiceNumbers) {
  * }
  * @param {{name: string, accountType: string, accountNumber: string, accountRouting: string}} accountDetails - Account information
  */
-function setupACH(accountDetails) {
+function setupACH(token) {
     return axios
-        .post('/api/setupACH', accountDetails)
+        .post('/api/setupACH', token)
         .then(response => response.data)
         .catch(err => {
             console.log(err);

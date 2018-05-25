@@ -124,7 +124,6 @@ class Tenant extends Template {
     }
 
     requestACH = (data) => {
-
         stripe.createToken('bank_account', {
               country: 'US',
               currency: 'usd',
@@ -133,8 +132,8 @@ class Tenant extends Template {
               routing_number: data.accountRouting,
               account_number: data.accountNumber
         }).then(token => {
+            console.log(token);
             axios.post('/api/setupACH', token)
-            .then(console.log('yuuup'))
             .then(response => {
                 console.log('Token Sent');
                 this.showModal(<p>Your account details have been submitted. An email will be sent with instructions to verify the account.</p>, "Account Submitted");
