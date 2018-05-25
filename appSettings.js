@@ -23,6 +23,7 @@ function createDefaultAppSettings() {
 }
 
 module.exports = {
+    /** @type {{name: string, value: string}[]} */
     settings: null,
 
     /**
@@ -57,14 +58,31 @@ module.exports = {
         return [...(this.settings)];
     },
 
-    /** Returns a promise which resolves to {name, value} when the database is updated.
+    /** Returns Promis<{name, value}> when the database is updated.
+     *  
      * @param {string} name - Name of the setting to get
      * @param {string} value - Name of the setting to set
      * 
      */
     changeSetting: function (name, value) {
+        // Find, then update or create new as needed. Then update this.settings
         return db.AppSetting
-            .find({ where: { name: name } })
-            .then(record => ({ name: record.name, value: record.value }));
+            .findOne({
+                where: { name: value }
+            }).then(setting => {
+                if (setting) {
+                    return setting.update({ value: value });
+                } else {
+                    return db.AppSetting.create({ name: name, value: value });
+                }
+            }).then(setting => {
+                var newSetting = { name: name, value: record.value };
+
+                var indexOf = this.settings.findIndex(item => item.name === name);
+                if (indexOf < 0) indexOf = this.settings.length;
+                this.settings[indexOf] = newSetting;
+
+                return { name: record.name, value: setting.value };
+            });
     }
 };
