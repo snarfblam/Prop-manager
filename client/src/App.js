@@ -74,7 +74,7 @@ class App extends Component {
                     <Route exact path='/tenant' render={(props) => this.renderPage(Tenant, props)} />
                     <Route exact path='/tenant/payments' render={(props) => this.renderPage(TenantPayments, props)} />
                     <Route exact path='/tenant/account' render={(props) => this.renderPage(TenantAccount, props)} />
-                    <Route path='*' render={(props) => this.renderPage(NotFound, props)} />
+                    <Route path='*' render={(props) => this.renderPage(NotFound, props)} status={404} />
                 </Switch>
                     <Modal state={this.state.modal} onRequestClose={() => this.setState({ modal: this.state.modal.hide() })} />
                 </div>
