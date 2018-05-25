@@ -196,6 +196,7 @@ function getAllPayments(options) {
 function payACH(invoiceNumbers) {
     return axios
         .post('/api/payACH', { invoiceList: invoiceNumbers })
+        .then(response => response.data)
         .catch(err => {
             console.log(err);
             return { result: 'error', error: err.toString() };
@@ -212,6 +213,7 @@ function payACH(invoiceNumbers) {
 function setupACH(accountDetails) {
     return axios
         .post('/api/setupACH', accountDetails)
+        .then(response => response.data)
         .catch(err => {
             console.log(err);
             return { result: 'error', error: err.toString() };
@@ -225,6 +227,7 @@ function setupACH(accountDetails) {
 function verifyACH(amounts) {
     return axios
         .post('/api/verifyACH', amounts)
+        .then(response => response.data)
         .catch(err => {
             console.log(err);
             return { result: 'error', error: err.toString() };

@@ -12,6 +12,8 @@ import Pane from '../components/Pane';
 import Spinner from './modals/Spinner';
 
 declare var StripeCheckout;
+declare var Stripe;
+var stripe = Stripe('pk_test_edJT25Bz1YVCJKIMvmBGCS5Y');
 
 class Tenant extends Template {
     constructor(props) {
@@ -122,15 +124,36 @@ class Tenant extends Template {
     }
 
     requestACH = (data) => {
-        api.setupACH(data)
+
+        stripe.createToken('bank_account', {
+              country: 'US',
+              currency: 'usd',
+              account_holder_name: data.name,
+              account_holder_type: data.accountType,
+              routing_number: data.accountRouting,
+              account_number: data.accountNumber
+        }).then(token => {
+            axios.post('/api/setupACH', token)
+            .then(console.log('yuuup'))
             .then(response => {
-                if (response.result == 'success') {
-                    this.showModal(<p>Your account details have been submitted. An email will be sent with instructions to verify the account.</p>, "Account Submitted");
-                } else {
-                    console.log(response.result.error || 'setupACH returned an unexpected value');
-                    this.showModal(<p>There was an error submitting your account information.</p>, "Error");
-                }
+                console.log('Token Sent');
+                this.showModal(<p>Your account details have been submitted. An email will be sent with instructions to verify the account.</p>, "Account Submitted");
+            }).catch(error => {
+                console.log(error);
+                this.showModal(<p>There was an error submitting your account information.</p>, "Error");
             });
+        })
+        
+
+        // api.setupACH(data)
+        //     .then(response => {
+        //         if (response.result == 'success') {
+        //             this.showModal(<p>Your account details have been submitted. An email will be sent with instructions to verify the account.</p>, "Account Submitted");
+        //         } else {
+        //             console.log(response.result.error || 'setupACH returned an unexpected value');
+        //             this.showModal(<p>There was an error submitting your account information.</p>, "Error");
+        //         }
+        //     });
     }
 
     payRentWithACH = (ev) => {
