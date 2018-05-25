@@ -45,7 +45,9 @@ module.exports = {
      * @param {string} name - Name of the setting to get
      */
     getSetting: function (name) {
-        return this.settings.find(setting => (setting.name == name));
+        var setting = this.settings.find(setting => (setting.name == name));
+        if (setting) return setting.value;
+        return null;
     },
 
     /**
