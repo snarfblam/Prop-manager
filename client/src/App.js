@@ -49,7 +49,7 @@ class App extends Component {
                     role: toKnownRole(response.status),
                     user: response,
                 });
-                document.title = response.appTitle;
+                document.title = response.appTitle || document.title;
             });
     }
 
@@ -103,9 +103,9 @@ class App extends Component {
         return (
             <Page
                 showModal={
-                    (content, title) => {
+                    (content, title, fixed) => {
                         this.setState({
-                            modal: this.state.modal.show(content, title),
+                            modal: this.state.modal.show(content, title, fixed || false), // fixed should be false, not undefined, to overide previous value
                         });
                     }
                 }
