@@ -16,6 +16,7 @@ import { Modal, ModalState } from './components/Modal';
 import * as api from './api';
 import Axios from 'axios';
 import TenantVerifyACH from './pages/TenantVerifyACH';
+import TenantAccount from './pages/TenantAccount';
 
 var knownRoles = ['logged out', 'tenant', 'admin'];
 function toKnownRole(role) {
@@ -72,6 +73,7 @@ class App extends Component {
                     <Route path='/tenant/verifyach/' render={(props) => this.renderPage(TenantVerifyACH, props)} />
                     <Route exact path='/tenant' render={(props) => this.renderPage(Tenant, props)} />
                     <Route exact path='/tenant/payments' render={(props) => this.renderPage(TenantPayments, props)} />
+                    <Route exact path='/tenant/account' render={(props) => this.renderPage(TenantAccount, props)} />
                     <Route path='*' render={(props) => this.renderPage(NotFound, props)} />
                 </Switch>
                     <Modal state={this.state.modal} onRequestClose={() => this.setState({ modal: this.state.modal.hide() })} />
@@ -108,6 +110,7 @@ class App extends Component {
                 }
                 match={match}
                 loggedAs={this.state.role}
+                user={this.state.user}
                 onLogOut={() => {
                     Axios.post('/auth/logout', {}).then(() => {
                         this.setState({ role: 'logged out' });

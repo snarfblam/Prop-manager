@@ -69,7 +69,6 @@ class Tenant extends Template {
 
 
     paymentTransform(col, value, item) {
-        console.log(item);
         if (col === 'paid') {
             return value ? 'Paid' : 'Unpaid';
         } else if (col === 'amount') {
@@ -111,7 +110,6 @@ class Tenant extends Template {
         if (this.state.paymentTable.items === null) return <Spinner />;
         if (this.state.paymentTable.items.length === 0) return <p>You have no payments due.</p>;
         
-        console.log(this.state.paymentTable);
         return (
             <Table
                 data={this.state.paymentTable}

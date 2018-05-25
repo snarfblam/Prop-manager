@@ -242,6 +242,12 @@ function verifyACH(amounts) {
         });
 }
 
+function getOwnUnits() {
+    return axios
+        .get('/api/getOwnUnits')
+        .then(response => response.data);
+}
+
 export {
     createNewUser, activateUser, getUnitList,
     getUserStatus, getRentDue, getUserList,
@@ -249,4 +255,5 @@ export {
     createNewUnit, editUnit, completeMaintRequest,
     payACH, setupACH, verifyACH,
     markPaymentPaid, getAllOwnUnitPayments,
+    getOwnUnits,
 };

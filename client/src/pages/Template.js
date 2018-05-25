@@ -36,7 +36,8 @@ class Template extends React.Component {
         ];
         this.tenantNavLinks = [
             { path: '/tenant', text: 'Home', altPaths: ['/'] },
-            { path: '/tenant/payments', text: 'Payment History', altPaths: ['/'] },
+            { path: '/tenant/payments', text: 'Payment History' },
+            { path: '/tenant/account', text: 'Account', altPaths: ['tenant/activate/']},
             // { path: '/tenant', text: 'Pay Rent' },
             // { path: '/tenant', text: 'Request Maintenance' },
         ];

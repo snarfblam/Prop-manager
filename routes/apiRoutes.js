@@ -481,6 +481,18 @@ var router = express.Router();
 
             });
     });
+
+    router.get('/api/getOwnUnits', (req, res, next) => {
+        if (!req.user) return res.status(403).end();
+
+        req.user.getUnits()
+            .then(units => {
+                res.json({ units: units });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).end();
+            });
+    });
 }
 
 module.exports = router;
