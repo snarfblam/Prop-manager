@@ -356,7 +356,10 @@ var router = express.Router();
     router.get("/api/userStatus", (req, res, next) => {
         var user = req.user;
         if (!user) {
-            res.json({ status: 'logged out' });
+            res.json({
+                status: 'logged out',
+                appTitle: appSettings.getSetting('appTitle'),
+            });
         } else {
             var role = user.role || 'tenant'; // assume the most restrictive account type if not present
             res.json({
@@ -365,6 +368,7 @@ var router = express.Router();
                 stripeToken: user.stripeCustToken,
                 stripeACHVerified: user.stripeACHVerified,
                 authtype: user.authtype,
+                appTitle: appSettings.getSetting('appTitle'),
             });
         }
     });

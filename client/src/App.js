@@ -49,6 +49,7 @@ class App extends Component {
                     role: toKnownRole(response.status),
                     user: response,
                 });
+                document.title = response.appTitle;
             });
     }
 
