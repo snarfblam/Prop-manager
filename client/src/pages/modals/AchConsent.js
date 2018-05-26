@@ -23,7 +23,11 @@ class AchConsent extends React.Component {
                 <p><strong>Your rent will be paid from the bank account on file.</strong></p>
                 <hr />
                 <p>
-                    I authorize {this.props.company || 'the property owner'} to electronically
+                    I authorize
+                    <span style={{textTransform: 'uppercase'}}>
+                        {' '} {this.props.company || 'the property owner'} {' '}
+                    </span>
+                    to electronically
                     debit my account and, if necessary, electronically credit my account
                     to correct erroneous debits.
             </p>
