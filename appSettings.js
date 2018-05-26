@@ -12,6 +12,7 @@ function createDefaultAppSettings() {
         { name: 'urlPrefix', value: 'http://localhost:3001/' },
         { name: 'appTitle', value: 'Tenant Service Portal' },
         { name: 'stripeApiKey', value: 'pk_test_edJT25Bz1YVCJKIMvmBGCS5Y'},
+        { name: 'bannerText', value: '132 Chapel St'},
     ];
 
     return db.AppSetting
