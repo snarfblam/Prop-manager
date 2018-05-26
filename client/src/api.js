@@ -112,7 +112,7 @@ function getUserStatus() {
         .get('/api/userStatus')
         .catch(err => {
             console.log(err);
-            return { data: { status: 'logged out' } };
+            return { data: { status: 'connection failed' } };
         })
         .then(response => {
             return response.data;
