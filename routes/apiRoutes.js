@@ -308,9 +308,15 @@ var router = express.Router();
                             console.error(err);
                             res.json({ result: 'error' });
                         } else {
-                            res.json({
-                                result: 'paid'
-                            });
+                            db.Payment.update({ paid: true }, { where: { id: invoiceList } })
+                            .then(data => {
+                                res.json({
+                                    result: 'paid'
+                                });
+                            })
+                            .catch(error => {
+                                res.json({ result: 'error' });
+                            })                       
                         }
                     }
                 );
@@ -325,6 +331,7 @@ var router = express.Router();
         .then(data => {
             req.logIn(req.user, err => {
                 if(!err) {
+                    emailSnd.sendACHVerification(req.user)
                     res.json({result: "success"})
                 }
             })            
@@ -356,7 +363,7 @@ var router = express.Router();
                         if(err) throw err;
                         req.user.update({stripeACHVerified: true})
                     .then(data => {
-                        res.json({result: "success"})
+                        res.json({result: "success"})                       
                     }).catch(err => {
                         res.status(500).end();
                         console.log(err);
