@@ -23,6 +23,24 @@ function createNewUser(userData) {
 }
 
 /**
+ * Local auth data for the user name and password
+ * {localAuthData: {local_username: string, local_password: string}} or rejects to Error
+ * @param {any} localAuthData
+ * @returns {Promise<any>}
+ */
+
+function setLocalCreds(localAuthData) {
+    return axios
+        .post('/auth/signup', localAuthData)
+        .then(response => {
+            return response.data;
+        }).catch(err => {
+            console.log(err);
+            return { error: (err || {}).toString() };
+        })
+ }
+
+/**
  * Sends a request to the server to create a new unit. Expects {
  *     unitName: string,
  *     rate: int,
@@ -273,5 +291,5 @@ export {
     payACH, setupACH, verifyACH,
     markPaymentPaid, getAllOwnUnitPayments,
     getOwnUnits,
-    getAppSettings, changeAppSetting,
+    getAppSettings, changeAppSetting, setLocalCreds,
 };
