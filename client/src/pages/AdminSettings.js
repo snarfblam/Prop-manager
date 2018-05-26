@@ -8,6 +8,7 @@ import Spinner from './modals/Spinner';
 import { Table } from '../components/Table';
 import Fas from '../components/Fas';
 import FakeAnchor from '../components/FakeAnchor';
+import EditSetting from './modals/EditSetting';
 
 class AdminSettings extends Template {
     constructor(props) {
@@ -15,6 +16,7 @@ class AdminSettings extends Template {
 
         this.state = {
             settings: null,
+            pendingSettings: [], // settings which the user has set a new value for, where we're waiting for the server to confirm the setting has been updated
         }
 
         this.settingsColumns = [
@@ -55,8 +57,60 @@ class AdminSettings extends Template {
     }
 
     transformSettings = (col, value, item) => {
-        if (col == 'editButton') return <FakeAnchor href='/editSetting'><Fas icon='pen-square' /></FakeAnchor>
+        if (col == 'editButton') {
+            return this.state.pendingSettings.includes(item.name) ? ( // 'pending settings' show an 
+                <Spinner size='12px' />
+            ) : (
+                <FakeAnchor
+                    href='/editSetting'
+                    onClick={e => this.editSetting(item)}>
+                    <Fas icon='pen-square' />
+                </FakeAnchor>
+            );
+        }
+        
         return value;
+    }
+
+    editSetting = (item) => {
+        this.showModal(
+            <EditSetting
+                settingName={item.name}
+                initialValue={item.value}
+                onSubmit={this.onSettingSubmitted}
+            />, "Change Setting", true);
+    }
+
+    onSettingSubmitted = (name, value) => {
+        this.hideModal();
+
+        var pending = [...this.state.pendingSettings, name];
+        this.setState({pendingSettings: pending});
+
+        api
+            .changeAppSetting(name, value)
+            .catch(err => err) // forward err to .then
+            .then(response => {
+                var newPending = this.state.pendingSettings;
+                var index = newPending.indexOf(name);
+                if (index >= 0) newPending.splice(index, 1);
+                
+                if (response.result == 'success') {
+                    var newList = this.state.settings;
+                    (newList.find(item => item.name == name) || {}).value = value;
+                    
+                    this.setState({
+                        pendingSettings: newPending,
+                        settings: newList,
+                    });
+                } else {
+                    this.setState({
+                        pendingSettings: newPending,
+                    });
+
+                    this.showModal(<p>Could not change the setting.</p>, "Error", true);
+                }
+            });
     }
 }
 

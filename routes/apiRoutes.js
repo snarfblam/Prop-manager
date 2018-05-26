@@ -504,8 +504,25 @@ var router = express.Router();
 {
     router.get('/api/getSettings', (req, res, next) => {
         if (!req.user || req.user.role != 'admin') return res.status(403).end();
-
+        
         res.json({ settings: appSettings.getAllSettings() });
+    })
+
+    // Expects {settings: {name: string, value: string}[] }
+    // Returns {result: 'success', 'error' } NOTE: error may indicate that SOME settings have changed while others have not (only applies if multiple settings were sent)
+    router.post('/api/changeSettings', (req, res, next) => {
+        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+        if (!req.body || !req.body.settings || !req.body.settings.map) return res.status(400).end();
+
+        var pendingChanges = req.body.settings.map(setting => appSettings.changeSetting(setting.name, setting.value));
+
+        Promise.all(pendingChanges)
+            .then(results => {
+                res.json({ result: 'success' });
+            }).catch(err => { 
+                console.log(err);
+                res.json({ result: 'error' });
+            });
     })
 }
 

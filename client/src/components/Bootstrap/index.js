@@ -44,19 +44,20 @@ import Form from './Form';
 import Input from './Input';
 import Select from './Select';
 import CheckList, { CheckListState } from './CheckList';
+import Button from './Button';
 
 
 
 export {
     Col, Row, Container,
     Navbar, NavbarBrand, NavbarNav, NavItem, NavLink, NavLinkItem,
-    Form, Input, Select,
+    Form, Input, Select, Button,
     CheckList, CheckListState
 };
 
 export default {
     Col, Row, Container,
     Navbar, NavbarBrand, NavbarNav, NavItem, NavLink, NavLinkItem,
-    Form, Input, Select,
+    Form, Input, Select, Button,
     CheckList, CheckListState
 };

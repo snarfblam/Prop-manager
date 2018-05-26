@@ -254,6 +254,14 @@ function getAppSettings() {
         .then(response => response.data);
 }
 
+function changeAppSetting(name, value) {
+    return axios
+        .post(
+            '/api/changeSettings',
+            { settings: [{ name: name, value: value }] }
+        ).then(response => response.data);
+}
+
 export {
     createNewUser, activateUser, getUnitList,
     getUserStatus, getRentDue, getUserList,
@@ -262,5 +270,5 @@ export {
     payACH, setupACH, verifyACH,
     markPaymentPaid, getAllOwnUnitPayments,
     getOwnUnits,
-    getAppSettings,
+    getAppSettings, changeAppSetting,
 };

@@ -11,6 +11,7 @@ function createDefaultAppSettings() {
         // in email correspondance.Construct the full path using url.resolve(urlPrefix, relativePath)
         { name: 'urlPrefix', value: 'http://localhost:3001/' },
         { name: 'appTitle', value: 'Tenant Service Portal' },
+        { name: 'stripeApiKey', value: 'pk_test_edJT25Bz1YVCJKIMvmBGCS5Y'},
     ];
 
     return db.AppSetting
@@ -68,7 +69,7 @@ module.exports = {
         // Find, then update or create new as needed. Then update this.settings
         return db.AppSetting
             .findOne({
-                where: { name: value }
+                where: { name: name }
             }).then(setting => {
                 if (setting) {
                     return setting.update({ value: value });
@@ -76,13 +77,13 @@ module.exports = {
                     return db.AppSetting.create({ name: name, value: value });
                 }
             }).then(setting => {
-                var newSetting = { name: name, value: record.value };
+                var newSetting = { name: name, value: setting.value };
 
                 var indexOf = this.settings.findIndex(item => item.name === name);
                 if (indexOf < 0) indexOf = this.settings.length;
                 this.settings[indexOf] = newSetting;
 
-                return { name: record.name, value: setting.value };
+                return { name: setting.name, value: setting.value };
             });
     }
 };
