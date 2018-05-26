@@ -105,7 +105,7 @@ db.sequelize.sync({
 
 }).then(() => {
     ////////////// Routing ////////////////////////
-    app.use('/auth', require('./auth'));
+    app.use('/auth', require('./routes/auth'));
     app.use('/static', express.static(path.join(__dirname, 'client', 'build', 'static')));
     app.use('/img', express.static(path.join(__dirname, 'client', 'build', 'img')));
     app.get('*', (req, res) => {
