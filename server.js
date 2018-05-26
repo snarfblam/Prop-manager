@@ -12,6 +12,8 @@ const SessionStore = require('express-session-sequelize')(expressSession.Store)
 const cookieParser = require('cookie-parser');
 const passport = require('./passport')
 const appSettings = require('./appSettings');
+const enforce = require('express-sslify');
+
 
 const invoiceJob = require('./cron/invoiceGenerator');
 
@@ -22,9 +24,14 @@ global.db = db;
 ////////////// Configuration //////////////////
 const PORT = process.env.PORT || 3001;
 const app = express();
+
+//Enforce HTTPS/SSL
+app.use(enforce.HTTPS( {trustProtoHeader: true} ));
+
 app.use(express.urlencoded());
 app.use(express.json());
 app.use(cookieParser());
+
 
 db.sequelize.sync({
     force: true
