@@ -256,6 +256,9 @@ class Tenant extends Template {
     }
 
     getNavItems() {
+        if (!this.props.user) {
+            return [{ path: '/tenant', text: 'Home', altPaths: ['/'] }];
+        }
         return this.tenantNavLinks;
     }
 
@@ -279,6 +282,9 @@ class Tenant extends Template {
 
 
     getContent() {
+        if (!this.props.user) {
+            return <p>Log in to view content</p>
+        }
         return (
             <Container>
                 <Pane>

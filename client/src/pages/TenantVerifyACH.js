@@ -85,9 +85,7 @@ class TenantVerifyACH extends Template {
             <Container>
                 <Pane>
                     <h3>Verify Bank Account</h3>
-                    {this.state.user ? (
-                        <p><strong>Please log in to proceed.</strong></p>
-                    ) : (
+                    {this.props.user ? (
                         <div>
                             <p>
                                 Enter the value, <em>in cents</em>, of the two deposits made to verify the account. 
@@ -105,6 +103,8 @@ class TenantVerifyACH extends Template {
                                 <Button onClick={this.verifyAccount}>Verify Account</Button>
                             </Form>
                         </div>    
+                    ) : (
+                        <p><strong>Please log in to proceed.</strong></p>
                     )}
                 </Pane>
             </Container>
