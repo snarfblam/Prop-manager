@@ -23,6 +23,11 @@
     width: 80%; /* Could be more or less, depending on screen size */
 }
 
+.modal-content.modal-fixed {
+    width: calc(100% - 20px);
+    max-width: 600px;
+}
+
 .modal-close {
     color: #aaa;
     float: right;

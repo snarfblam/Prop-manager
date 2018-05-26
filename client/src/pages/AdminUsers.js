@@ -1,20 +1,19 @@
 import React from 'react';
 import Template from './Template';
 import './page.css'
-import { Select } from '../components/Bootstrap';
+import { Select, Container, Col, Row } from '../components/Bootstrap';
 import { Table } from '../components/Table';
 import Button from '../components/Bootstrap/Button';
 import NewUser from './modals/NewUser/NewUser';
 import Spinner from './modals/Spinner'
 import * as api from '../api';
+import Pane from '../components/Pane';
 
 class AdminUsers extends Template {
     constructor(props) {
         super(props)
         this.state = {
-            userList: [
-                { value: '0', text: 'Loading' },
-            ],
+            userList: null,
             selectedUserId: '0', // should correspond to a userList value
             newUserData: {}, // Temporarily store new-user-form data so we can re-populate the form on the modal if there is an error
         };
@@ -25,9 +24,20 @@ class AdminUsers extends Template {
     }
 
     componentDidMount() {
+        this.getUserList();
+    }
+
+    getActivationUrl(user) {
+        if (!user.activationCode) return null;
+
+        var port = (window.location.port == 80) ? '' : (':' + window.location.port.toString()); // get port only if not default
+
+        return 'http://' + window.location.hostname + port + '/tenant/activate/' + user.activationCode;
+    }
+
+    getUserList() {
         api.getUserList()
             .then(userlist => {
-                console.log(userlist);
                 this.cachedUsers = {};
                 userlist.forEach(user => this.cachedUsers[user.id] = user);
                 var newUserSelectionList = userlist.map(user => ({ value: user.id, text: user.fullname }));
@@ -39,7 +49,7 @@ class AdminUsers extends Template {
                 })
             }).catch(err => {
                 console.log(err);
-            })
+            });
     }
 
     showNewUserModal() {
@@ -79,38 +89,31 @@ class AdminUsers extends Template {
                     );
                     this.setState({ newUserData: {} });
                 }
+
+                this.getUserList();
             });
 
-        // Save the form data. If there is an error from the server, this allows the user to bring the form back
-        // up with the entered data still in there instead of starting from scratch.
-
-        // TODO: reset newUserData upon a success result from the server
 
     }
 
     getNavItems() {
-        return [
-            { path: '/admin/overview', text: 'Overview' },
-            { path: '/admin/units', text: 'Units' },
-            { path: '/admin/maint', text: 'Maintenance' },
-            { path: '/admin/payments', text: 'Payments' },
-            { path: '/admin/users', text: 'Users' },
-        ];
+        return this.adminNavLinks;
     }
 
     getContent() {
-        console.log(this.cachedUsers);
         var displayedUser = this.cachedUsers[this.state.selectedUserId];
-        var displayedItems = [
+        var displayedItems = displayedUser ? [
             { name: 'Account Type', value: displayedUser.role },
             { name: 'Name', value: displayedUser.fullname },
-            { name: 'Email', value: displayedUser.email},
-            { name: 'Phone', value: displayedUser.phone},
-            { name: 'Address', value: displayedUser.address},
-            { name: 'City', value: `${displayedUser.city} ${displayedUser.state} ${displayedUser.zip}`},
+            { name: 'Email', value: displayedUser.email },
+            { name: 'Phone', value: displayedUser.phone },
+            { name: 'Address', value: displayedUser.address },
+            { name: 'City', value: `${displayedUser.city} ${displayedUser.state} ${displayedUser.zip}` },
             // { name: 'Unit(s)', value:  displayedUser.},
-            { name: 'Auth Type', value:  displayedUser.authtype},
-        ]
+            { name: 'Auth Type', value: displayedUser.authtype },
+        ] : [];
+        var activateUrl = this.getActivationUrl(displayedUser);
+        var activateElement = activateUrl ? <p>Activation url: {activateUrl}</p> : null;
 
         var data = {
             columns: [
@@ -121,16 +124,27 @@ class AdminUsers extends Template {
         };
 
         return (
-            <div>
-                <h1>Users</h1>
-                <Select items={this.state.userList} value={this.state.selectedUserId} onChange={(e) => { this.setState({ selectedUserId: e.target.value }) }} />
-                <h3>Information</h3>
-                <Table data={data} />
-                <hr />
-                <Button onClick={this.showNewUserModal}>Create New User </Button>
-            </div>
+            <Container>
+                <Pane>
+                    <h3>Users</h3>
+                    {(this.state.userList == null) ? (
+                        <Spinner />
+                    ): (
+                        <div>
+                            <Container><Row className='row justify-content-center'><Col size='12 sm-8 md-6'>
+                                <Select items={this.state.userList} value={this.state.selectedUserId} onChange={(e) => { this.setState({ selectedUserId: e.target.value }) }} />
+                            </Col></Row></Container>
+                            <Table data={data} />
+                            {activateElement}
+                            <hr />
+                            <Button onClick={this.showNewUserModal}>Create New User </Button>
+                        </div>      
+                    )}
+                </Pane>
+            </Container>
         );
     }
+
 }
 
 export default AdminUsers;

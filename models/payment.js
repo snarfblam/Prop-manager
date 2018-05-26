@@ -17,13 +17,13 @@ module.exports = function(sequelize, DataTypes) {
       }
     });
       
-    // Payment.associate = function(models) {
-    //     Payment.belongsTo(models.Unit, {
-    //       foreignKey: {
-    //         allowNull: false
-    //       }
-    //     });
-    //   };
+    Payment.associate = function(models) {
+        Payment.belongsTo(models.Unit, {
+          foreignKey: {
+            allowNull: false
+          }
+        });
+      };
     
   return Payment;
   
