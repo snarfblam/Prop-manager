@@ -26,8 +26,11 @@ app.use(express.urlencoded());
 app.use(express.json());
 app.use(cookieParser());
 
+// Don't clear database in production. Seems important.
+var syncOption = (process.env.NODE_ENV == 'production') ? {} : { force: true };
+
 db.sequelize.sync({
-    force: true
+    syncOption
 }).then(() => {
     // Generate default user(s) and settings, when applicable
     return Promise.all([
