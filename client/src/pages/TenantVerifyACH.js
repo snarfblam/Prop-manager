@@ -54,13 +54,34 @@ class TenantVerifyACH extends Template {
         var noErrors = (Object.getOwnPropertyNames(errors).length == 0);
 
         if (noErrors) {
+            this.showModal(<Spinner />, "Verifying...", true);
+
             api
                 .verifyACH([parseInt(this.state.amnt1), parseInt(this.state.amnt2)])
                 .then(response => {
                     if (response.result == 'success') {
                         this.setState({ verified: true });
+                        this.showModal((
+                            <div>
+                            <p>
+                                Your account has been verified and be used to make payments.
+                            </p>
+                            <p>
+                                <strong>Be sure to read the terms of use before paying with ACH.</strong>
+                                </p>
+                            </div>), "Verified");
+                    } else {
+                        throw response;
                     }
-                 });
+                }).catch(err => {
+                    console.error(err);
+                    this.showModal((
+                        <p>
+                            There was an error verifying your bank account.
+                            Please double-check the deposit amounts.
+                            <strong>If verification fails 10 times, your ACH service will be disabled.</strong>
+                        </p>), "Error");
+                });
         }
     }
 

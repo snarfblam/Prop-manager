@@ -10,6 +10,7 @@ import { Table } from '../components/Table';
 import RequestAch from './modals/RequestAch';
 import Pane from '../components/Pane';
 import Spinner from './modals/Spinner';
+import AchConsent from './modals/AchConsent';
 
 declare var StripeCheckout;
 declare var Stripe;
@@ -162,7 +163,21 @@ class Tenant extends Template {
         //     });
     }
 
+    promptForACH = (ev) => {
+        // If user is already verified for ACH, show the consent form
+        if (this.props.user && this.props.user.stripeACHVerified) {
+            this.showModal(
+                <AchConsent onAgree={this.payRentWithACH} amount={this.state.totalDue} company={this.props.bannerText} />,
+                "Authorize Payment", true);
+        } else {
+            // Unverified users will get the default info or setup modals
+            this.payRentWithACH();
+        }
+    }
+
     payRentWithACH = (ev) => {
+        this.setState({ processingPayment: true });
+        
         api.payACH(this.state.checkedPaymentIds)
             .then(response => {
                 if (response.result == 'paid') {
@@ -175,6 +190,10 @@ class Tenant extends Template {
                 } else {
                     this.showModal(<p>There was an error submitting the request. Please contact your property manager for more information.</p>, 'Error');
                 }
+            }).catch(err => {
+                console.error(err);
+            }).then(nothing => {
+                this.setState({ processingPayment: false });
             });
     }
     
@@ -327,7 +346,7 @@ class Tenant extends Template {
                         &emsp;
                         <Button
                             disabled={this.state.processingPayment || (this.state.totalDue === 0)}
-                            onClick={this.payRentWithACH}
+                            onClick={this.promptForACH}
                         >
                             Pay by ACH
                         </Button>

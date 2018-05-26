@@ -343,37 +343,44 @@ var router = express.Router();
 
     router.post('/api/verifyACH', (req, res, next) => {
         getStripeCustomer(req, req.user.email)
-        .then(customer => {
-            var tokenID = req.user.stripeACHToken;
-            var amount1 = req.body[0];
-            var amount2 = req.body[1];
+            .then(customer => {
+                var tokenID = req.user.stripeACHToken;
+                var amount1 = req.body[0];
+                var amount2 = req.body[1];
 
-            stripe.customers.createSource(customer.id, {
-                source: tokenID
-            }, 
-            function(err, source) {
-                if (err) throw err
-                stripe.customers.verifySource(
-                    customer.id,
-                    source.id,
-                    {
-                    amounts: [amount1, amount2]
-                    },
-                    function(err, bankAccount) {
-                        if(err) throw err;
-                        req.user.update({stripeACHVerified: true})
-                    .then(data => {
-                        res.json({result: "success"})                       
-                    }).catch(err => {
-                        res.status(500).end();
-                        console.log(err);
+                stripe.customers.createSource(customer.id, {
+                    source: tokenID
+                },
+                    function (err, source) {
+                        if (err) {
+                            console.log(err);
+                            return res.status(500).end();
+                        }
+                        stripe.customers.verifySource(
+                            customer.id,
+                            source.id,
+                            { amounts: [amount1, amount2] },
+                            function (err, bankAccount) {
+                                if (err) {
+                                    console.log(err);
+                                    return res.status(500).end();
+                                }
+                                req.user.update({ stripeACHVerified: true })
+                                    .then(data => {
+                                        res.json({ result: "success" })
+                                    }).catch(err => {
+                                        res.status(500).end();
+                                        console.log(err);
+                                    });
+                            });
                     });
-                });
-            });
 
            
-        })
-    })
+            }).catch(err => {
+                res.status(500).end();
+                console.log(err);
+            }) // getStripeCustomer
+    }); // post
 }
 
 { // Users
@@ -435,6 +442,7 @@ var router = express.Router();
                         fullname: user.fullname,
                         role: user.role,
                         activated: !user.activationCode,
+                        activationCode: user.activationCode,
                         phone: user.phone,
                         email: user.email,
                         authtype: user.authtype || getAccountType(user),

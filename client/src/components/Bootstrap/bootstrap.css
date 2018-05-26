@@ -33,7 +33,7 @@
     color: black;
 }
 
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 767px) {
     .activeNavTab {
         position: initial;
         /* border-top-left-radius: 6px; */
