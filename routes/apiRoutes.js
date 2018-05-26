@@ -206,7 +206,7 @@ var router = express.Router();
         if (!req.user || req.user.role != 'admin') {
             return res.status(403).end();
         }
-
+        
         var where = (req.body || {}).where || {};
 
         db.Payment.findAll({
@@ -240,36 +240,38 @@ var router = express.Router();
             }).then(payments => {
                 var totalDollars = payments.reduce((sum, pmt) => sum + pmt.amount, 0);
                 var totalCents = totalDollars * 100;
-                var customerID = getStripeCustomer(req, req.user.email).id;
+                // var customerID = getStripeCustomer(req, req.user.email).id;
+                var customerID = req.user.stripeCustToken;
                 var tokenID = req.user.stripeACHToken;
     
                 if (totalCents === 0) {
                     return res.json({ status: 'zero payment' });
                 };
-    
+
                 stripe.charges.create({
                     amount: totalCents,
                     currency: "usd",
-                    source: tokenID, 
-                    customer: customerID,
-                    description: "Charge for 132 Chapel St. LLC"
-                }, 
-                    function(err, charge) {
-                        if(err) throw err;
-
-                        if(charge.paid == true) {
+                    customer: customerID
+                },
+                    function (err, charge) { 
+                        if (err) { 
+                            console.error(err);
+                            res.json({ result: 'error' });
+                        } else {
                             res.json({
                                 result: 'paid'
                             });
                         }
                     }
-                )
+                );
+                
             });
         }
     });
     
     router.post('/api/setupACH', (req, res, next) => {
-        req.user.update({stripeACHToken: req.body.token.bank_account.id, stripeACHVerified: false})
+        console.log(req.body)
+        req.user.update({stripeACHToken: req.body.token.id, stripeACHVerified: false})
         .then(data => {
             req.logIn(req.user, err => {
                 if(!err) {
@@ -296,7 +298,7 @@ var router = express.Router();
                 if (err) throw err
                 stripe.customers.verifySource(
                     customer.id,
-                    tokenID,
+                    source.id,
                     {
                     amounts: [amount1, amount2]
                     },

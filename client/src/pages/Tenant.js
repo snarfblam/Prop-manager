@@ -156,7 +156,7 @@ class Tenant extends Template {
     }
 
     payRentWithACH = (ev) => {
-        api.payACH()
+        api.payACH(this.state.checkedPaymentIds)
             .then(response => {
                 if (response.result == 'paid') {
                     this.showModal(<p>Your payment has been submitted via ACH.</p>, 'Payment Submitted');
