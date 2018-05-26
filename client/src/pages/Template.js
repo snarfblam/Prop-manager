@@ -29,13 +29,16 @@ class Template extends React.Component {
 
         this.adminNavLinks = [
             { path: '/admin/overview', text: 'Overview', altPaths: ['/'] },
-            { path: '/admin/units', text: 'Units' },
             { path: '/admin/maint', text: 'Maintenance' },
             { path: '/admin/payments', text: 'Payments' },
             { path: '/admin/users', text: 'Users' },
+            { path: '/admin/units', text: 'Units' },
+            { path: '/admin/settings', text: 'Settings' },
         ];
         this.tenantNavLinks = [
             { path: '/tenant', text: 'Home', altPaths: ['/'] },
+            { path: '/tenant/payments', text: 'Payment History' },
+            { path: '/tenant/account', text: 'Account', altPaths: ['tenant/activate/']},
             // { path: '/tenant', text: 'Pay Rent' },
             // { path: '/tenant', text: 'Request Maintenance' },
         ];

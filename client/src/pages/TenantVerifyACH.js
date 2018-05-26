@@ -85,21 +85,27 @@ class TenantVerifyACH extends Template {
             <Container>
                 <Pane>
                     <h3>Verify Bank Account</h3>
-                    <p>
-                        Enter the value, <em>in cents</em>, of the two deposits made to verify the account. 
-                        They will appear on your statement as <tt>AMNTS</tt>.
-                    </p>
-                    <Form>
-                        <Container>
-                            <Row center>
-                                <Input innerPrepend='AMNTS' className='col-5' name="amnt1" onChange={this.inputChanged} value={this.state.amnt1} />
-                            </Row>
-                            <Row center>
-                                <Input innerPrepend='AMNTS' className='col-5' name="amnt2" onChange={this.inputChanged} value={this.state.amnt2} />
-                            </Row>
-                        </Container>    
-                        <Button onClick={this.verifyAccount}>Verify Account</Button>
-                    </Form>
+                    {this.props.user ? (
+                        <div>
+                            <p>
+                                Enter the value, <em>in cents</em>, of the two deposits made to verify the account. 
+                                They will appear on your statement as <tt>AMNTS</tt>.
+                            </p>
+                            <Form>
+                                <Container>
+                                    <Row center>
+                                        <Input innerPrepend='AMNTS' className='col-5' name="amnt1" onChange={this.inputChanged} value={this.state.amnt1} />
+                                    </Row>
+                                    <Row center>
+                                        <Input innerPrepend='AMNTS' className='col-5' name="amnt2" onChange={this.inputChanged} value={this.state.amnt2} />
+                                    </Row>
+                                </Container>    
+                                <Button onClick={this.verifyAccount}>Verify Account</Button>
+                            </Form>
+                        </div>    
+                    ) : (
+                        <p><strong>Please log in to proceed.</strong></p>
+                    )}
                 </Pane>
             </Container>
         );    

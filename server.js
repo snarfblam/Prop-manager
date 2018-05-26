@@ -11,6 +11,7 @@ const expressSession = require('express-session');
 const SessionStore = require('express-session-sequelize')(expressSession.Store)
 const cookieParser = require('cookie-parser');
 const passport = require('./passport')
+const appSettings = require('./appSettings');
 
 const invoiceJob = require('./cron/invoiceGenerator');
 
@@ -27,6 +28,8 @@ app.use(cookieParser());
 
 db.sequelize.sync({
     force: true
+}).then(() => {
+    return appSettings.init();
 }).then(() => {
     var newUnitPromise = db.Unit.create({
         unitName: "Big Office",
@@ -95,7 +98,7 @@ db.sequelize.sync({
         resave: false,
         saveUninitialized: false,
     }));
-``
+//``
     app.use(passport.initialize())
     app.use(passport.session()) // will call the deserializeUser
     app.use(apiRoutes)
@@ -115,3 +118,6 @@ db.sequelize.sync({
         console.log('Listening on port ' + PORT);
     });
 });
+
+
+

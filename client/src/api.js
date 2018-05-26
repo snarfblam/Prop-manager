@@ -134,6 +134,12 @@ function getRentDue() {
         .then(response => response.data);
 }
 
+function getAllOwnUnitPayments() {
+    return axios
+        .get('/api/getOwnUnitPayments')
+        .then(response => response.data);
+}
+
 function getUserList() {
     return axios
         .get('/api/getUserlist')
@@ -185,6 +191,11 @@ function getAllPayments(options) {
         .then(response => response.data);
 }
 
+function markPaymentPaid(id) {
+    return axios
+        .post('/api/markPaid', { id: id });
+}
+
 /**
  * Sends a request to pay invoice(s) via ACH. Returns {
  *      result: 'paid' | 'needs setup' | 'needs verification' | 'error'
@@ -234,10 +245,33 @@ function verifyACH(amounts) {
         });
 }
 
+function getOwnUnits() {
+    return axios
+        .get('/api/getOwnUnits')
+        .then(response => response.data);
+}
+
+function getAppSettings() {
+    return axios
+        .get('/api/getSettings')
+        .then(response => response.data);
+}
+
+function changeAppSetting(name, value) {
+    return axios
+        .post(
+            '/api/changeSettings',
+            { settings: [{ name: name, value: value }] }
+        ).then(response => response.data);
+}
+
 export {
     createNewUser, activateUser, getUnitList,
     getUserStatus, getRentDue, getUserList,
     getOwnMaintRequest, getAllMaintRequests, getAllPayments,
     createNewUnit, editUnit, completeMaintRequest,
     payACH, setupACH, verifyACH,
+    markPaymentPaid, getAllOwnUnitPayments,
+    getOwnUnits,
+    getAppSettings, changeAppSetting,
 };

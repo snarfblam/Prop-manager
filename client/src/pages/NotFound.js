@@ -10,8 +10,7 @@ class NotFound extends Template {
 
     getNavItems() {
         return [
-            { path: '/', text: 'Information' },
-            { path: '/', text: 'Request an Account' },
+            { path: '/', text: 'Home' },
         ];
     }
 
