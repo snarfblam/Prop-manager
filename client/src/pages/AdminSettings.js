@@ -40,7 +40,7 @@ class AdminSettings extends Template {
     getContent() {
         return (
             <Container>
-                <Pane>
+                <Pane size='12'>
                     <h3>Site Settings</h3>
                     <p>Warning: tinkering under the hood may cause things to break.</p>
                     <hr />
