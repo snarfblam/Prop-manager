@@ -33,7 +33,7 @@ class AdminMaint extends Template {
                 columns: this.maintRequestColumns,
                 items: null,
             },
-            maintTableNeedsToRefeash: false
+            maintTableNeedsToRefresh: false
         };
 
     }
@@ -41,7 +41,7 @@ class AdminMaint extends Template {
         this.requestMaintData();
     }
     componentDidUpdate() {
-        if (this.state.maintTableNeedsToRefeash) {
+        if (this.state.maintTableNeedsToRefresh) {
             this.requestMaintData();
         }
     }
@@ -96,7 +96,7 @@ class AdminMaint extends Template {
                     columns: this.maintRequestColumns,
                     items: []
                 },
-                maintTableNeedsToRefeash: false
+                maintTableNeedsToRefresh: false
             })
         }
 
@@ -107,7 +107,7 @@ class AdminMaint extends Template {
                     columns: this.maintRequestColumns,
                     items: maintRequests
                 },
-                maintTableNeedsToRefeash: false
+                maintTableNeedsToRefresh: false
             });
         });
     }
@@ -143,7 +143,7 @@ class AdminMaint extends Template {
                         inline
                         onChange={newState => this.setState({
                           filterState: newState,
-                          maintTableNeedsToRefeash: true
+                          maintTableNeedsToRefresh: true
                         })}
                     />    
                     {/* <Table data={this.state.maintTable} /> */}

@@ -7,6 +7,7 @@ const stripeKeys = keys.Stripe;
 const keyPublishable = stripeKeys.PUBLISHABLE_KEY;
 const keySecret = stripeKeys.SECRET_KEY;
 const stripe = require("stripe")(keySecret);
+const appSettings = require('../appSettings');
 
 const emailSnd = require('../mail/emailActivation')
 
@@ -133,6 +134,7 @@ var router = express.Router();
         });
     });
 
+
     function getStripeCustomer(request, email, card) {
         var user = request.user;
         if (!user) throw Error('User not logged in');
@@ -155,6 +157,21 @@ var router = express.Router();
         return 
     }
 
+        // POST - Mark a maintenance request as completed
+        router.post('/api/markPaid', (req, res, next) => {
+            if (!req.user || req.user.role != 'admin') return res.status(403).end();
+
+            db.Payment.findById(req.body.id).then(function(payment){
+                if(payment) {
+                    payment.updateAttributes({
+                        paid: true,
+                    })
+                }
+                res.sendStatus(200)
+            }).catch(function(error) {
+                if(error) throw error;
+            })
+        });
     /* GET - gets rent amount that the tenant owes
         Returns array: {
             unitId: number,
@@ -165,10 +182,42 @@ var router = express.Router();
         } []
     
     */
+   
+   router.get('/api/getOwnUnitPayments', (req, res, next) => {
+        return getUserPayments(req, res, {  });
+   });
+    
     router.get('/api/rentAmount', (req, res, next) => {
+        // if (req.user) {
+        //     req.user
+        //         .getUnits({ include: [{ model: db.Payment, where: { paid: false } }] })
+        //         .then(units => {
+        //             var results = [];
+
+        //             units.forEach(unit => {
+        //                 unit.Payments.forEach(payment => {
+        //                     results.push({
+        //                         id: payment.id,
+        //                         unitId: unit.id,
+        //                         paymentId: payment.id,
+        //                         unitName: unit.unitName,
+        //                         amount: payment.amount,
+        //                         due: payment.due_date,
+        //                     });
+        //                 });
+        //             });
+        //             res.json(results);
+        //         });
+        // } else {
+        //     res.json([]); // whole lotta nuffin
+        // }
+        return getUserPayments(req, res, { paid: false });
+    });
+
+    function getUserPayments(req, res, where) {
         if (req.user) {
             req.user
-                .getUnits({ include: [{ model: db.Payment, where: { paid: false } }] })
+                .getUnits({ include: [{ model: db.Payment, where: where }] })
                 .then(units => {
                     var results = [];
 
@@ -181,6 +230,7 @@ var router = express.Router();
                                 unitName: unit.unitName,
                                 amount: payment.amount,
                                 due: payment.due_date,
+                                paid: payment.paid,
                             });
                         });
                     });
@@ -189,7 +239,7 @@ var router = express.Router();
         } else {
             res.json([]); // whole lotta nuffin
         }
-    });
+    }
 
     // GET - gets the tenant’s payment history
     router.get('/api/paymentHistory', (req, res, next) => {
@@ -411,10 +461,20 @@ var router = express.Router();
     router.get("/api/userStatus", (req, res, next) => {
         var user = req.user;
         if (!user) {
-            res.json({ status: 'logged out' });
+            res.json({
+                status: 'logged out',
+                appTitle: appSettings.getSetting('appTitle'),
+            });
         } else {
             var role = user.role || 'tenant'; // assume the most restrictive account type if not present
-            res.json({ status: role });
+            res.json({
+                status: role,
+                email: user.email,
+                stripeToken: user.stripeCustToken,
+                stripeACHVerified: user.stripeACHVerified,
+                authtype: user.authtype,
+                appTitle: appSettings.getSetting('appTitle'),
+            });
         }
     });
 }
@@ -531,6 +591,44 @@ var router = express.Router();
 
             });
     });
+
+    router.get('/api/getOwnUnits', (req, res, next) => {
+        if (!req.user) return res.status(403).end();
+
+        req.user.getUnits()
+            .then(units => {
+                res.json({ units: units });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).end();
+            });
+    });
+}
+
+// Settings 
+{
+    router.get('/api/getSettings', (req, res, next) => {
+        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+        
+        res.json({ settings: appSettings.getAllSettings() });
+    })
+
+    // Expects {settings: {name: string, value: string}[] }
+    // Returns {result: 'success', 'error' } NOTE: error may indicate that SOME settings have changed while others have not (only applies if multiple settings were sent)
+    router.post('/api/changeSettings', (req, res, next) => {
+        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+        if (!req.body || !req.body.settings || !req.body.settings.map) return res.status(400).end();
+
+        var pendingChanges = req.body.settings.map(setting => appSettings.changeSetting(setting.name, setting.value));
+
+        Promise.all(pendingChanges)
+            .then(results => {
+                res.json({ result: 'success' });
+            }).catch(err => { 
+                console.log(err);
+                res.json({ result: 'error' });
+            });
+    })
 }
 
 module.exports = router;
