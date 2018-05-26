@@ -19,8 +19,12 @@ import NotFound from './pages/NotFound';
 import { Modal, ModalState } from './components/Modal';
 import Axios from 'axios';
 import * as api from './api';
+import Spinner from './pages/modals/Spinner';
+import FakeAnchor from './components/FakeAnchor';
+import { Container } from './components/Bootstrap';
+import Pane from './components/Pane';
 
-var knownRoles = ['logged out', 'tenant', 'admin'];
+var knownRoles = ['logged out', 'tenant', 'admin', 'connection failed'];
 function toKnownRole(role) {
     if (knownRoles.includes(role)) return role;
     return knownRoles[0];
@@ -45,6 +49,7 @@ class App extends Component {
         api
             .getUserStatus()
             .then(response => {
+                console.log(response);
                 this.setState({
                     role: toKnownRole(response.status),
                     user: response,
@@ -62,6 +67,31 @@ class App extends Component {
     }
 
     render() {
+        if (this.state.role == 'connection failed') {
+            return (
+                <div>
+                    <Container>
+                        <Pane className='text-center'>
+                        <h2>Tenant Service Portal</h2>
+                        </Pane>
+                        <Pane>
+                            <h3>Could Not Connect</h3>
+                            <p>
+                                Could not connect to the site. 
+                                Please check your connection or try another device.
+                                Make sure you don't have ad-blocking software or a firewall interfereing with the website.
+                                Contact your property manager if you believe this is a problem with the site.
+                            </p>
+                            <p>
+                                You can <FakeAnchor href='#refresh' onClick={(e) => {window.location.reload()}}>refresh the page</FakeAnchor> to try again.
+                            </p>
+                        </Pane>
+                    </Container>
+                </div>
+            );
+        }
+        if (!this.state.role) return <div className='text-center'><p>Connecting...</p><Spinner /></div>
+        
         return (
             <BrowserRouter>
                 <div className="App">
@@ -115,6 +145,7 @@ class App extends Component {
                 match={match}
                 loggedAs={this.state.role}
                 user={this.state.user}
+                bannerText={(this.state.user || {}).bannerText || null}
                 onLogOut={() => {
                     Axios.post('/auth/logout', {}).then(() => {
                         this.setState({ role: 'logged out' });

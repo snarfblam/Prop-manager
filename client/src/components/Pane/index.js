@@ -8,16 +8,15 @@ import { Row, Col } from '../Bootstrap';
 
 export default props => (
     <Row center>
-        <Col size={props.size || '12 md-8'} className='pane'>
+        <Col size={props.size || '12 md-8'} className={getColClassName(props)}>
           {props.children}    
         </Col>
     </Row>
 );
 
-// function getColClassName(props) {
-//     if (props.size) {
-        
-//     } else {
-//         return 
-//     }
-// }
+
+function getColClassName(props) {
+    var result = 'pane';
+    if (props.className) result += ' ' + props.className;
+    return result;
+}

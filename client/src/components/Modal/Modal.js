@@ -12,7 +12,6 @@ export default props => (
             props.onRequestClose();
         }
     }}>
-        {console.log(props.state.fluid, props.state.fixed)}    
         <div className={(props.state.fluid || !props.state.fixed) ? 'modal-content' : 'modal-content modal-fixed'}>
             <h2 className='modal-title'>    
                 <span className='modal-close'><a onClick={(e) => {
