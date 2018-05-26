@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-// const User = require('../db/models/user')
+const db = require('../models')
 const passport = require('../passport')
 
 var googleAuthHandler = passport.authenticate('google', { scope: ['profile'] });
@@ -57,24 +57,19 @@ router.post('/logout', (req, res) => {
 	}
 })
 
-// router.post('/signup', (req, res) => {
-// 	const { username, password } = req.body
-// 	// ADD VALIDATION
-// 	User.findOne({ 'local.username': username }, (err, userMatch) => {
-// 		if (userMatch) {
-// 			return res.json({
-// 				error: `Sorry, already a user with the username: ${username}`
-// 			})
-// 		}
-// 		const newUser = new User({
-// 			'local.username': username,
-// 			'local.password': password
-// 		})
-// 		newUser.save((err, savedUser) => {
-// 			if (err) return res.json(err)
-// 			return res.json(savedUser)
-// 		})
-// 	})
-// })
+router.post('/signup', (req, res) => {
+	
+	const username = req.body.username;
+	const password = req.body.password;
+	// ADD VALIDATION
+	db.User.findOne({ activationCode: req.session.activationCode }).then(userMatch => {
+		if (userMatch) {
+			userMatch.updateAttributes({
+				local_username: username,
+				local_password: password
+			});
+		}
+	})
+})
 
 module.exports = router
