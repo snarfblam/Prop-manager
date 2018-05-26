@@ -16,54 +16,76 @@ class TenantActivate extends Template {
 
         this.state = {
             activationCodeStatus: 'checking', // 'checking', 'error', 'verified'
+            username: '',
+            password: ''
         };
 
-        this.createSubStates();
+        // this.createSubStates();
     }
 
-    createSubStates() {
-        this.subStates = {
-            verified:
-                <Container>
-                    <Pane>
-                        <h3>Activate with Google</h3>
-                        <p>
-                            Activate your account with
-                                </p>
-                        <a className='login-link' href='/auth/google'>
-                            <button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
-                        </a>
-                    </Pane>
+    // createSubStates() {
+    //     this.subStates = {
+    //         verified:
+    //             <Container>
+    //                 <Pane>
+    //                     <h3>Activate with Google</h3>
+    //                     <p>
+    //                         Activate your account with
+    //                             </p>
+    //                     <a className='login-link' href='/auth/google'>
+    //                         <button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
+    //                     </a>
+    //                 </Pane>
 
-                    <Pane>
-                        <h3>Create Username and Password</h3>
-                        <Form className="container-400">
-                        <Input
-                                name='username'
-                                value=''
-                                label='User'
-                            />
-                        <Input
-                                password
-                                name='pass'
-                                value=''
-                                label='Password'
-                            />
-                            <Button>Create Account</Button>
-                        </Form>
-                    </Pane>    
-                </Container>,
-            checking:
-                <div>
-                    <p>Accessing your account</p>
-                    <Spinner />
-                </div>,
-            error:
-                <div>
-                    <p>Could not access the account.</p>
-                </div>
+    //                 <Pane>
+    //                     <h3>Create Username and Password</h3>
+    //                     <Form className="container-400">
+    //                     <Input
+    //                             name='username'
+    //                             value={this.state.username}
+    //                             label='User Name'
+    //                             onChange={this.handleInputChange}
+    //                         />
+    //                     <Input
+    //                             password
+    //                             name='password'
+    //                             value={this.state.password}
+    //                             label='Password'
+    //                             onChange={this.handleInputChange}
+    //                         />
+    //                         <Button onClick={this.handleCreateAccount}>Create Account</Button>
+    //                     </Form>
+    //                 </Pane>    
+    //             </Container>,
+    //         checking:
+    //             <div>
+    //                 <p>Accessing your account</p>
+    //                 <Spinner />
+    //             </div>,
+    //         error:
+    //             <div>
+    //                 <p>Could not access the account.</p>
+    //             </div>
+    //     }
+    // }
+
+    handleInputChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+    }
+
+    handleCreateAccount = (event) => {
+        if (this.state.username && this.state.password) {
+            api.
+                setLocalCreds({username: this.state.username, password: this.state.password})
+            .then(data => {
+                console.log(data)
+            }).catch(err => {
+                console.log(err)
+            })
         }
-    }
+    };
+
+
     componentDidMount() {
         // this.showModal(
         //     <Spinner />, 'Finding your account'
@@ -89,7 +111,50 @@ class TenantActivate extends Template {
     }
 
     getContent() {
-        return this.subStates[this.state.activationCodeStatus];
+        switch (this.state.activationCodeStatus) {
+          case 'verified':
+                return (<Container>
+                    <Pane>
+                        <h3>Activate with Google</h3>
+                        <p>
+                            Activate your account with
+                                </p>
+                        <a className='login-link' href='/auth/google'>
+                            <button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
+                        </a>
+                    </Pane>
+
+                    <Pane>
+                        <h3>Create Username and Password</h3>
+                        <Form className="container-400">
+                            <Input
+                                name='username'
+                                value={this.state.username}
+                                label='User Name'
+                                onChange={this.handleInputChange}
+                            />
+                            <Input
+                                password
+                                name='password'
+                                value={this.state.password}
+                                label='Password'
+                                onChange={this.handleInputChange}
+                            />
+                            <Button onClick={this.handleCreateAccount}>Create Account</Button>
+                        </Form>
+                    </Pane>
+                </Container>);
+            case 'checking':
+                return (<div>
+                    <p>Accessing your account</p>
+                    <Spinner />
+                </div>);
+            case 'error':
+                return (<div>
+                    <p>Could not access the account.</p>
+                </div>);
+        }
+        // return this.subStates[this.state.activationCodeStatus];
     }
 }
 
