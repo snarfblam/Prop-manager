@@ -17,6 +17,10 @@ class EditSettings extends React.Component {
         }
     }
 
+    componentWillReceiveProps(newProps) {
+        this.setState({ value: newProps.initialValue });
+    }
+
     render() {
         return (
             <div>
