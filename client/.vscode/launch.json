@@ -5,18 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach",
             "type": "chrome",
-            "request": "attach",
-            "port": 9222,
-            "url": "http://localhost:3001/tenant/activate/admin",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/server.js"
+            "name": "Launch via YARN",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": [
+                "start"
+            ],
+            "port": 9229
         }
     ]
 }

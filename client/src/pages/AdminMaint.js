@@ -15,8 +15,8 @@ class AdminMaint extends Template {
         super(props)
 
         this.filterOptions = [
-            {name: 'complete', label: 'Completed', checked: true},
-            {name: 'incomplete', label: 'Not completed'}, 
+            {name: 'complete', label: 'Completed',  },
+            {name: 'incomplete', label: 'Not Completed', checked: true}, 
         ];
 
 
@@ -32,12 +32,18 @@ class AdminMaint extends Template {
             maintTable: {
                 columns: this.maintRequestColumns,
                 items: null,
-            }
+            },
+            maintTableNeedsToRefeash: false
         };
 
     }
     componentDidMount() {        
         this.requestMaintData();
+    }
+    componentDidUpdate() {
+        if (this.state.maintTableNeedsToRefeash) {
+            this.requestMaintData();
+        }
     }
 
     completeMaintItem = (id) => {
@@ -72,12 +78,36 @@ class AdminMaint extends Template {
     }
     
     requestMaintData() {
-        api.getAllMaintRequests().then(maintRequests => {
+        let where = {};
+        
+        console.log("THis is the  Check box State", this.state.filterState)
+        if (this.state.filterState.complete) {
+            where.open = false;
+        } 
+        if (this.state.filterState.incomplete) {
+            where.open = true;
+        }
+        if (this.state.filterState.incomplete && this.state.filterState.complete ) {
+           delete where.open;
+        }
+        if (!this.state.filterState.incomplete && !this.state.filterState.complete) {
+            return this.setState({
+                maintTable: {
+                    columns: this.maintRequestColumns,
+                    items: []
+                },
+                maintTableNeedsToRefeash: false
+            })
+        }
+
+        console.log("Where obj", where)
+        api.getAllMaintRequests(where).then(maintRequests => {
             this.setState({
                 maintTable: {
                     columns: this.maintRequestColumns,
                     items: maintRequests
-                }
+                },
+                maintTableNeedsToRefeash: false
             });
         });
     }
@@ -112,7 +142,8 @@ class AdminMaint extends Template {
                         state={this.state.filterState}
                         inline
                         onChange={newState => this.setState({
-                            filterState: newState
+                          filterState: newState,
+                          maintTableNeedsToRefeash: true
                         })}
                     />    
                     {/* <Table data={this.state.maintTable} /> */}
