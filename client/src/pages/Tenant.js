@@ -167,6 +167,7 @@ class Tenant extends Template {
             .then(response => {
                 if (response.result == 'paid') {
                     this.showModal(<p>Your payment has been submitted via ACH.</p>, 'Payment Submitted');
+                    this.requestRentData();
                 } else if (response.result == 'needs verification') {
                     this.showModal(<p>Your account has not been verified. Please see the email that was sent when you requested ACH service.</p>, 'ACH Not Verified');
                 } else if (response.result == 'needs setup') {

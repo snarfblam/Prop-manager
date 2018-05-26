@@ -1,5 +1,6 @@
 require("dotenv").config();
 var mailgun = require("mailgun-js");
+var appSettings = require('../appSettings');
 
 var api_key = process.env.PRIVATE_KEY;
 var DOMAIN = process.env.DOMAIN_;
@@ -28,11 +29,36 @@ Building Manager`
         mailgun.messages().send(data, function (error, body) {
             if(error){
                 console.log(`${error} Unable to send email to ${usrData.activationCode} @ ${usrData.email}`);
-            }else{
+            } else {
                 console.log(`email to ${usrData.activationCode} successfully sent to ${usrData.email}`);
             }
         });
     }
 
+    sendACHVerification = (usrData) => {
+        var verifyUrl = require('url').resolve(appSettings.getSetting('urlPrefix'), '/tenant/verifyach/');
+        var data = {
+            from: 'barbarits@comcast.net',
+            to: `anthonyknight023@gmail.com`,
+            subject: 'ACH Verification',
+            text: `Hi ${usrData.fullname},
+In 1-2 busniness days, you'll receive 2 small (Typicially less than a dollar) deposits from us. Once you recieve them, enter them here at the link below:
 
-module.exports = { sendInv: sendInv };
+Link: ${verifyUrl}
+
+Regards,
+Clark McDermith,
+Building Manager`
+        }
+        mailgun.messages().send(data, function (error, body) {
+            if(error){
+                console.log(`${error} Unable to send ACH Verification email to ${usrData.fullname}  @ ${usrData.email}`);
+            } else {
+                console.log(`ACH Verification email to ${usrData.fullname}  successfully sent to ${usrData.email}`);
+            }
+        });
+    }
+
+    
+
+module.exports = { sendInv: sendInv, sendACHVerification: sendACHVerification };

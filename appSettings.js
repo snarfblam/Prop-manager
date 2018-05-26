@@ -26,7 +26,7 @@ function createDefaultAppSettings() {
 
 module.exports = {
     /** @type {{name: string, value: string}[]} */
-    settings: null,
+    settings: [],
 
     /**
      * Returns a promise which resolves when the settings have been loaded from the database.
