@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "heroku-postbuild": "cd client && yarn && yarn run build"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "express-sequelize-session": "^0.4.0",
     "express-session": "^1.15.6",
     "express-session-sequelize": "^1.1.0",
+    "express-sslify": "^1.2.0",
     "mailgun-js": "^0.18.0",
     "moment": "^2.22.1",
     "mysql2": "^1.5.3",
@@ -37,6 +39,7 @@
     "request": "^2.85.0",
     "sequelize": "^4.37.7",
     "stripe": "^5.10.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "yarn": "^1.7.0"
   }
 }
