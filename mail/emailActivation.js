@@ -1,8 +1,6 @@
 require("dotenv").config();
 var mailgun = require("mailgun-js");
-// var appSettings = require('../appSettings');
-// var verifyUrl = require('url').resolve(appSettings.urlPrefix, '/tenant/verifyach/')
-var verifyUrl = "localhost:3001/tenant/verifyach/";
+var appSettings = require('../appSettings');
 
 var api_key = process.env.PRIVATE_KEY;
 var DOMAIN = process.env.DOMAIN_;
@@ -38,6 +36,7 @@ Building Manager`
     }
 
     sendACHVerification = (usrData) => {
+        var verifyUrl = require('url').resolve(appSettings.getSetting('urlPrefix'), '/tenant/verifyach/');
         var data = {
             from: 'barbarits@comcast.net',
             to: `anthonyknight023@gmail.com`,
