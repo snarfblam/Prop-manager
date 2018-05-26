@@ -27,6 +27,14 @@ class AdminUsers extends Template {
         this.getUserList();
     }
 
+    getActivationUrl(user) {
+        if (!user.activationCode) return null;
+
+        var port = (window.location.port == 80) ? '' : (':' + window.location.port.toString()); // get port only if not default
+
+        return 'http://' + window.location.hostname + port + '/tenant/activate/' + user.activationCode;
+    }
+
     getUserList() {
         api.getUserList()
             .then(userlist => {
@@ -104,6 +112,8 @@ class AdminUsers extends Template {
             // { name: 'Unit(s)', value:  displayedUser.},
             { name: 'Auth Type', value: displayedUser.authtype },
         ] : [];
+        var activateUrl = this.getActivationUrl(displayedUser);
+        var activateElement = activateUrl ? <p>Activation url: {activateUrl}</p> : null;
 
         var data = {
             columns: [
@@ -125,6 +135,7 @@ class AdminUsers extends Template {
                                 <Select items={this.state.userList} value={this.state.selectedUserId} onChange={(e) => { this.setState({ selectedUserId: e.target.value }) }} />
                             </Col></Row></Container>
                             <Table data={data} />
+                            {activateElement}
                             <hr />
                             <Button onClick={this.showNewUserModal}>Create New User </Button>
                         </div>      
@@ -133,6 +144,7 @@ class AdminUsers extends Template {
             </Container>
         );
     }
+
 }
 
 export default AdminUsers;
