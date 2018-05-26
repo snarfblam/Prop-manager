@@ -457,6 +457,7 @@ var router = express.Router();
             res.json({
                 status: 'logged out',
                 appTitle: appSettings.getSetting('appTitle'),
+                bannerText: appSettings.getSetting('bannerText'),
             });
         } else {
             var role = user.role || 'tenant'; // assume the most restrictive account type if not present
@@ -467,6 +468,7 @@ var router = express.Router();
                 stripeACHVerified: user.stripeACHVerified,
                 authtype: user.authtype,
                 appTitle: appSettings.getSetting('appTitle'),
+                bannerText: appSettings.getSetting('bannerText'),
             });
         }
     });

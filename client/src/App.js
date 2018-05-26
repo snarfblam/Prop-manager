@@ -19,6 +19,7 @@ import NotFound from './pages/NotFound';
 import { Modal, ModalState } from './components/Modal';
 import Axios from 'axios';
 import * as api from './api';
+import Spinner from './pages/modals/Spinner';
 
 var knownRoles = ['logged out', 'tenant', 'admin'];
 function toKnownRole(role) {
@@ -62,6 +63,7 @@ class App extends Component {
     }
 
     render() {
+        if(!this.state.role) return <div className='text-center'><Spinner /></div>
         return (
             <BrowserRouter>
                 <div className="App">
@@ -115,6 +117,7 @@ class App extends Component {
                 match={match}
                 loggedAs={this.state.role}
                 user={this.state.user}
+                bannerText={(this.state.user || {}).bannerText || null}
                 onLogOut={() => {
                     Axios.post('/auth/logout', {}).then(() => {
                         this.setState({ role: 'logged out' });
