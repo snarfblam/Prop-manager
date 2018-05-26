@@ -69,7 +69,7 @@ class TenantVerifyACH extends Template {
                             <p>
                                 <strong>Be sure to read the terms of use before paying with ACH.</strong>
                                 </p>
-                            </div>), "Veified");
+                            </div>), "Verified");
                     } else {
                         throw response;
                     }
