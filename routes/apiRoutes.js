@@ -442,6 +442,7 @@ var router = express.Router();
                         fullname: user.fullname,
                         role: user.role,
                         activated: !user.activationCode,
+                        activationCode: user.activationCode,
                         phone: user.phone,
                         email: user.email,
                         authtype: user.authtype || getAccountType(user),
