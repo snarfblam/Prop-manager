@@ -12,7 +12,7 @@ const SessionStore = require('express-session-sequelize')(expressSession.Store)
 const cookieParser = require('cookie-parser');
 const passport = require('./passport')
 const appSettings = require('./appSettings');
-const enforce = require('express-sslify');
+// const enforce = require('express-sslify');
 
 
 const invoiceJob = require('./cron/invoiceGenerator');
@@ -26,7 +26,9 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 //Enforce HTTPS/SSL
-app.use(enforce.HTTPS( {trustProtoHeader: true} ));
+if (process.env.NODE_ENV == 'production') {
+    app.use(require('express-sslify').HTTPS({ trustProtoHeader: true }));
+}
 
 app.use(express.urlencoded());
 app.use(express.json());
@@ -35,9 +37,9 @@ app.use(cookieParser());
 // Don't clear database in production. Seems important.
 var syncOption = (process.env.NODE_ENV == 'production') ? {} : { force: true };
 
-db.sequelize.sync({
+db.sequelize.sync(
     syncOption
-}).then(() => {
+).then(() => {
     // Generate default user(s) and settings, when applicable
     return Promise.all([
         generateDatabaseSeed(),
@@ -62,7 +64,7 @@ db.sequelize.sync({
 
 }).then(() => {
     ////////////// Routing ////////////////////////
-    app.use('/auth', require('./auth'));
+    app.use('/auth', require('./routes/auth'));
     app.use('/static', express.static(path.join(__dirname, 'client', 'build', 'static')));
     app.use('/img', express.static(path.join(__dirname, 'client', 'build', 'img')));
     app.get('*', (req, res) => {
