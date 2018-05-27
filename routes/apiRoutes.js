@@ -394,7 +394,7 @@ var router = express.Router();
         db.Unit.findOne({ where: { id: data.UnitId } }).then(function (findUnit) {
             console.log(findUnit);
             db.User.create(data).then(function (dbUser) {
-                findUnit.addUser(dbUser);
+                findUnit.setUsers([dbUser]);
                 res.json({
                     activationCode: dbUser.activationCode
                 });
@@ -419,6 +419,9 @@ var router = express.Router();
                         req.session.activationCode = null;
                         res.json({ result: 'error' });
                     }
+                }).catch(err => { 
+                    console.log(err);
+                    res.json({ result: 'error' });
                 });
             
         } else {
