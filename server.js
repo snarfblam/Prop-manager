@@ -84,23 +84,29 @@ db.sequelize.sync(
 
 
 
+/** Seeds the database when applicable. Returns a promise that resolves when the operation is complete. */
 function generateDatabaseSeed() {
     if (process.env.NODE_ENV == 'production') {
-        return db.User.create({
-            fullname: "Administrator",
-            role: "admin",
-            activationCode: "admin",
-            authtype: null,
-            local_username: null,
-            local_password: null,
-            googleId: null,
-            phone: "000-000-0000",
-            email: "none@none.com",
-            address: "none",
-            city: "none",
-            state: "CA",
-            zip: 90210,
-        });
+        return db.User.count()
+            .then(count => {
+                if (count > 0) return Promise.resolve();
+                return db.User.create({
+                    fullname: "Administrator",
+                    role: "admin",
+                    activationCode: "admin",
+                    authtype: null,
+                    local_username: null,
+                    local_password: null,
+                    googleId: null,
+                    phone: "000-000-0000",
+                    email: "none@none.com",
+                    address: "none",
+                    city: "none",
+                    state: "CA",
+                    zip: 90210,
+                });
+            })
+        
     }
 
     var newUnitPromise = db.Unit.create({
