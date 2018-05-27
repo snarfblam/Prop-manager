@@ -11,6 +11,8 @@ function schedule() {
         db.Unit
             .findAll({})
             .then(units => {
+                if (!units || units.length == 0) return;
+
                 let timeOfTheMos = moment(moment().format("YYYY-MM")).format("YYYY-MM-DD HH:mm:ss.SSS");
                 // console.log(timeOfTheMos);
                 units.map(unit => {
@@ -35,7 +37,7 @@ function schedule() {
                         })
 
                     }
-                });
+                }).then();
             }).catch(console.error)
     });
 }

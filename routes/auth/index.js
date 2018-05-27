@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../models')
-const passport = require('../passport')
+// const User = require('../db/models/user')
+const passport = require('../../passport')
 
 var googleAuthHandler = passport.authenticate('google', { scope: ['profile'] });
 router.get('/google', (req, res, next) => {

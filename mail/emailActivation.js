@@ -7,7 +7,10 @@ var DOMAIN = process.env.DOMAIN_;
 
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
-    sendInv= (usrData) => {
+sendInv = (usrData) => {
+        var rootPath = appSettings.getSetting('urlPrefix') || 'http://localhost:3001/';
+        var fullPath = require('url').resolve(rootPath, '/tenant/activate/' + usrData.activationCode);
+
         // console.log(usrData);
         var data = {
             from: 'barbarits@comcast.net',
