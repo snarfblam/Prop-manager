@@ -31,6 +31,8 @@ Once your units are set up, create accounts for your tenants. Visit the *Users* 
 ## Invoicing
 Invoices are generated monthly as configured for each unit. Users are emailed a notification when the invoice is generated and can visit the site to pay via credit card (or ACH if the user has set up it up). The application does not store any information regarding invoices and payments except the due date, the amount, and whether it has been paid. Transactions and all financial information are handled directly by Stripe.
 
+The invoice generated each month is based on the rent rate listed at the beginning of the month. If the rent rate is zero for the entirety of a month, an invoice will not be generated. If the rent rate is zero, but then changed to another amount in the middle of a month, an invoice will be generated at that time (or soon thereafter).
+
 When a payment is made through other means, e.g. cash or check, you can find the invoice in the *Payments* page and manually mark it as payed.
 
 # Deployment
