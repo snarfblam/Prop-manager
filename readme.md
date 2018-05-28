@@ -100,6 +100,7 @@ express-session-sequelize
 * `sequelize-cli` - Used to initialize Sequelize project
 * `create-react-app` - Used to initiialize React project
 * `mern-passport` - [mern-passport](https://github.com/thechutrain/mern-passport) was used as a template to implement OAuth in a React-based site. It was converted from Mongoose to Sequelize and modified to enable the account activation flow.
+* **Bootstrap 4** - Responsive CSS framework
 
 ## Directory Structure
 
