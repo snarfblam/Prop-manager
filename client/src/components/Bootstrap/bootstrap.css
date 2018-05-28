@@ -9,16 +9,27 @@
     display:none;
 }
 
+.navbar {
+    overflow: hidden;
+}
+
+
+.navbar-nav {
+    white-space: nowrap;
+}
+
 .activeNavTab {
     position: relative;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     bottom: -2px;
-    border-bottom: 8px solid #e8ecf1;
+    /* border-bottom: 8px solid #e8ecf1; */
+    border-bottom: 12px solid #fffcf1;
     margin-bottom: -12px;
     padding-left: .5em;
     padding-right: .5em;
-    border-top: 4px solid #8c90b3;
+    /* border-top: 4px solid #8c90b3; */
+    border-top: 4px solid #b3a08c;
     margin-left: 0.5em;
     margin-right: 0.5em;
 }
@@ -29,7 +40,8 @@
 .navbar-nav .nav-item .activeNavTab.nav-link:active,
 .navbar-nav .nav-item .activeNavTab.nav-link:focus
   {
-    background: #e8ecf1;
+    background: #fffcf1;
+    /* background: #e8ecf1; */
     color: black;
 }
 

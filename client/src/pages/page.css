@@ -1,11 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200');
+
 body {
     /* background: #F8FCFF; */
-    background: #e8ecf1;
+    /* background: #e8ecf1; */
+    background: #fffcf0;
+    font-family: Lato, 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 18px;
+    /* font-size: 14px; */
 }
 
 hr {
     margin-left: 0;
     margin-right: 0;
+}
+
+h1, h2, h3 {
+    font-family: 'Source Sans Pro', Lato, 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .brand-emblem {

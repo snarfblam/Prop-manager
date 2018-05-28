@@ -113,7 +113,7 @@ class AdminUsers extends Template {
             { name: 'Auth Type', value: displayedUser.authtype },
         ] : [];
         var activateUrl = this.getActivationUrl(displayedUser);
-        var activateElement = activateUrl ? <p>Activation url: {activateUrl}</p> : null;
+        var activateElement = activateUrl ? <p>Activation url: <a href={activateUrl}>{activateUrl}</a></p> : null;
 
         var data = {
             columns: [

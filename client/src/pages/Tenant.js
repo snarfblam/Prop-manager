@@ -336,10 +336,11 @@ class Tenant extends Template {
                     <hr />
                     <p>
                         Total:  <span className='rent-amount'>{this.formatDollars(this.state.totalDue || 0)}</span>
-                        <br />
+                    </p><p>
                         <Button
                             disabled={this.state.processingPayment || (this.state.totalDue === 0)}
                             onClick={this.payRentWithCreditCard}
+                            className='mt-3'
                         >
                             Pay by card
                         </Button>
@@ -356,9 +357,9 @@ class Tenant extends Template {
                     <h3>Maintenance Requests</h3>
                     <form>
                         <label>
-                            Please explain your request for maintenance:
+                            Please describe the issue that needs to be resolved:
                             <br></br>
-                            <Input type="text" value={this.state.message} onChange={this.handleChange} />
+                            <Input type="text" value={this.state.message} onChange={this.handleChange} className='mt-3' />
                         </label>
                         <br></br>
                         <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
