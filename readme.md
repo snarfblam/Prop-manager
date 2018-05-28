@@ -95,6 +95,8 @@ express-session-sequelize
 * `react` - Front-end application framework
 * `react-router-dom` - Single-page-application router
 * `axios` - HTTP client used for AJAX
+* **Stripe JS** - Front-end Stripe payment component
+* **Bootstrap 4** - Responsive CSS framework
 
 ## Other Code Resources
 * `sequelize-cli` - Used to initialize Sequelize project

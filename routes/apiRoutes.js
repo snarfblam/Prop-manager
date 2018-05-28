@@ -487,6 +487,7 @@ var router = express.Router();
                 authtype: user.authtype,
                 appTitle: appSettings.getSetting('appTitle'),
                 bannerText: appSettings.getSetting('bannerText'),
+                stripeApiKey: appSettings.getSetting('stripeApiKey'),
             });
         }
     });

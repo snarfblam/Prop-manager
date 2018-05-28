@@ -73,7 +73,7 @@ class AdminOverview extends Template {
     getContent() {
         return (
             <div>
-                <h1>Overview</h1>
+                <h1>At a Glance</h1>
                 <Container>
                     <Pane size='12'>
                         <h3>Maintenance</h3>

@@ -14,7 +14,7 @@ import AchConsent from './modals/AchConsent';
 
 declare var StripeCheckout;
 declare var Stripe;
-var stripe = Stripe('pk_test_edJT25Bz1YVCJKIMvmBGCS5Y');
+var stripe = null; //= Stripe('pk_test_edJT25Bz1YVCJKIMvmBGCS5Y');
 
 class Tenant extends Template {
     constructor(props) {
@@ -120,7 +120,7 @@ class Tenant extends Template {
 
     payRentWithCreditCard = (ev) => {
         var checkoutHandler = StripeCheckout.configure({
-            key: "pk_test_edJT25Bz1YVCJKIMvmBGCS5Y",
+            key: this.props.user.stripeApiKey,
             locale: "auto"
         });
 
@@ -132,6 +132,7 @@ class Tenant extends Template {
     }
 
     requestACH = (data) => {
+        if (!stripe) stripe = new Stripe(this.props.user.stripeApiKey);
         stripe.createToken('bank_account', {
               country: 'US',
               currency: 'usd',
@@ -145,6 +146,7 @@ class Tenant extends Template {
             .then(response => {
                 console.log('Token Sent');
                 this.showModal(<p>Your account details have been submitted. An email will be sent with instructions to verify the account.</p>, "Account Submitted");
+                this.refreshUser();
             }).catch(error => {
                 console.log(error);
                 this.showModal(<p>There was an error submitting your account information.</p>, "Error");
@@ -336,10 +338,11 @@ class Tenant extends Template {
                     <hr />
                     <p>
                         Total:  <span className='rent-amount'>{this.formatDollars(this.state.totalDue || 0)}</span>
-                        <br />
+                    </p><p>
                         <Button
                             disabled={this.state.processingPayment || (this.state.totalDue === 0)}
                             onClick={this.payRentWithCreditCard}
+                            className='mt-3'
                         >
                             Pay by card
                         </Button>
@@ -356,12 +359,12 @@ class Tenant extends Template {
                     <h3>Maintenance Requests</h3>
                     <form>
                         <label>
-                            Please explain your request for maintenance:
+                            Please describe the issue that needs to be resolved:
                             <br></br>
-                            <Input type="text" value={this.state.message} onChange={this.handleChange} />
+                            <Input type="text" value={this.state.message} onChange={this.handleChange} className='mt-3' />
                         </label>
                         <br></br>
-                        <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
+                        <Button onClick={this.submitMaintenanceRequest} disabled={this.state.message.trim().length == 0}>Request Maintenance</Button>
                     </form>
                     <hr></hr>
                     {this.getMaintTable()}

@@ -153,16 +153,16 @@ class NewUser extends React.Component {
                                 <Input className='col-12' label='Full name' name='fullname' value={this.state.fullname} placeholder='' onChange={this.onInputChange} errorText={this.getError('fullname')} />
                             </Row>
                             <Row>
-                                <Input className='col-6' label='Phone' name='phone' value={this.state.phone} placeholder=' xxx-xxx-xxxx' onChange={this.onInputChange} errorText={this.getError('phone')} />
-                                <Input className='col-6' label='Email' name='email' value={this.state.email} placeholder='' onChange={this.onInputChange} errorText={this.getError('email')} />
+                                <Input className='col-md-6 col-12' label='Phone' name='phone' value={this.state.phone} placeholder=' xxx-xxx-xxxx' onChange={this.onInputChange} errorText={this.getError('phone')} />
+                                <Input className='col-md-6 col-12' label='Email' name='email' value={this.state.email} placeholder='' onChange={this.onInputChange} errorText={this.getError('email')} />
                             </Row>
                             <Row>
                                 <Input className='col-12' label='Address' name='address' value={this.state.address} placeholder='' onChange={this.onInputChange} errorText={this.getError('address')} />
                             </Row>
                             <Row>
-                                <Input className='col-6' label='City' name='city' value={this.state.city} placeholder='' onChange={this.onInputChange} errorText={this.getError('city')} />
-                                <Input className='col-2' label='State' name='state' value={this.state.state} placeholder='' onChange={this.onInputChange} errorText={this.getError('state')} />
-                                <Input className='col-4' label='Zip' name='zip' value={this.state.zip} placeholder='' onChange={this.onInputChange} errorText={this.getError('zip')} />
+                                <Input className='col-md-6 col-12' label='City' name='city' value={this.state.city} placeholder='' onChange={this.onInputChange} errorText={this.getError('city')} />
+                                <Input className='col-md-2 col-4' label='State' name='state' value={this.state.state} placeholder='' onChange={this.onInputChange} errorText={this.getError('state')} />
+                                <Input className='col-md-4 col-8' label='Zip' name='zip' value={this.state.zip} placeholder='' onChange={this.onInputChange} errorText={this.getError('zip')} />
                             </Row>
                             <Button onClick={this.onSubmit}>Create User</Button>
                             &emsp;

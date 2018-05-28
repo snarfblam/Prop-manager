@@ -46,6 +46,10 @@ class App extends Component {
         return this.state.user;
     }
     componentDidMount() {
+        this.refreshUser();
+    }
+
+    refreshUser = () => {
         api
             .getUserStatus()
             .then(response => {
@@ -151,6 +155,7 @@ class App extends Component {
                         this.setState({ role: 'logged out' });
                     });
                 }}
+                refreshUser={this.refreshUser}
             />
         );
     }

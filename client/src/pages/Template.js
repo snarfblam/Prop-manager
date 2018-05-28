@@ -42,6 +42,8 @@ class Template extends React.Component {
             // { path: '/tenant', text: 'Pay Rent' },
             // { path: '/tenant', text: 'Request Maintenance' },
         ];
+
+        this.refreshUser = this.props.refreshUser;
     }
  
     toNavItems(navList) {
