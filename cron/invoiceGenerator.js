@@ -37,7 +37,7 @@ function schedule() {
                         })
 
                     }
-                }).then();
+                });
             }).catch(console.error)
     });
 }
