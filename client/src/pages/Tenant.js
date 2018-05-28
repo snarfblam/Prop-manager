@@ -362,7 +362,7 @@ class Tenant extends Template {
                             <Input type="text" value={this.state.message} onChange={this.handleChange} className='mt-3' />
                         </label>
                         <br></br>
-                        <Button onClick={this.submitMaintenanceRequest}>Request Maintenance</Button>
+                        <Button onClick={this.submitMaintenanceRequest} disabled={this.state.message.trim().length == 0}>Request Maintenance</Button>
                     </form>
                     <hr></hr>
                     {this.getMaintTable()}

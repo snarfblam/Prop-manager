@@ -43,6 +43,22 @@
     background: #fffcf1;
     /* background: #e8ecf1; */
     color: black;
+    transition: outline .25s;
+}
+
+.btn {
+    outline: 1px solid rgba(255, 255, 255, 0.5);
+    
+    outline-offset: -3px;
+    transition: outline .25s;
+}
+
+.btn.focus, .btn:focus {
+    /* outline: 1px solid rgba(255, 255, 255, 0.5); */
+    outline: 1px solid rgba(255, 255, 255, 0);
+    
+    outline-offset: -3px;
+    transition: outline .25s;
 }
 
 @media screen and (max-width: 767px) {
