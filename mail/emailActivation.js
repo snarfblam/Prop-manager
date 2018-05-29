@@ -18,10 +18,11 @@ sendInv = (usrData) => {
             subject: 'Welcome to 132 Chapel',
             text: `Hi ${usrData.fullname},
 Welcome to your new office space. We are happy that you are with us. Let us know if there is anything we can do.
-You can communicate with us through the facility website. To get started using the website, you will need to following
-activation code to gain access:
-    UUID: ${usrData.activationCode}
-Use this code when requested during initial login. I am sure you will find online access easy and useful and it
+You can communicate with us through the facility website. To get started using the website, you will need to visit the following page:
+
+    Link: ${fullPath}
+
+Visit this page to activate your account. I am sure you will find online access easy and useful and it
 will facilitate efficient communication and transactions.
 Thank you for joining us. We know you will be happy here.
 
@@ -42,7 +43,7 @@ Building Manager`
         var verifyUrl = require('url').resolve(appSettings.getSetting('urlPrefix'), '/tenant/verifyach/');
         var data = {
             from: 'barbarits@comcast.net',
-            to: `anthonyknight023@gmail.com`,
+            to: `${usrData.email}`,
             subject: 'ACH Verification',
             text: `Hi ${usrData.fullname},
 In 1-2 busniness days, you'll receive 2 small (Typicially less than a dollar) deposits from us. Once you recieve them, enter them here at the link below:
