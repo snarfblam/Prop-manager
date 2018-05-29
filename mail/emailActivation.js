@@ -42,7 +42,7 @@ Building Manager`
     sendACHVerification = (usrData) => {
         var verifyUrl = require('url').resolve(appSettings.getSetting('urlPrefix'), '/tenant/verifyach/');
         var data = {
-            from: process.env.emailFrom || 'admin@site.com', //'barbarits@comcast.net',
+            from: process.env.EMAILFROM || 'admin@site.com', //'barbarits@comcast.net',
             to: `${usrData.email}`,
             subject: 'ACH Verification',
             text: `Hi ${usrData.fullname},
