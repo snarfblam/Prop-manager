@@ -13,7 +13,7 @@ sendInv = (usrData) => {
 
         // console.log(usrData);
         var data = {
-            from: 'barbarits@comcast.net',
+            from: process.env.EMAILFROM || 'noreply@132chapelst.com',
             to: `${usrData.email}`,
             subject: 'Welcome to 132 Chapel',
             text: `Hi ${usrData.fullname},
@@ -42,7 +42,7 @@ Building Manager`
     sendACHVerification = (usrData) => {
         var verifyUrl = require('url').resolve(appSettings.getSetting('urlPrefix'), '/tenant/verifyach/');
         var data = {
-            from: 'barbarits@comcast.net',
+            from: process.env.emailFrom || 'admin@site.com', //'barbarits@comcast.net',
             to: `${usrData.email}`,
             subject: 'ACH Verification',
             text: `Hi ${usrData.fullname},
