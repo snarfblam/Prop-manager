@@ -21,6 +21,8 @@ class Login extends React.Component {
     }
     
     handleLogin = (event) => {
+        event.preventDefault();
+        
         api
             .localLogin(this.state.username, this.state.password)
             .then(request => {
