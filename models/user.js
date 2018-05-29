@@ -23,10 +23,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true,
       type: DataTypes.STRING,
     },
-    local_password: {
-      allowNull: true,
-      type: DataTypes.STRING,
-    },
     googleId: {
       allowNull:true,
       type: DataTypes.STRING
@@ -98,6 +94,8 @@ module.exports = function(sequelize, DataTypes) {
     User.belongsToMany(models.Unit, {
       through: 'User_unit'
     });
+
+    // User.belongsTo(models.Cred);
   };
 
 

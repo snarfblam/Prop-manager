@@ -40,6 +40,19 @@ function setLocalCreds(localAuthData) {
         })
  }
 
+ function localLogin(username, password) {
+     var localAuthData = {
+         username: username,
+         password: password
+     }
+     return axios
+            .post('/auth/login', localAuthData).then(response => {
+               return response.data;
+            }).catch(err => {
+                return { error: (err || {}).toString() };
+            });
+ }
+
 /**
  * Sends a request to the server to create a new unit. Expects {
  *     unitName: string,
@@ -291,5 +304,5 @@ export {
     payACH, setupACH, verifyACH,
     markPaymentPaid, getAllOwnUnitPayments,
     getOwnUnits,
-    getAppSettings, changeAppSetting, setLocalCreds,
+    getAppSettings, changeAppSetting, setLocalCreds, localLogin
 };

@@ -74,11 +74,32 @@ class TenantActivate extends Template {
     }
 
     handleCreateAccount = (event) => {
+        event.preventDefault();
         if (this.state.username && this.state.password) {
             api.
                 setLocalCreds({username: this.state.username, password: this.state.password})
-            .then(data => {
+                .then(data => {
+                    var result = data.result;
+                    if (result == 'success') {
+                        api
+                        .localLogin(this.state.username, this.state.password)
+                        .then(loggedIn => {
+                            console.log(loggedIn);
+                            window.location.href = '/';
+                            // success: navigate to '/'
+                            // failure:( activation succeeded but login failed )
+                        })
+                    } else if (result == 'duplicate') {
+                        // username specified is not unique
+                        this.showModal(<p>The username specified is not unique. Please choose a different username.</p>, "Error");
+                    } else if (result == 'not found') {
+                        // invalid activation code
+                        this.showModal(<p>The activation code used is not valid.</p>, "Error");
+                        this.setState({ activationCodeStatus: 'error' });
+                    }
+
                 console.log(data)
+
             }).catch(err => {
                 console.log(err)
             })
