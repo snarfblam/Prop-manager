@@ -82,7 +82,7 @@ class Landing extends Template {
                             <p className="lead">No utilites or internet to pay for.</p>
                         </div>
                         <div className="overridebackground bg-dark box-shadow mx-auto" style={styles.boxstyle}>
-                        <img id="frontDoor" src={require("./images/FrontDoor.png")}></img>
+                        <img id="frontDoor" src={require("./images/frontdoor.png")}></img>
                         </div>
                     </div>
                     <div className="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
