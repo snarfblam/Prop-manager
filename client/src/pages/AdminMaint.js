@@ -80,7 +80,6 @@ class AdminMaint extends Template {
     requestMaintData() {
         let where = {};
         
-        console.log("THis is the  Check box State", this.state.filterState)
         if (this.state.filterState.complete) {
             where.open = false;
         } 
@@ -100,7 +99,6 @@ class AdminMaint extends Template {
             })
         }
 
-        console.log("Where obj", where)
         api.getAllMaintRequests(where).then(maintRequests => {
             this.setState({
                 maintTable: {

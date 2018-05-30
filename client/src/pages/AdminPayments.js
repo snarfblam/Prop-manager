@@ -67,9 +67,7 @@ class AdminPayments extends Template {
             this.setState({
                 paymentItems: paymentData,
                 paymentTableNeedsRefresh: false
-            });
-        console.log(paymentData);
-            
+            });            
         });
     }
 
@@ -86,7 +84,6 @@ class AdminPayments extends Template {
 
     get_MarkPaid_button = (item) => {
         var id = item.id;
-        console.log(item);
         return (
             <Button
                 onClick={(e) => {this.markPaid(id)}}    
