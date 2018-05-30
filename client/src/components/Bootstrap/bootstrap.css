@@ -46,6 +46,21 @@
     transition: outline .25s;
 }
 
+
+
+.whitebody .activeNavTab {
+    border-bottom: 12px solid white;
+}
+.whitebody .activeNavTab,
+.whitebody .navbar-dark .navbar-nav .activeNavTab .nav-link,
+.whitebody .navbar-nav .nav-item .activeNavTab.nav-link,
+.whitebody .navbar-nav .nav-item .activeNavTab.nav-link:hover,
+.whitebody .navbar-nav .nav-item .activeNavTab.nav-link:active,
+.whitebody .navbar-nav .nav-item .activeNavTab.nav-link:focus
+  {
+    background: white;
+}
+
 .btn {
     outline: 1px solid rgba(255, 255, 255, 0.5);
     

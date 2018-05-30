@@ -121,18 +121,21 @@ class App extends Component {
     }
 
     renderLanding(props) {
+        alert(this.state.role)
         if (this.state.role == 'admin') {
             return this.renderPage(AdminOverview, props);
         } else if (this.state.role == 'tenant') {
             return this.renderPage(Tenant, props);
         } else if (this.state.role == 'logged out') {
-            return this.renderPage(Landing, props);
+            console.log('white');
+             return this.renderPage(Landing, props, 'whitebody');
+            alert('white')
         } else {
             return <div />
         }
     }
 
-    renderPage(Page, props) {
+    renderPage(Page, props, className) {
         var match = (props || {}).match || null;
         return (
             <Page
@@ -156,6 +159,7 @@ class App extends Component {
                     });
                 }}
                 refreshUser={this.refreshUser}
+                className={className || ''}
             />
         );
     }

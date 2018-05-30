@@ -77,7 +77,7 @@ class Template extends React.Component {
         }
 
         return (
-            <div>
+            <div className={this.props.className}>
                 <Navbar>
                     <Container>
                         <NavbarBrand>
