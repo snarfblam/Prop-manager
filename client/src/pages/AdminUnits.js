@@ -64,6 +64,7 @@ class AdminUnits extends Template {
     showEditUnitModal(unitId) {
         var unit = this.state.units.find(item => item.id === unitId);
         this.editingUnit = unit;
+        var userId = unit.users[0] ? unit.users[0].id : null;
 
         this.showModal(
             <NewUnit
@@ -72,7 +73,7 @@ class AdminUnits extends Template {
                 initialData={{
                     unitName: unit.unitName,
                     rate: unit.rate,
-                    user: unit.users[0].id,
+                    user: userId,
                 }}
             />, "Edit Unit"
         );

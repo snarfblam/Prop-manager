@@ -23,7 +23,7 @@ class Landing extends Template {
     getNavItems() {
         return [
             { path: '/', text: 'Information' },
-            { path: '/', text: 'Request an Account' },
+            // { path: '/', text: 'Request an Account' },
         ];
     }
 
