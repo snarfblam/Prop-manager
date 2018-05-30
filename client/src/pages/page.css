@@ -10,6 +10,10 @@ body {
     /* font-size: 14px; */
 }
 
+.whitebody {
+  background: white
+}
+
 hr {
     margin-left: 0;
     margin-right: 0;
@@ -128,3 +132,42 @@ h1, h2, h3 {
   }
 
   .overflow-hidden { overflow: hidden; }
+
+  
+  #frontDoor {
+    /* width: 75%; */
+    height: 100%;
+    margin-top: 25px;
+    border-radius: 5px;
+  }
+
+  #stripe {
+    margin-top: 100px;
+    width: 100%;
+    max-width: 450px;
+  }
+
+  #fastinternet {
+    margin-top: 45px;
+  }
+
+  #bow_street {
+    width: 100%;
+    padding: 20px;
+  }
+  
+  .overridebackground {
+    background: none!important;
+  }
+
+  #homeicon {
+    position: absolute;
+    top: -20px;
+    left: -350px;
+  }
+
+  #cloud {
+    position: absolute;
+    top: 40px;
+    right: -350px;
+  }
