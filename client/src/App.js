@@ -121,15 +121,12 @@ class App extends Component {
     }
 
     renderLanding(props) {
-        alert(this.state.role)
         if (this.state.role == 'admin') {
             return this.renderPage(AdminOverview, props);
         } else if (this.state.role == 'tenant') {
             return this.renderPage(Tenant, props);
         } else if (this.state.role == 'logged out') {
-            console.log('white');
              return this.renderPage(Landing, props, 'whitebody');
-            alert('white')
         } else {
             return <div />
         }
