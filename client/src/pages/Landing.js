@@ -23,7 +23,7 @@ class Landing extends Template {
     getNavItems() {
         return [
             { path: '/', text: 'Information' },
-            { path: '/', text: 'Request an Account' },
+            // { path: '/', text: 'Request an Account' },
         ];
     }
 
@@ -65,7 +65,7 @@ class Landing extends Template {
                             <p className="lead">Located in Downtown Portsmouth, NH</p>
                         </div>
                         <div className="bg-dark box-shadow mx-auto" style={styles.boxstyle}></div>
-                    </div>
+                    </div>                
                 </div>
 
                 <div className="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
