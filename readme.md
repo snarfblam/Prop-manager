@@ -84,6 +84,7 @@ Heroku is the simplest deployment option. However, it is not required. If you're
 * `sequelize` + `mysql2` - Programmatic MySQL interface
 * `stripe` - Stripe API for processing financial transactions
 * `passport` + `passport-google-oauth` - Account login using Google
+* `bcrypt` - Encryption library, used to hash passwords
 * `mailgun-js` - To send account activation and other emails to users
 express-session-sequelize
 * `node-cron` - Scheduler used for generating monthly invoices

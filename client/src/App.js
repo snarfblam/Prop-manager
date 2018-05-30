@@ -126,13 +126,13 @@ class App extends Component {
         } else if (this.state.role == 'tenant') {
             return this.renderPage(Tenant, props);
         } else if (this.state.role == 'logged out') {
-            return this.renderPage(Landing, props);
+             return this.renderPage(Landing, props, 'whitebody');
         } else {
             return <div />
         }
     }
 
-    renderPage(Page, props) {
+    renderPage(Page, props, className) {
         var match = (props || {}).match || null;
         return (
             <Page
@@ -156,6 +156,7 @@ class App extends Component {
                     });
                 }}
                 refreshUser={this.refreshUser}
+                className={className || ''}
             />
         );
     }

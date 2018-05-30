@@ -127,7 +127,8 @@ class Tenant extends Template {
         checkoutHandler.open({
             name: "132 Chapel St. LLC",
             description: "Rent Payment",
-            token: this.handleTokenCard
+            token: this.handleTokenCard,
+            email: this.props.user.email || '',
         });
     }
 
