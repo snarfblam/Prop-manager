@@ -7,28 +7,25 @@ var DOMAIN = process.env.DOMAIN_;
 
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
+var businessName = "132 Chapel St LLC"  //this should be updated from the settings tab or process.env
+
 sendInv = (usrData) => {
         var rootPath = appSettings.getSetting('urlPrefix') || 'http://localhost:3001/';
         var fullPath = require('url').resolve(rootPath, '/tenant/activate/' + usrData.activationCode);
-
-        // console.log(usrData);
         var data = {
-            from: process.env.EMAILFROM || 'noreply@132chapelst.com',
+            from: process.env.EMAILFROM || 'admin@site.com',
             to: `${usrData.email}`,
-            subject: 'Welcome to 132 Chapel',
+            subject: `Welcome to ${businessName}`,
             text: `Hi ${usrData.fullname},
-Welcome to your new office space. We are happy that you are with us. Let us know if there is anything we can do.
-You can communicate with us through the facility website. To get started using the website, you will need to visit the following page:
 
-    Link: ${fullPath}
+            Welcome to ${businessName}! We are happy that you are with us and we hope you are enjoying your office in downtown Portsmouth. You can communicate with us through the ${businessName} website. To get started using the website, you will need to activate your account by clicking the link below:
 
-Visit this page to activate your account. I am sure you will find online access easy and useful and it
-will facilitate efficient communication and transactions.
-Thank you for joining us. We know you will be happy here.
+            ${fullPath}
 
-Regards,
-Clark McDermith,
-Building Manager`
+            After activating your account you will be able to make rent payments and submit maintenance requests. Please let us know if you have any questions. 
+
+            Thank you,
+            ${businessName}`
         };
         mailgun.messages().send(data, function (error, body) {
             if(error){
@@ -42,17 +39,17 @@ Building Manager`
     sendACHVerification = (usrData) => {
         var verifyUrl = require('url').resolve(appSettings.getSetting('urlPrefix'), '/tenant/verifyach/');
         var data = {
-            from: process.env.EMAILFROM || 'admin@site.com', //'barbarits@comcast.net',
+            from: process.env.EMAILFROM || 'admin@site.com',
             to: `${usrData.email}`,
-            subject: 'ACH Verification',
+            subject: `ACH Verification for ${businessName}`,
             text: `Hi ${usrData.fullname},
-In 1-2 busniness days, you'll receive 2 small (Typicially less than a dollar) deposits from us. Once you recieve them, enter them here at the link below:
 
-Link: ${verifyUrl}
+            In 1-2 business days, you'll receive 2 small deposits from "${businessName}". Once you recieve them, enter them here at the link below:
 
-Regards,
-Clark McDermith,
-Building Manager`
+            Link: ${verifyUrl}
+
+            Thank you,
+            ${businessName}`
         }
         mailgun.messages().send(data, function (error, body) {
             if(error){
@@ -62,7 +59,5 @@ Building Manager`
             }
         });
     }
-
-    
 
 module.exports = { sendInv: sendInv, sendACHVerification: sendACHVerification };
