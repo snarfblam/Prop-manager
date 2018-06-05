@@ -18,7 +18,7 @@ sendInv = (usrData) => {
             subject: `Welcome to ${businessName}`,
             text: `Hi ${usrData.fullname},
 
-            Welcome to 132 Chapel St! We are happy that you are with us and we hope you are enjoying your office in downtown Portsmouth. You can communicate with us through the 132 Chapel St website. To get started using the website, you will need to activate your account by clicking the link below:
+            Welcome to ${businessName}! We are happy that you are with us and we hope you are enjoying your office in downtown Portsmouth. You can communicate with us through the ${businessName} website. To get started using the website, you will need to activate your account by clicking the link below:
 
             ${fullPath}
 
