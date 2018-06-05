@@ -7,13 +7,15 @@ var DOMAIN = process.env.DOMAIN_;
 
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
+var businessName = "132 Chapel St LLC"  //this should be updated from the settings tab or process.env
+
 sendInv = (usrData) => {
         var rootPath = appSettings.getSetting('urlPrefix') || 'http://localhost:3001/';
         var fullPath = require('url').resolve(rootPath, '/tenant/activate/' + usrData.activationCode);
         var data = {
-            from: process.env.EMAILFROM || 'noreply@132chapelst.com',
+            from: process.env.EMAILFROM || 'admin@site.com',
             to: `${usrData.email}`,
-            subject: 'Welcome to 132 Chapel St.',
+            subject: `Welcome to ${businessName}`,
             text: `Hi ${usrData.fullname},
 
             Welcome to 132 Chapel St! We are happy that you are with us and we hope you are enjoying your office in downtown Portsmouth. You can communicate with us through the 132 Chapel St website. To get started using the website, you will need to activate your account by clicking the link below:
@@ -23,7 +25,7 @@ sendInv = (usrData) => {
             After activating your account you will be able to make rent payments and submit maintenance requests. Please let us know if you have any questions. 
 
             Thank you,
-            132 Chapel St LLC`
+            ${businessName}`
         };
         mailgun.messages().send(data, function (error, body) {
             if(error){
@@ -39,15 +41,15 @@ sendInv = (usrData) => {
         var data = {
             from: process.env.EMAILFROM || 'admin@site.com',
             to: `${usrData.email}`,
-            subject: 'ACH Verification',
+            subject: `ACH Verification for ${businessName}`,
             text: `Hi ${usrData.fullname},
 
-            In 1-2 busniness days, you'll receive 2 small deposits from "132 Chapel St. LLC". Once you recieve them, enter them here at the link below:
+            In 1-2 business days, you'll receive 2 small deposits from "${businessName}". Once you recieve them, enter them here at the link below:
 
             Link: ${verifyUrl}
 
             Thank you,
-            132 Chapel St LLC`
+            ${businessName}`
         }
         mailgun.messages().send(data, function (error, body) {
             if(error){
@@ -57,5 +59,5 @@ sendInv = (usrData) => {
             }
         });
     }
-    
+
 module.exports = { sendInv: sendInv, sendACHVerification: sendACHVerification };
