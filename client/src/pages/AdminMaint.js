@@ -46,9 +46,9 @@ class AdminMaint extends Template {
         }
     }
 
-    completeMaintItem = (id) => {
+    changeStatusMaintRequest = (id, value) => {
         api
-            .completeMaintRequest(id)
+            .changeStatusMaintRequest(id, value)
             .then(response => {
                 this.requestMaintData(); // refresh table here
         })
@@ -61,16 +61,18 @@ class AdminMaint extends Template {
      * @param {*} item - item being displayed
      */
     maintRequestTransform = (col,value,item) => {
-        var ackButton = <Button onClick={() => this.completeMaintItem(item.id)}><Fas icon='check' />&emsp;Done</Button>
+        const buttonStyle = {marginLeft: '5px'};
+        var ackButtonDone = <Button style={buttonStyle} onClick={() => this.changeStatusMaintRequest(item.id, false)}><Fas icon='check' />&emsp;Mark Done</Button>
+        var ackButtonUncompleted = <Button style={buttonStyle} onClick={() => this.changeStatusMaintRequest(item.id, true)}><Fas icon='check' />&emsp;Mark Uncompleted</Button>
         if (col == 'message') {
             return value
         } else if (col === 'unit') {
             return item.Unit.unitName;
         } else if (col == 'status') {
             if (value) {
-                return ackButton // value = "Open"                
+                return ["Open", ackButtonDone ] // value = "Open"                
             } else {
-                return value = "Completed"
+                return ["Completed", ackButtonUncompleted] //value = "Completed"
             }  
         } else if (col== 'createdAt') {
             return new Date(value).toLocaleDateString();
