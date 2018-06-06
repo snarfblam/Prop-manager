@@ -27,12 +27,12 @@ var router = express.Router();
     });
 
     // POST - Mark a maintenance request as completed
-    router.post('/api/completeMaintRequest', (req, res, next) => {
+    router.post('/api/changeStatusMaintRequest', (req, res, next) => {
         
         db.Maintenance.findById(req.body.id).then(function(dbMaint){
             if(dbMaint) {
                 dbMaint.updateAttributes({
-                    status: false // false means closed
+                    status:  req.body.status    // false means closed || true means open
                 })
             }
             res.sendStatus(200)
