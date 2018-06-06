@@ -197,14 +197,14 @@ function getAllMaintRequests(options) {
 }
 
 
-function changeStatusMaintRequest(id, booleanvalue) {
+function completeMaintRequest(id) {
     // var requestOptions = {};
     // if(options){
     //     if (options.open != undefined) requestOptions.where = { status: options.open };
     // }
 
     return axios
-        .post("/api/changeStatusMaintRequest", { id : id, status: booleanvalue })
+        .post("/api/completeMaintRequest", { id : id })
         .then(response => response.data);
 }
 
@@ -300,7 +300,7 @@ export {
     createNewUser, activateUser, getUnitList,
     getUserStatus, getRentDue, getUserList,
     getOwnMaintRequest, getAllMaintRequests, getAllPayments,
-    createNewUnit, editUnit, changeStatusMaintRequest,
+    createNewUnit, editUnit, completeMaintRequest,
     payACH, setupACH, verifyACH,
     markPaymentPaid, getAllOwnUnitPayments,
     getOwnUnits,
