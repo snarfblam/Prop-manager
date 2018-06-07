@@ -47,11 +47,11 @@ class AdminOverview extends Template {
         if (col === 'unit') {
             return item.Unit.unitName;
         } else if (col === 'paid') {
-            return value ? "yes" : "no";
+            return value ? "Yes" : "No";
         } else if (col === 'due_date') {
             return (new Date(value)).toLocaleDateString();
         } else {    
-            return value;
+            return '$' + value.toFixed(2);
         }
     }
     

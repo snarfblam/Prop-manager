@@ -79,7 +79,7 @@ class AdminPayments extends Template {
         } else if (col == 'due_date') {
             return new Date(value).toLocaleDateString();
         }
-        return value;
+        return '$' + value.toFixed(2);
     }
 
     get_MarkPaid_button = (item) => {
