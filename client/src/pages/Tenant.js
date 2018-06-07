@@ -200,7 +200,6 @@ class Tenant extends Template {
             });
     }
     
-
     handleTokenCard = (token) => {
         token.invoiceList = this.state.checkedPaymentIds;
 

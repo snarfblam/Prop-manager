@@ -8,7 +8,6 @@ const keyPublishable = stripeKeys.PUBLISHABLE_KEY;
 const keySecret = stripeKeys.SECRET_KEY;
 const stripe = require("stripe")(keySecret);
 const appSettings = require('../appSettings');
-
 const emailSnd = require('../mail/emailActivation')
 
 var router = express.Router();
@@ -83,7 +82,6 @@ var router = express.Router();
     // POST - submits payment to stripe from tenant page
     //Creates the Strip modal for Credit card transaction that takes the card and email for from the person making the payment
     router.post('/api/submitPayment', (req, res, next) => {
-        // let amount = 500;
 
         var invoiceList = req.body.invoiceList || [];
 
@@ -100,7 +98,6 @@ var router = express.Router();
                 return res.json({ status: 'zero payment' });
             };
 
-
             // stripe.customers.create({
             //     email: req.body.email,
             //     card: req.body.id,
@@ -111,7 +108,7 @@ var router = express.Router();
                     description: "Rent Payment",
                     currency: "usd",
                     customer: customer.id,
-                    
+                    receipt_email: req.body.email,
                 })
             ).then(charge => {
                 console.log("successful payment");
@@ -157,7 +154,7 @@ var router = express.Router();
         return 
     }
 
-        // POST - Mark a maintenance request as completed
+        // POST - Mark a payment request as paid
         router.post('/api/markPaid', (req, res, next) => {
             if (!req.user || req.user.role != 'admin') return res.status(403).end();
 
@@ -172,16 +169,6 @@ var router = express.Router();
                 if(error) throw error;
             })
         });
-    /* GET - gets rent amount that the tenant owes
-        Returns array: {
-            unitId: number,
-            paymentId: number
-            unitName: string,
-            amount: number <dollars>,
-            due: Date,
-        } []
-    
-    */
    
    router.get('/api/getOwnUnitPayments', (req, res, next) => {
         return getUserPayments(req, res, {  });
@@ -301,7 +288,8 @@ var router = express.Router();
                 stripe.charges.create({
                     amount: totalCents,
                     currency: "usd",
-                    customer: customerID
+                    customer: customerID,
+                    receipt_email: req.user.email
                 },
                     function (err, charge) { 
                         if (err) { 
@@ -371,16 +359,17 @@ var router = express.Router();
                                     }).catch(err => {
                                         res.status(500).end();
                                         console.log(err);
-                                    });
-                            });
+                                    }
+                                    );
+                            }
+                        );
                     });
-
-           
-            }).catch(err => {
+            }
+            ).catch(err => {
                 res.status(500).end();
                 console.log(err);
-            }) // getStripeCustomer
-    }); // post
+            })
+    });
 }
 
 { // Users
