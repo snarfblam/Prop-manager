@@ -19,10 +19,6 @@ class RequestAch extends React.Component{
     }
 
     inputChanged = (e) => {
-        console.log(this.state);
-        // var value = e.target.checked;
-        // if (value === undefined) value = e.target.value;
-
         this.setState({
             [e.target.name]: this.getTargetValue(e),
         });
