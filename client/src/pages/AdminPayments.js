@@ -86,18 +86,31 @@ class AdminPayments extends Template {
         var id = item.id;
         return (
             <Button
-                onClick={(e) => {this.markPaid(id)}}    
+                onClick={(e) => {this.markPaid(id, true)}}    
                 >
                 Mark Paid
             </Button>
         );
     }
 
-    markPaid = (id) => {
-        api.markPaymentPaid(id)
+    markPaid = (id, prompt) => {
+        if (prompt) { 
+            this.showModal(
+                <div>
+                    <p>Mark this invoice paid?</p>
+                    <div className='text-center'>
+                        <Button onClick={() => this.hideModal()}>Cancel</Button>
+                        &emsp;
+                        <Button onClick={() => { this.hideModal(); this.markPaid(id, false) }}>Yes</Button>
+                    </div>
+                </div>, 'Confirm', true
+            );
+        } else {
+            api.markPaymentPaid(id)
             .then(() => {
                 this.requestPaymentData();
             }).catch(console.error);
+        }
     }
 
     getNavItems() {
