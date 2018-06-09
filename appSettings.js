@@ -90,25 +90,30 @@ module.exports = {
      * @param {string} value - Name of the setting to set
      * 
      */
-    changeSetting: function (name, value) {
+    changeSetting: function (name, value, description) {
         // Find, then update or create new as needed. Then update this.settings
         return db.AppSetting
             .findOne({
                 where: { name: name }
             }).then(setting => {
+                var attributes = {};
+                if (value || value == '') attributes.value = value;
+                if (description || description == '') attributes.description = description;
+
                 if (setting) {
-                    return setting.update({ value: value });
+                    return setting.update(attributes);
                 } else {
-                    return db.AppSetting.create({ name: name, value: value });
+                    attributes.name = name;
+                    return db.AppSetting.create(attributes);
                 }
             }).then(setting => {
-                var newSetting = { name: name, value: setting.value };
+                var newSetting = { name: name, value: setting.value, description: setting.description };
 
                 var indexOf = this.settings.findIndex(item => item.name === name);
                 if (indexOf < 0) indexOf = this.settings.length;
                 this.settings[indexOf] = newSetting;
 
-                return { name: setting.name, value: setting.value };
+                return { name: setting.name, value: setting.value, description: setting.description };
             });
     }
 };

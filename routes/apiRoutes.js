@@ -631,7 +631,7 @@ var router = express.Router();
         if (!req.user || req.user.role != 'admin') return res.status(403).end();
         if (!req.body || !req.body.settings || !req.body.settings.map) return res.status(400).end();
 
-        var pendingChanges = req.body.settings.map(setting => appSettings.changeSetting(setting.name, setting.value));
+        var pendingChanges = req.body.settings.map(setting => appSettings.changeSetting(setting.name, setting.value, setting.description));
 
         Promise.all(pendingChanges)
             .then(results => {
