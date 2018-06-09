@@ -1,7 +1,10 @@
+/*
+    App Settings - Retrieves and updates application settings stored in the database.
+
+    Settings that are not found are retrieved from process.env.
+*/
+
 const db = require('./models');
-
-
-
 
 
 function createDefaultAppSettings() {
@@ -9,10 +12,26 @@ function createDefaultAppSettings() {
     var defaultSettings = [
         // Prepended to any relative paths (e.g. /tenant/activate/code) for display in UI or 
         // in email correspondance.Construct the full path using url.resolve(urlPrefix, relativePath)
-        { name: 'urlPrefix', value: 'http://localhost:3001/' },
-        { name: 'appTitle', value: 'Tenant Service Portal' },
-        { name: 'stripeApiKey', value: 'pk_test_edJT25Bz1YVCJKIMvmBGCS5Y'},
-        { name: 'bannerText', value: '132 Chapel St'},
+        { 
+            name: 'urlPrefix', 
+            value: 'http://localhost:3001/',
+            description: 'The domain to use in correspondence',
+        },
+        { 
+            name: 'appTitle', 
+            value: 'Tenant Service Portal',
+            description: 'Page title',
+        },
+        { 
+            name: 'stripeApiKey', 
+            value: 'pk_test_edJT25Bz1YVCJKIMvmBGCS5Y',
+            description: 'Shareable stripe api key',
+        },
+        { 
+            name: 'bannerText', 
+            value: '132 Chapel St',
+            description: 'Text to display in the navbar',
+        },
     ];
 
     return db.AppSetting
@@ -50,6 +69,11 @@ module.exports = {
     getSetting: function (name) {
         var setting = this.settings.find(setting => (setting.name == name));
         if (setting) return setting.value;
+        
+        // defer to environment if we don't have a setting by the requested name.
+        if (process.env[name] !== undefined) return process.env[name];
+
+        // null indicates setting not found
         return null;
     },
 
