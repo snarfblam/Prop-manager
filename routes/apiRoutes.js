@@ -616,8 +616,17 @@ var router = express.Router();
         res.json({ settings: appSettings.getAllSettings() });
     })
 
-    // Expects {settings: {name: string, value: string}[] }
-    // Returns {result: 'success', 'error' } NOTE: error may indicate that SOME settings have changed while others have not (only applies if multiple settings were sent)
+    // Expects {
+    //   settings: { 
+    //       name: string,
+    //       value: string,
+    //       description?: string,
+    //   } []
+    // }
+    // Returns {
+    //   result: 'success', 'error'
+    // } 
+    // NOTE: error may indicate that SOME settings have changed while others have not(only applies if multiple settings were sent)
     router.post('/api/changeSettings', (req, res, next) => {
         if (!req.user || req.user.role != 'admin') return res.status(403).end();
         if (!req.body || !req.body.settings || !req.body.settings.map) return res.status(400).end();
