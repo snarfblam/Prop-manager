@@ -288,11 +288,11 @@ function getAppSettings() {
         .then(response => response.data);
 }
 
-function changeAppSetting(name, value) {
+function changeAppSetting(name, value, description) {
     return axios
         .post(
             '/api/changeSettings',
-            { settings: [{ name: name, value: value }] }
+            { settings: [{ name: name, value: value, description: description }] }
         ).then(response => response.data);
 }
 

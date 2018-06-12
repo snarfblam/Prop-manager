@@ -77,18 +77,19 @@ class AdminSettings extends Template {
             <EditSetting
                 settingName={item.name}
                 initialValue={item.value}
+                initialDescription={item.description || ''}
                 onSubmit={this.onSettingSubmitted}
             />, "Change Setting", true);
     }
 
-    onSettingSubmitted = (name, value) => {
+    onSettingSubmitted = (name, value, description) => {
         this.hideModal();
 
         var pending = [...this.state.pendingSettings, name];
         this.setState({pendingSettings: pending});
 
         api
-            .changeAppSetting(name, value)
+            .changeAppSetting(name, value, description)
             .catch(err => err) // forward err to .then
             .then(response => {
                 var newPending = this.state.pendingSettings;
@@ -97,7 +98,9 @@ class AdminSettings extends Template {
                 
                 if (response.result == 'success') {
                     var newList = this.state.settings;
-                    (newList.find(item => item.name == name) || {}).value = value;
+                    var newItem = (newList.find(item => item.name == name) || {});
+                    newItem.value = value;
+                    newItem.description = description;
                     
                     this.setState({
                         pendingSettings: newPending,
