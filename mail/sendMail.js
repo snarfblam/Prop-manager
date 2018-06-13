@@ -37,17 +37,21 @@ function sendMail(subject, body, to, from) {
         email.text = emailBody;
     }
 
-    // Get rid of leading whitespace
-    if (email.text) email.text = email.text.replace(/^\W+/gm, '');
+    // Get rid of leading spaces
+    if (email.text) email.text = email.text.replace(/^ +/gm, '');
     
     // Do the thing
     return new Promise((resolve, reject) => {
         mailgun.messages().send(email, function (error, body) {
             if (error) {
-                console.log(error, `Unable to send email to ${to}`);
+                console.log(error, `Unable to send email to ${email.to}`);
                 reject(error);
             } else {
-                console.log(`email to ${usrData.activationCode} successfully sent to ${to}`);
+                if(body) {
+                    console.log(`email successfully sent to ${email.to}`);
+                } else {
+                    console.log(`email sent to ${email.to}, but there was no response`)
+                }    
                 resolve(body);
             }
         });
