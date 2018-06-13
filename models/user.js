@@ -1,3 +1,5 @@
+import { userInfo } from "os";
+
 module.exports = function(sequelize, DataTypes) {
   var User = sequelize.define("User", {
     fullname: {
@@ -98,7 +100,16 @@ module.exports = function(sequelize, DataTypes) {
     // User.belongsTo(models.Cred);
   };
 
+    
+    
+/**
+ *  Returns a boolean indicating whether this account has any credentials associated with it
+ */
+  User.prototype.hasCredentials = function() {
+      return !!(this.googleId || this.local_username);
+  }  
 
 return User;
 
 };
+
