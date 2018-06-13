@@ -401,8 +401,13 @@ var router = express.Router();
            activationCode: string
        }
        Returns: {
-            result: string // 'success' = ready to activate, 'reset' = ready to reset user, 'error' = error
+            result: 'success' | 'error,
+            accountStatus?: 'new' | 'local reset' | 'full reset'
        }
+       // 'local reset' refers to when a user resets his password. He has a username which
+       //  will remain intact unless he opts to use OAuth.
+       // 'full reset' refers to an OAuth user who is resetting credentials. He has no residual
+       // credentials to be retained.
     */
     router.post('/api/activateUser', (req, res, next) => {
         if (req.body.activationCode && !req.user) {
@@ -410,10 +415,16 @@ var router = express.Router();
                 .then(user => {
                     if (user) {
                         // If the user already has credentials he is performing a password reset and ui should act accordingly.
-                        var hasCredentials = user.hasCredentials();
+                        var accountStatus = 'new';
+                        if (user.hasCredentials()) {
+                            accountStatus = user.local_username ? 'local reset' : 'full reset';
+                        }
 
                         req.session.activationCode = req.body.activationCode;
-                        res.json({ result: hasCredentials ? 'reset' : 'success' });
+                        res.json({
+                            result: 'success',
+                            accountStatus: accountStatus,
+                        });
                     } else {
                         req.session.activationCode = null;
                         res.json({ result: 'error' });
