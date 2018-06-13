@@ -17,10 +17,10 @@ passport.deserializeUser((id, done) => {
             console.log('======= DESERILAIZE USER CALLED ======')
             console.log(user)
             console.log('--------------')
-            done(null, user)
+            return done(null, user)
         }).catch(err => {
             console.log(err);
-            done(null, false);
+            return done(null, false);
         });
     // 	'firstName lastName photos local.username',
     // 	(err, user) => {
