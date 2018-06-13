@@ -397,13 +397,23 @@ var router = express.Router();
     });
 
     // POST - Activates a user
+    /* Expects:  {
+           activationCode: string
+       }
+       Returns: {
+            result: string // 'success' = ready to activate, 'reset' = ready to reset user, 'error' = error
+       }
+    */
     router.post('/api/activateUser', (req, res, next) => {
         if (req.body.activationCode && !req.user) {
             db.User.findOne({ where: { activationCode: req.body.activationCode } })
                 .then(user => {
                     if (user) {
+                        // If the user already has credentials he is performing a password reset and ui should act accordingly.
+                        var hasCredentials = user.hasCredentials();
+
                         req.session.activationCode = req.body.activationCode;
-                        res.json({ result: 'success' });
+                        res.json({ result: hasCredentials ? 'reset' : 'success' });
                     } else {
                         req.session.activationCode = null;
                         res.json({ result: 'error' });
