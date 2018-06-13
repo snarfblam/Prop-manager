@@ -31,8 +31,8 @@ const appSettings = require('../appSettings');
 
 const strategy = new GoogleStrategy(
     {
-        clientID: appSettings('GOOGLE_CLIENT_ID'),
-        clientSecret: appSettings('GOOGLE_CLIENT_SECRET'),
+        clientID: appSettings.getSetting('GOOGLE_CLIENT_ID'),
+        clientSecret: appSettings.getSetting('GOOGLE_CLIENT_SECRET'),
         callbackURL: '/auth/google/callback',
         passReqToCallback: true,
     },
