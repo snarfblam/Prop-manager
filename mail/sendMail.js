@@ -1,3 +1,8 @@
+const appSettings = require('../appSettings');
+const api_key = appSettings.getSetting('PRIVATE_KEY');
+const DOMAIN = appSettings.getSetting('DOMAIN');
+const mailgun = require('mailgun-js')({ apiKey: api_key, domain: DOMAIN });
+
 /**
  * Sends an email message to a tenant. Returns a promise.
  * @param {string} subject - Subject line of message
