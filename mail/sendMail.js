@@ -7,31 +7,37 @@
  * @returns {Promise<*>}
  */
 function sendMail(subject, body, to, from) {
-    var toUser = to;
+    // Compose parameters into an object. (Body to be processed later).
+    var email = { subject: subject, to: to, from: from };
+    var emailBody = body;
 
-    // Get email address from User model, if applicable
-    if (to.email) to = to.email;
+    // An object can be accepted instead of a traditional parameter list
+    if (subject.subject && subject.body && subject.to) {
+        var paramObj = subject;
+        email = { subject: paramObj.subject, to: paramObj.to, from: paramObj.from };
 
-    var data = {
-        from: from || (appSettings.getSetting('EMAILFROM') || 'admin@site.com'),
-        to: to,
-        subject: subject || (`A message from ${businessName}`),
-    };
+        emailBody = subject.body;
+    }
 
-    // Text or html body
-    if (body.text || body.html) {
-        if (body.text) data.text = body.text;
-        if (body.html) data.html = body.html;
+    // provide default values
+    email.subject = email.subject || (`A message from ${businessName}`);
+    email.from = email.from || (appSettings.getSetting('EMAILFROM') || 'admin@site.com');
+    email.to = email.to.email || email.to; // get User.email when applicable
+
+    // Body can be an object or a string
+    if (emailBody.text || emailBody.html) {
+        if (emailBody.text) email.text = emailBody.text;
+        if (emailBody.html) email.html = emailBody.html;
     } else {
-        data.text = body;
+        email.text = emailBody;
     }
 
     // Get rid of leading whitespace
-    if (body.text) body.text = body.text.replace(/^\W+/gm, '');
+    if (email.text) email.text = email.text.replace(/^\W+/gm, '');
     
     // Do the thing
     return new Promise((resolve, reject) => {
-        mailgun.messages().send(data, function (error, body) {
+        mailgun.messages().send(email, function (error, body) {
             if (error) {
                 console.log(error, `Unable to send email to ${to}`);
                 reject(error);
