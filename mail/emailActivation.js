@@ -31,25 +31,17 @@ sendInv = (usrData) => {
 
 sendACHVerification = (usrData) => {
     var verifyUrl = require('url').resolve(appSettings.getSetting('urlPrefix'), '/tenant/verifyach/');
-    var data = {
-        from: appSettings.getSetting('EMAILFROM') || 'admin@site.com',
-        to: `${usrData.email}`,
+    return sendMail({
+        to: usrData,
         subject: `ACH Verification for ${businessName}`,
-        text: `Hi ${usrData.fullname},
+        body: `Hi ${usrData.fullname},
 
             In 1-2 business days, you'll receive 2 small deposits from "${businessName}". Once you recieve them, enter them here at the link below:
 
             Link: ${verifyUrl}
 
             Thank you,
-            ${businessName}`
-    }
-    mailgun.messages().send(data, function (error, body) {
-        if (error) {
-            console.log(`${error} Unable to send ACH Verification email to ${usrData.fullname}  @ ${usrData.email}`);
-        } else {
-            console.log(`ACH Verification email to ${usrData.fullname}  successfully sent to ${usrData.email}`);
-        }
+            ${businessName}`        
     });
 }
 
