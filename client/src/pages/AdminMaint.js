@@ -24,7 +24,8 @@ class AdminMaint extends Template {
             { name: 'message', label: 'Message' },
             { name: 'unit', label: 'Unit' },
             { name: 'createdAt', label: 'Date Submited'},
-            { name: 'status', label: 'Status'}
+            { name: 'status', label: 'Status'},
+            { name: 'action', label: 'Action'},
         ] 
 
         this.state = {
@@ -62,17 +63,24 @@ class AdminMaint extends Template {
      */
     maintRequestTransform = (col,value,item) => {
         const buttonStyle = {marginLeft: '5px'};
-        var ackButtonDone = <Button style={buttonStyle} onClick={() => this.changeStatusMaintRequest(item.id, false)}><Fas icon='check' />&emsp;Mark Done</Button>
-        var ackButtonUncompleted = <Button style={buttonStyle} onClick={() => this.changeStatusMaintRequest(item.id, true)}><Fas icon='check' />&emsp;Mark Uncompleted</Button>
+        var completeButton = <Button style={buttonStyle} onClick={() => this.changeStatusMaintRequest(item.id, false)}><Fas icon='check' />&emsp;Complete</Button>
+        var uncompleteButton = <Button style={buttonStyle} onClick={() => this.changeStatusMaintRequest(item.id, true)}><Fas icon='times' />&emsp;Uncomplete</Button>
+        
         if (col == 'message') {
             return value
         } else if (col === 'unit') {
             return item.Unit.unitName;
         } else if (col == 'status') {
             if (value) {
-                return ["Open", ackButtonDone ] // value = "Open"                
+                return "Open"; // value = "Open"      
             } else {
-                return ["Completed", ackButtonUncompleted] //value = "Completed"
+                return "Completed"; //value = "Completed"
+            }  
+        } else if (col == 'action') {
+            if (item.status) {
+                return completeButton; // value = "Open"                
+            } else {
+                return uncompleteButton; //value = "Completed"
             }  
         } else if (col== 'createdAt') {
             return new Date(value).toLocaleDateString();

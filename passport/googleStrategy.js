@@ -26,12 +26,13 @@
 
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const User = require('../models').User;
+const appSettings = require('../appSettings');
 
 
 const strategy = new GoogleStrategy(
     {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        clientID: appSettings.getSetting('GOOGLE_CLIENT_ID'),
+        clientSecret: appSettings.getSetting('GOOGLE_CLIENT_SECRET'),
         callbackURL: '/auth/google/callback',
         passReqToCallback: true,
     },

@@ -2,18 +2,18 @@ require("dotenv").config();
 var mailgun = require("mailgun-js");
 var appSettings = require('../appSettings');
 
-var api_key = process.env.PRIVATE_KEY;
-var DOMAIN = process.env.DOMAIN_;
+var api_key = appSettings.getSetting('PRIVATE_KEY');
+var DOMAIN = appSettings.getSetting('DOMAIN');
 
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
-var businessName = "132 Chapel St LLC"  //this should be updated from the settings tab or process.env
+var businessName = "132 Chapel St LLC"  //this should be updated from the settings tab or the .env file
 
 sendInv = (usrData) => {
         var rootPath = appSettings.getSetting('urlPrefix') || 'http://localhost:3001/';
         var fullPath = require('url').resolve(rootPath, '/tenant/activate/' + usrData.activationCode);
         var data = {
-            from: process.env.EMAILFROM || 'admin@site.com',
+            from: appSettings.getSetting('EMAILFROM') || 'admin@site.com',
             to: `${usrData.email}`,
             subject: `Welcome to ${businessName}`,
             text: `Hi ${usrData.fullname},
@@ -39,7 +39,7 @@ sendInv = (usrData) => {
     sendACHVerification = (usrData) => {
         var verifyUrl = require('url').resolve(appSettings.getSetting('urlPrefix'), '/tenant/verifyach/');
         var data = {
-            from: process.env.EMAILFROM || 'admin@site.com',
+            from: appSettings.getSetting('EMAILFROM') || 'admin@site.com',
             to: `${usrData.email}`,
             subject: `ACH Verification for ${businessName}`,
             text: `Hi ${usrData.fullname},
