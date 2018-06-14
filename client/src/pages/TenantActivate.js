@@ -16,58 +16,13 @@ class TenantActivate extends Template {
 
         this.state = {
             activationCodeStatus: 'checking', // 'checking', 'error', 'verified'
+            accountStatus: 'checking', // 'checking', 'new', 'local reset', 'full reset'
             username: '',
             password: ''
         };
 
         // this.createSubStates();
     }
-
-    // createSubStates() {
-    //     this.subStates = {
-    //         verified:
-    //             <Container>
-    //                 <Pane>
-    //                     <h3>Activate with Google</h3>
-    //                     <p>
-    //                         Activate your account with
-    //                             </p>
-    //                     <a className='login-link' href='/auth/google'>
-    //                         <button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
-    //                     </a>
-    //                 </Pane>
-
-    //                 <Pane>
-    //                     <h3>Create Username and Password</h3>
-    //                     <Form className="container-400">
-    //                     <Input
-    //                             name='username'
-    //                             value={this.state.username}
-    //                             label='User Name'
-    //                             onChange={this.handleInputChange}
-    //                         />
-    //                     <Input
-    //                             password
-    //                             name='password'
-    //                             value={this.state.password}
-    //                             label='Password'
-    //                             onChange={this.handleInputChange}
-    //                         />
-    //                         <Button onClick={this.handleCreateAccount}>Create Account</Button>
-    //                     </Form>
-    //                 </Pane>    
-    //             </Container>,
-    //         checking:
-    //             <div>
-    //                 <p>Accessing your account</p>
-    //                 <Spinner />
-    //             </div>,
-    //         error:
-    //             <div>
-    //                 <p>Could not access the account.</p>
-    //             </div>
-    //     }
-    // }
 
     handleInputChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
@@ -108,20 +63,16 @@ class TenantActivate extends Template {
 
 
     componentDidMount() {
-        // this.showModal(
-        //     <Spinner />, 'Finding your account'
-        // );
-
         api
             .activateUser({ activationCode: this.activationCode })
             .then(result => {
                 console.log(result);
                 if (result.result == 'success') {
                     // this.hideModal();
-                    this.setState({ activationCodeStatus: 'verified' });
+                    this.setState({ activationCodeStatus: 'verified', accountStatus: result.accountStatus });
                 } else {
                     var err = result.error || 'unknown error';
-                    this.setState({ activationCodeStatus: 'error' });
+                    this.setState({ activationCodeStatus: 'error', accountStatus: 'checking' });
                     this.showModal(<p>There was an error finding your account: {err}</p>, "Error");
                 }
             });
@@ -148,12 +99,15 @@ class TenantActivate extends Template {
                     <Pane>
                         <h3>Create Username and Password</h3>
                         <Form className="container-400">
-                            <Input
-                                name='username'
-                                value={this.state.username}
-                                label='User Name'
-                                onChange={this.handleInputChange}
-                            />
+                            {(this.state.accountStatus == 'new' || this.state.accountStatus == 'full_reset') ? 
+                                <Input
+                                    name='username'
+                                    value={this.state.username}
+                                    label='User Name'
+                                    onChange={this.handleInputChange}
+                                />
+                                : null
+                            }    
                             <Input
                                 password
                                 name='password'
