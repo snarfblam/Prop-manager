@@ -46,7 +46,7 @@ db.sequelize.sync(
         appSettings.init(),
     ]);
 }).then(() => {
-    invoiceJob.schedule();    
+    invoiceJob.schedule();
     const sequelizeSessionStore = new SessionStore({
         db: db.sequelize,
     });
@@ -57,7 +57,7 @@ db.sequelize.sync(
         resave: false,
         saveUninitialized: false,
     }));
-//``
+    //``
     app.use(passport.initialize())
     app.use(passport.session()) // will call the deserializeUser
     app.use(apiRoutes)
@@ -76,6 +76,10 @@ db.sequelize.sync(
     app.listen(PORT, () => {
         console.log('Listening on port ' + PORT);
     });
+    }).catch(err => { 
+        console.log("There was an error connecting to the database or performing follow-up logic");
+        console.error(err);
+        
 });
 
 
