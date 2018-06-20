@@ -16,6 +16,7 @@ class TenantActivate extends Template {
 
         this.state = {
             activationCodeStatus: 'checking', // 'checking', 'error', 'verified'
+            accountStatus: 'checking', // 'checking', 'new', 'local reset', 'full reset'
             username: '',
             password: ''
         };
@@ -23,59 +24,18 @@ class TenantActivate extends Template {
         // this.createSubStates();
     }
 
-    // createSubStates() {
-    //     this.subStates = {
-    //         verified:
-    //             <Container>
-    //                 <Pane>
-    //                     <h3>Activate with Google</h3>
-    //                     <p>
-    //                         Activate your account with
-    //                             </p>
-    //                     <a className='login-link' href='/auth/google'>
-    //                         <button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
-    //                     </a>
-    //                 </Pane>
-
-    //                 <Pane>
-    //                     <h3>Create Username and Password</h3>
-    //                     <Form className="container-400">
-    //                     <Input
-    //                             name='username'
-    //                             value={this.state.username}
-    //                             label='User Name'
-    //                             onChange={this.handleInputChange}
-    //                         />
-    //                     <Input
-    //                             password
-    //                             name='password'
-    //                             value={this.state.password}
-    //                             label='Password'
-    //                             onChange={this.handleInputChange}
-    //                         />
-    //                         <Button onClick={this.handleCreateAccount}>Create Account</Button>
-    //                     </Form>
-    //                 </Pane>    
-    //             </Container>,
-    //         checking:
-    //             <div>
-    //                 <p>Accessing your account</p>
-    //                 <Spinner />
-    //             </div>,
-    //         error:
-    //             <div>
-    //                 <p>Could not access the account.</p>
-    //             </div>
-    //     }
-    // }
-
     handleInputChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
     handleCreateAccount = (event) => {
         event.preventDefault();
-        if (this.state.username && this.state.password) {
+
+        var validInput =
+            this.state.password && 
+            (this.state.accountStatus == 'local reset' || this.state.username);
+
+        if (validInput) {
             api.
                 setLocalCreds({username: this.state.username, password: this.state.password})
                 .then(data => {
@@ -108,20 +68,17 @@ class TenantActivate extends Template {
 
 
     componentDidMount() {
-        // this.showModal(
-        //     <Spinner />, 'Finding your account'
-        // );
-
         api
             .activateUser({ activationCode: this.activationCode })
             .then(result => {
                 console.log(result);
+
                 if (result.result == 'success') {
                     // this.hideModal();
-                    this.setState({ activationCodeStatus: 'verified' });
+                    this.setState({ activationCodeStatus: 'verified', accountStatus: result.accountStatus });
                 } else {
                     var err = result.error || 'unknown error';
-                    this.setState({ activationCodeStatus: 'error' });
+                    this.setState({ activationCodeStatus: 'error', accountStatus: 'checking' });
                     this.showModal(<p>There was an error finding your account: {err}</p>, "Error");
                 }
             });
@@ -131,14 +88,41 @@ class TenantActivate extends Template {
         return [...(this.tenantNavLinks), { path: this.props.match.path, text: 'Activate Account' }];
     }
 
+    getPageLabels() {
+        if (this.state.accountStatus == 'new') {
+            return {
+                google: 'Activate with Google',
+                googleInner: 'Activate your account with',
+                local: 'Create Username and Password',
+                password: 'Create Account',
+            }            
+        } else if (this.state.accountStatus == 'local reset') {
+            return {
+                google: 'Log in with Google',
+                googleInner: 'Set your login method',
+                local: 'Change Password',
+                password: 'Update Password',
+            }     
+        } else {
+            return {
+                google: 'Log in with Google',
+                googleInner: 'Set your login method',
+                local: 'Create Username and Password',
+                password: 'Create Username',
+            }     
+        }
+    }
+
     getContent() {
+        var labels = this.getPageLabels();
+
         switch (this.state.activationCodeStatus) {
           case 'verified':
                 return (<Container>
                     <Pane>
-                        <h3>Activate with Google</h3>
+                        <h3>{labels.google}</h3>
                         <p>
-                            Activate your account with
+                            {labels.googleInner}
                                 </p>
                         <a className='login-link' href='/auth/google'>
                             <button className='btn btn-dark'><GoogleSvg className="googlogo" /></button>
@@ -146,14 +130,17 @@ class TenantActivate extends Template {
                     </Pane>
 
                     <Pane>
-                        <h3>Create Username and Password</h3>
+                        <h3>{labels.local}</h3>
                         <Form className="container-400">
-                            <Input
-                                name='username'
-                                value={this.state.username}
-                                label='User Name'
-                                onChange={this.handleInputChange}
-                            />
+                            {(this.state.accountStatus == 'new' || this.state.accountStatus == 'full_reset') ? 
+                                <Input
+                                    name='username'
+                                    value={this.state.username}
+                                    label='User Name'
+                                    onChange={this.handleInputChange}
+                                />
+                                : null
+                            }    
                             <Input
                                 password
                                 name='password'
@@ -161,7 +148,7 @@ class TenantActivate extends Template {
                                 label='Password'
                                 onChange={this.handleInputChange}
                             />
-                            <Button onClick={this.handleCreateAccount}>Create Account</Button>
+                            <Button onClick={this.handleCreateAccount}>{labels.password}</Button>
                         </Form>
                     </Pane>
                 </Container>);

@@ -14,7 +14,7 @@ const strategy = new LocalStrategy(
 				return done(null, false, { message: 'Incorrect username' })
 			}
 
-            db.Cred.find({ where: { UserId: userMatch.id } })
+            return db.Cred.find({ where: { UserId: userMatch.id } })
                 .then(cred => {
                     if(cred) {
                         bcrypt.compare(password, cred.local_password, function(err, matched) {
@@ -35,14 +35,8 @@ const strategy = new LocalStrategy(
                         done(Error('invalid username or password'), null);
                     }    
                 });
-			// Load hash from your password DB.
-
-
-			// if (!userMatch.checkPassword(password)) {
-			// 	return done(null, false, { message: 'Incorrect password' })
-			// }
-			return done(null, userMatch)
-		}).catch(err => {
+        }).catch(err => {
+            console.log(err);
 			if (err) {
 				return done(err)
 			}

@@ -47,55 +47,36 @@ const strategy = new GoogleStrategy(
             where: {
                 googleId: id
             }
-        }).then((userMatch) => {
-            // if there is already someone with that googleId
-            if (userMatch) {
-                return done(null, userMatch)
-            } else {
-                if (req.session.activationCode) {
-                    return User.findOne({
-                        where: {
-                            activationCode: req.session.activationCode
-                        }
-                    }).then(userMatch => {
-                        if (!userMatch) throw Error("Activation code not valid");
-                        userMatch.activationCode = null;
-                        userMatch.googleId = id;
-                        return userMatch.save();
-                    }).then(userMatch => {
+        }).then((googleMatch) => {
+            if (req.session.activationCode) {
+                return User.findOne({
+                    where: {
+                        activationCode: req.session.activationCode
+                    }
+                }).then(activationMatch => {
+                    if (!activationMatch) {
+                        throw Error("Activation code not valid");
                         req.session.activationCode = null;
-                        
-                        if (userMatch instanceof Error) {
-                            return done(userMatch, false);
-                        } else {
-                            return done(null, userMatch);
-                        }
+                    }
 
-                    })
-                } else {
-                    return done(Error("The specified google user does not have an associated user account on this site."), false);
-                }
-                // if no user in our db, create a new user with that googleId
-                // console.log('====== PRE SAVE =======')
-                // console.log(id)
-                // console.log(profile)
-                // console.log('====== post save ....')
-                // const newGoogleUser = User.create({
-                //     'google.googleId': id,
-                //     firstName: name.givenName,
-                //     lastName: name.familyName,
-                //     photos: photos
-                // })
-                // // save this user
-                // newGoogleUser.save((err, savedUser) => {
-                //     if (err) {
-                //         console.log('Error!! saving the new google user')
-                //         console.log(err)
-                //         return done(null, false)
-                //     } else {
-                //         return done(null, savedUser)
-                //     }
-                // }) // closes newGoogleUser.save
+                    // activationMatch.activationCode = null;
+                    // activationMatch.googleId = id;
+                    // return activationMatch.save();
+                    return assignGoogleId(activationMatch, id);
+                }).then(activationMatch => {
+                    req.session.activationCode = null;
+                        
+                    if (activationMatch instanceof Error) {
+                        return done(activationMatch, false);
+                    } else {
+                        return done(null, activationMatch);
+                    }
+
+                })
+            } else if (googleMatch) {
+                return done(null, googleMatch)
+            } else {
+                return done(Error("The specified google user does not have an associated user account on this site."), false);
             }
         }).catch(err => {
             console.log('Error!! trying to find user with googleId')
@@ -104,5 +85,19 @@ const strategy = new GoogleStrategy(
         }) // closes User.findONe
     }
 )
+
+// Returns a promise that resolves when the user's credentials are updated
+function assignGoogleId(user, googleId) {
+    user.googleId = googleId;
+    user.activationCode = null;
+    user.local_username = null;
+
+    return Promise.all([
+        // Remove password
+        db.Cred.destroy({ where: { UserId: user.id } }),
+        // Save user
+        user.save()
+    ]).then(resultArray => resultArray[1]); // Return user model
+}
 
 module.exports = strategy
