@@ -12,9 +12,7 @@ function schedule() {
             .findAll({})
             .then(units => {
                 if (!units || units.length == 0) return;
-
-                let timeOfTheMos = moment(moment().format("YYYY-MM")).format("YYYY-MM-DD HH:mm:ss.SSS");
-                // console.log(timeOfTheMos);
+                let timeOfTheMos = moment(moment.utc().format("YYYY-MM")).format("YYYY-MM-DD HH:mm:ss.SSS");
                 units.map(unit => {
                     if (unit.rate) { // Don't create payments for units with a rate of 0
                         db.Payment.findOrCreate({
