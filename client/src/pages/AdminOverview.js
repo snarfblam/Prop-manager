@@ -8,6 +8,7 @@ import * as api from '../api';
 import Spinner from './modals/Spinner';
 import Pane from '../components/Pane';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 class AdminOverview extends Template {
     constructor(props) {
@@ -49,7 +50,9 @@ class AdminOverview extends Template {
         } else if (col === 'paid') {
             return value ? "Yes" : "No";
         } else if (col === 'due_date') {
-            return (new Date(value)).toLocaleDateString();
+            // return (new Date(value)).toLocaleDateString();
+            return moment.utc(value).format('MM-DD-YYYY');
+
         } else {    
             return '$' + value.toFixed(2);
         }
