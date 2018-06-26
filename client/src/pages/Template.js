@@ -15,6 +15,8 @@ import LoginLink from './modals/Login/LoginLink';
 import Login from './modals/Login'
 import Axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import PassReset from './modals/PassReset';
+import * as api from '../api';
 
 
 class Template extends React.Component {
@@ -71,6 +73,8 @@ class Template extends React.Component {
         this.setState({ redirect: path });
     };
 
+
+
     render() {
         if (this.state.redirect) {
             return <Redirect to={this.state.redirect} />;
@@ -108,11 +112,35 @@ class Template extends React.Component {
 
             </div>
         );
+        }
+    
+    submitPasswordResetRequest = (user) => {
+        api.resetPassword(user)
+            .then(responseBody => {
+                var result = responseBody.result;
+                //  'reset' - The operation succeeded and an email was sent to the user
+                //  'not found' - The username wasn't found
+                //  'reset pending' - The operation failed because there is already a password reset for this account
+                //  'error' - Unknown error
+                if (result == 'reset') {
+                    this.showModal(<p>An email has been sent to reset your password.</p>, "Password Reset");
+                } else if (result == 'not found') {
+                    this.showModal(<p>The user account specified was not found.</p>, "Password Reset");
+                } else if (result == 'reset pending') {
+                    this.showModal(<p>An email has been sent to reset your password.</p>, "Password Reset");
+                } else if (result == 'error') {
+                    this.showModal(<p>An error occured trying to reset the password.</p>, "Password Reset");
+                }
+            });
     }
-
+    
+    showPasswordReset = () => {
+        this.showModal(<PassReset onRequestReset={this.submitPasswordResetRequest} />, "Reset Password");
+    }
+            
     onLoginClicked() {
         this.showModal(
-            <Login />,
+            <Login onPasswordReset={this.showPasswordReset} />,
             "Log In"
         );
     }
