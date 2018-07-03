@@ -8,13 +8,34 @@ const sendMail = require('./sendMail');
 
 var businessName = "132 Chapel St LLC"  //TODO: this should be updated from the settings tab or the .env file
 
-sendInv = (usrData) => {
+sendPasswordReset = (userModel) => {
     var rootPath = appSettings.getSetting('urlPrefix') || 'http://localhost:3001/';
-    var fullPath = require('url').resolve(rootPath, '/tenant/activate/' + usrData.activationCode);
+    var fullPath = require('url').resolve(rootPath, '/tenant/activate/' + userModel.activationCode);
+
+    return sendMail({
+        subject: `Password Reset for ${businessName} Account`,
+        body: `Hi ${userModel.fullname},
+
+            This email is in response to a password reset request. Click the following link to set a new password.
+
+            ${fullPath}
+
+            If you did not request a password reset, you can log in and and cancel the request under the "Account" tab. If you continue to receive these messages, contact an administrator.
+
+            Thank you,
+            ${businessName}`,
+        to: userModel
+
+    });
+}
+
+sendInv = (userModel) => {
+    var rootPath = appSettings.getSetting('urlPrefix') || 'http://localhost:3001/';
+    var fullPath = require('url').resolve(rootPath, '/tenant/activate/' + userModel.activationCode);
 
     return sendMail({
         subject: `Welcome to ${businessName}`,
-        body: `Hi ${usrData.fullname},
+        body: `Hi ${userModel.fullname},
 
             Welcome to ${businessName}! We are happy that you are with us and we hope you are enjoying your office in downtown Portsmouth. You can communicate with us through the ${businessName} website. To get started using the website, you will need to activate your account by clicking the link below:
 
@@ -24,7 +45,7 @@ sendInv = (usrData) => {
 
             Thank you,
             ${businessName}`,
-        to: usrData
+        to: userModel
 
     });
 }
@@ -45,4 +66,4 @@ sendACHVerification = (usrData) => {
     });
 }
 
-module.exports = { sendInv: sendInv, sendACHVerification: sendACHVerification };
+module.exports = {sendPasswordReset: sendPasswordReset, sendInv: sendInv, sendACHVerification: sendACHVerification };

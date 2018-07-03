@@ -56,10 +56,17 @@ class Login extends React.Component {
                         onChange={this.onInputChange}
                     />
                     <button onClick={this.handleLogin} className='btn btn-dark'>Log in</button>
+                    <span className='float-right mt-2'><a href='/forgot_password' onClick={this.passReset_click}>Forgot Password?</a></span>
                 </Form>
 
             </div>
         );
+    }
+
+    passReset_click = (e) => {
+        e.preventDefault();
+        if (this.props.onPasswordReset)
+            this.props.onPasswordReset();
     }
 }
 

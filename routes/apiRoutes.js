@@ -175,29 +175,6 @@ var router = express.Router();
    });
     
     router.get('/api/rentAmount', (req, res, next) => {
-        // if (req.user) {
-        //     req.user
-        //         .getUnits({ include: [{ model: db.Payment, where: { paid: false } }] })
-        //         .then(units => {
-        //             var results = [];
-
-        //             units.forEach(unit => {
-        //                 unit.Payments.forEach(payment => {
-        //                     results.push({
-        //                         id: payment.id,
-        //                         unitId: unit.id,
-        //                         paymentId: payment.id,
-        //                         unitName: unit.unitName,
-        //                         amount: payment.amount,
-        //                         due: payment.due_date,
-        //                     });
-        //                 });
-        //             });
-        //             res.json(results);
-        //         });
-        // } else {
-        //     res.json([]); // whole lotta nuffin
-        // }
         return getUserPayments(req, res, { paid: false });
     });
 
@@ -454,6 +431,48 @@ var router = express.Router();
     // POST - Login local (provided by passport)
     router.post('/api/loginLocal', (req, res, next) => {
 
+    });
+
+    // POST - Resets user (allows new password to be entered)
+    // Expects: {
+    //      username: string
+    // }
+    // Returns: {
+    //      result: string,
+    //          // 'reset' - The operation succeeded and an email was sent to the user
+    //          // 'not found' - The username wasn't found
+    //          // 'reset pending' - The operation failed because there is already a password reset for this account
+    //          // 'error' - Unknown error
+    //      error?: string
+    // }
+    router.post('/api/resetUser', (req, res, next) => {
+        if (!req.body || !req.body.username) {
+            return res.status(400).end();
+        }
+
+        db.User
+            .findOne({ where: { local_username: req.username } })
+            .then(foundUser => {
+                if (!foundUser) {
+                    return res.json({
+                        result: 'not found',
+                    })
+                }else if (foundUser.activationCode) {
+                    return res.json({
+                        result: 'reset pending'
+                    })
+                } else {
+                    var activation = uuidv1();
+                    return foundUser
+                        .update({ activationCode: activation })
+                        .then(() => emailSnd.sendPasswordReset(data))
+                        .then(() => {
+                            res.json({
+                                result: 'reset',
+                            });
+                        });
+                }
+            });
     });
 
     // GET - Returns an array of users

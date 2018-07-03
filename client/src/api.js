@@ -38,7 +38,17 @@ function setLocalCreds(localAuthData) {
             console.log(err);
             return { error: (err || {}).toString() };
         })
- }
+}
+ 
+function resetPassword(username) {
+    return axios
+        .post('/api/resetUser', { username: username })
+        .then(response => response.data)
+        .catch(err => {
+            console.log(err);
+            throw err;
+        })
+}
 
  function localLogin(username, password) {
      var localAuthData = {
@@ -304,5 +314,6 @@ export {
     payACH, setupACH, verifyACH,
     markPaymentPaid, getAllOwnUnitPayments,
     getOwnUnits,
-    getAppSettings, changeAppSetting, setLocalCreds, localLogin
+    getAppSettings, changeAppSetting, setLocalCreds, localLogin,
+    resetPassword
 };
