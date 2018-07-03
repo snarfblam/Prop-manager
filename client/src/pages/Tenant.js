@@ -11,6 +11,7 @@ import RequestAch from './modals/RequestAch';
 import Pane from '../components/Pane';
 import Spinner from './modals/Spinner';
 import AchConsent from './modals/AchConsent';
+import moment from 'moment';
 
 declare var StripeCheckout;
 declare var Stripe;
@@ -288,7 +289,8 @@ class Tenant extends Template {
         } else if (col === 'amount') {
             return this.formatDollars(value);
         } else if (col === 'due') {
-            return new Date(value).toLocaleDateString();
+            // return new Date(value).toLocaleDateString();
+            return moment.utc(value).format('MM-DD-YYYY');
         } else {
             return value;
         }

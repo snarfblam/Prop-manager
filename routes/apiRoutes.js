@@ -293,11 +293,32 @@ var router = express.Router();
     router.post('/api/setupACH', (req, res, next) => {
         console.log(req.body)
         req.user.update({stripeACHToken: req.body.token.id, stripeACHVerified: false})
-        .then(data => {
+            .then(data => {
+            // login to get req.user up to date with changes made above
             req.logIn(req.user, err => {
+                // here
+                getStripeCustomer(req, req.user.email)
+                    .then(customer => {
+                        var tokenID = req.user.stripeACHToken;
+
+                        stripe.customers.createSource(customer.id, {
+                            source: tokenID
+                        },
+                        function (err, source) {
+                            if (err) {
+                                console.log(err);
+                                return res.status(500).end();
+                            }
+                        });
+                    }).catch(err => {
+                        res.status(500).end();
+                        console.log(err);
+                    })
+                
                 if(!err) {
-                    emailSnd.sendACHVerification(req.user)
+                    emailSnd.sendACHVerification(req.user)               
                     res.json({result: "success"})
+
                 }
             })            
         }).catch(err => {
@@ -307,42 +328,33 @@ var router = express.Router();
     });
 
     router.post('/api/verifyACH', (req, res, next) => {
+        var amount1 = req.body[0];
+        var amount2 = req.body[1];     
+
+
         getStripeCustomer(req, req.user.email)
             .then(customer => {
-                var tokenID = req.user.stripeACHToken;
-                var amount1 = req.body[0];
-                var amount2 = req.body[1];
-
-                stripe.customers.createSource(customer.id, {
-                    source: tokenID
-                },
-                    function (err, source) {
+                var sourceID =  customer.sources.data.find(source => source.object === 'bank_account').id
+                stripe.customers.verifySource(
+                    customer.id,
+                    sourceID,
+                    { amounts: [amount1, amount2] },
+                    function (err, bankAccount) {
                         if (err) {
                             console.log(err);
                             return res.status(500).end();
                         }
-                        stripe.customers.verifySource(
-                            customer.id,
-                            source.id,
-                            { amounts: [amount1, amount2] },
-                            function (err, bankAccount) {
-                                if (err) {
-                                    console.log(err);
-                                    return res.status(500).end();
-                                }
-                                req.user.update({ stripeACHVerified: true })
-                                    .then(data => {
-                                        res.json({ result: "success" })
-                                    }).catch(err => {
-                                        res.status(500).end();
-                                        console.log(err);
-                                    }
-                                    );
+                        req.user.update({ stripeACHVerified: true })
+                            .then(data => {
+                                res.json({ result: "success" })
+                            }).catch(err => {
+                                res.status(500).end();
+                                console.log(err);
                             }
-                        );
-                    });
-            }
-            ).catch(err => {
+                            );
+                    }
+                );
+            }).catch(err => {
                 res.status(500).end();
                 console.log(err);
             })

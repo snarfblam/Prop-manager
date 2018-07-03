@@ -8,6 +8,7 @@ import * as api from '../api';
 import Pane from '../components/Pane';
 import Button from '../components/Bootstrap/Button';
 import Spinner from './modals/Spinner';
+import moment from 'moment';
 
 class AdminPayments extends Template {
     constructor(props) {
@@ -77,7 +78,8 @@ class AdminPayments extends Template {
         } else if (col == 'paid') {
             return value ? 'Paid' : this.get_MarkPaid_button(item);
         } else if (col == 'due_date') {
-            return new Date(value).toLocaleDateString();
+            // return new Date(value).toLocaleDateString();
+            return moment.utc(value).format('MM-DD-YYYY');
         }
         return '$' + value.toFixed(2);
     }
