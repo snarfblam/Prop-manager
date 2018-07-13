@@ -34,7 +34,7 @@ class TenantAccount extends Template {
     getUnitList = () => {
         api.getOwnUnits()
             .then(response => {
-                this.setState({ unitList: response.units || []});
+                this.setState({ unitList: response || []});
             });
     }
 

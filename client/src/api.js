@@ -1,5 +1,28 @@
 import axios from 'axios';
 
+function makeTspRequest(operation, params) {
+    var requestBody = { operation: operation };
+    if (params) requestBody.parameters = params;
+
+    return axios.post('/api/tsp', requestBody)
+        .then(response => {
+            if (response.status == 200 && response.data) {
+                if(response.data.status == 'error') {
+                    throw Error(response.data.error || 'The server returned an error');
+                } else {
+                    return response.data.result || null;
+                }
+            } else {
+                var errMsg = 'There was an error making the request.';
+                if (response.data && response.data.error) {
+                    errMsg = response.data.error;
+                }
+                errMsg += ' (' + response.status.toString() + ')';
+                
+                throw Error(errMsg);
+            }
+        });
+}
 
 /**
  * Sends a request to the server to create a new user. All required user fields must be
@@ -170,15 +193,11 @@ function getUserStatus() {
         } []
  */
 function getRentDue() {
-    return axios
-        .get('/api/rentAmount')
-        .then(response => response.data);
+    return makeTspRequest('GetOwnDuePayments');
 }
 
 function getAllOwnUnitPayments() {
-    return axios
-        .get('/api/getOwnUnitPayments')
-        .then(response => response.data);
+    return makeTspRequest('GetOwnPayments');
 }
 
 function getUserList() {
@@ -187,8 +206,12 @@ function getUserList() {
         .then(response => response.data);
 }
 
-function getOwnMaintRequest () {
-    return axios.get("/api/getOwnMaintRequest").then(response => response.data);
+function postMaintRequest(message) {
+    return makeTspRequest('PostMaintenanceRequest', { message: message });
+}
+
+function getOwnMaintRequest() {
+    return makeTspRequest("GetOwnMaintenanceRequests");
 }
 
 /**
@@ -287,9 +310,10 @@ function verifyACH(amounts) {
 }
 
 function getOwnUnits() {
-    return axios
-        .get('/api/getOwnUnits')
-        .then(response => response.data);
+    // return axios
+    //     .get('/api/getOwnUnits')
+    //     .then(response => response.data);
+    return makeTspRequest('GetOwnUnits');
 }
 
 function getAppSettings() {
@@ -309,7 +333,7 @@ function changeAppSetting(name, value, description) {
 export {
     createNewUser, activateUser, getUnitList,
     getUserStatus, getRentDue, getUserList,
-    getOwnMaintRequest, getAllMaintRequests, getAllPayments,
+    getOwnMaintRequest, getAllMaintRequests, getAllPayments, postMaintRequest,
     createNewUnit, editUnit, changeStatusMaintRequest,
     payACH, setupACH, verifyACH,
     markPaymentPaid, getAllOwnUnitPayments,

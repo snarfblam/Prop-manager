@@ -73,6 +73,7 @@ class Tenant extends Template {
         });
 
         api.getOwnMaintRequest().then(maintRequests => {
+            console.log(maintRequests)
             this.setState({
                 maintTable: {
                     columns: this.maintRequestColumns,
@@ -317,12 +318,16 @@ class Tenant extends Template {
         // alert('A name was submitted: ' + this.state.value);
         event.preventDefault();
 
-        axios.post('/api/postMaintRequest', {
-            message: this.state.message
-        }).then((resMaint) => {
-            console.log("Post Maintenance Request works!");
-            this.requestMaintData();        
-        });
+        // // axios.post('/api/postMaintRequest', {
+        // //     message: this.state.message
+        // }).then((resMaint) => {
+        //     console.log("Post Maintenance Request works!");
+        //     this.requestMaintData();        
+        // });
+        api.postMaintRequest(this.state.message)
+            .then(res => {
+                this.requestMaintData();
+        })
         this.setState({ message: '' });                          
     }
 

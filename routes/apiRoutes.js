@@ -9,21 +9,26 @@ const keySecret = stripeKeys.SECRET_KEY;
 const stripe = require("stripe")(keySecret);
 const appSettings = require('../appSettings');
 const emailSnd = require('../mail/emailActivation')
+const api = require('./api');
 
 var router = express.Router();
 
+router.post('/api/tsp', (req, res, next) => {
+    api.processRequest(req, res, next);
+})
+
 { // Maintenance Requests
     // POST - Post a maintenance request to the database
-    router.post('/api/postMaintRequest', (req, res, next) => {
-        var data = req.body;
-        req.user.getUnits()
-            .then(function (dbUnits) {
-                data.UnitId = dbUnits[0].id;
-                db.Maintenance.create(data).then(function (dbMaint) {
-                    res.json(dbMaint)
-                })
-            }).catch(console.log);
-    });
+    // router.post('/api/postMaintRequest', (req, res, next) => {
+    //     var data = req.body;
+    //     req.user.getUnits()
+    //         .then(function (dbUnits) {
+    //             data.UnitId = dbUnits[0].id;
+    //             db.Maintenance.create(data).then(function (dbMaint) {
+    //                 res.json(dbMaint)
+    //             })
+    //         }).catch(console.log);
+    // });
 
     // POST - Mark a maintenance request as completed
     router.post('/api/changeStatusMaintRequest', (req, res, next) => {
@@ -40,18 +45,18 @@ var router = express.Router();
         })
     });
 
-    // GET - User gets all of their maintenance requests
-    router.get('/api/getOwnMaintRequest', (req, res, next) => {
-        req.user.getUnits().then(function(dbUnits) {            
-            db.Maintenance.findAll({
-                where: {
-                    UnitId: dbUnits[0].id
-                }
-            }).then(function(dbMaint) {
-                res.json(dbMaint)
-            }) 
-        })
-    });
+    // // GET - User gets all of their maintenance requests
+    // router.get('/api/getOwnMaintRequest', (req, res, next) => {
+    //     req.user.getUnits().then(function(dbUnits) {            
+    //         db.Maintenance.findAll({
+    //             where: {
+    //                 UnitId: dbUnits[0].id
+    //             }
+    //         }).then(function(dbMaint) {
+    //             res.json(dbMaint)
+    //         }) 
+    //     })
+    // });
 
     // POST -  Admin gets all of the maintenance requests that are open
     /* Request body: {
@@ -170,40 +175,40 @@ var router = express.Router();
             })
         });
    
-   router.get('/api/getOwnUnitPayments', (req, res, next) => {
-        return getUserPayments(req, res, {  });
-   });
+//    router.get('/api/getOwnUnitPayments', (req, res, next) => {
+//         return getUserPayments(req, res, {  });
+//    });
     
-    router.get('/api/rentAmount', (req, res, next) => {
-        return getUserPayments(req, res, { paid: false });
-    });
+//     router.get('/api/rentAmount', (req, res, next) => {
+//         return getUserPayments(req, res, { paid: false });
+//     });
 
-    function getUserPayments(req, res, where) {
-        if (req.user) {
-            req.user
-                .getUnits({ include: [{ model: db.Payment, where: where }] })
-                .then(units => {
-                    var results = [];
+    // function getUserPayments(req, res, where) {
+    //     if (req.user) {
+    //         req.user
+    //             .getUnits({ include: [{ model: db.Payment, where: where }] })
+    //             .then(units => {
+    //                 var results = [];
 
-                    units.forEach(unit => {
-                        unit.Payments.forEach(payment => {
-                            results.push({
-                                id: payment.id,
-                                unitId: unit.id,
-                                paymentId: payment.id,
-                                unitName: unit.unitName,
-                                amount: payment.amount,
-                                due: payment.due_date,
-                                paid: payment.paid,
-                            });
-                        });
-                    });
-                    res.json(results);
-                });
-        } else {
-            res.json([]); // whole lotta nuffin
-        }
-    }
+    //                 units.forEach(unit => {
+    //                     unit.Payments.forEach(payment => {
+    //                         results.push({
+    //                             id: payment.id,
+    //                             unitId: unit.id,
+    //                             paymentId: payment.id,
+    //                             unitName: unit.unitName,
+    //                             amount: payment.amount,
+    //                             due: payment.due_date,
+    //                             paid: payment.paid,
+    //                         });
+    //                     });
+    //                 });
+    //                 res.json(results);
+    //             });
+    //     } else {
+    //         res.json([]); // whole lotta nuffin
+    //     }
+    // }
 
     // GET - gets the tenant’s payment history
     router.get('/api/paymentHistory', (req, res, next) => {
@@ -428,10 +433,10 @@ var router = express.Router();
         }
     });
 
-    // POST - Login local (provided by passport)
-    router.post('/api/loginLocal', (req, res, next) => {
+    // // POST - Login local (provided by passport)
+    // router.post('/api/loginLocal', (req, res, next) => {
 
-    });
+    // });
 
     // POST - Resets user (allows new password to be entered)
     // Expects: {

@@ -10,16 +10,19 @@ module.exports = function (sequelize, DataTypes) {
             "authtype           STRING  nullable",
             "local_username     STRING  nullable",
             "googleId           STRING  nullable",
-            "phone              STRING ", { validate: { not: ['[a-z]', 'i'] } },
-            "email              STRING  unique", { validate: { isEmail: true } },
+            "phone              STRING ",
+                { validate: { not: ['[a-z]', 'i'] } },
+            "email              STRING  unique",
+                { validate: { isEmail: true } },
             "address            STRING  nullable",
             "city               STRING  nullable notEmpty",
             "state              STRING  nullable notEmpty",
             "zip                STRING  nullable notEmpty",
             "stripeCustToken    STRING  nullable",
             "stripeACHToken     STRING  nullable",
-            "stripeACHVerified  BOOLEAN required", {defaultValue: false},
-        ])
+            "stripeACHVerified  BOOLEAN required",
+                { defaultValue: false },
+        ]) 
         // {
         //     fullname: {
         //         allowNull: true,
