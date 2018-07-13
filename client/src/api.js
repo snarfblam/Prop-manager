@@ -3,9 +3,12 @@ import axios from 'axios';
 function makeTspRequest(operation, params) {
     var requestBody = { operation: operation };
     if (params) requestBody.parameters = params;
+    var statusCode = null;
 
     return axios.post('/api/tsp', requestBody)
         .then(response => {
+            statusCode = response.status;
+
             if (response.status == 200 && response.data) {
                 if(response.data.status == 'error') {
                     throw Error(response.data.error || 'The server returned an error');
@@ -21,6 +24,8 @@ function makeTspRequest(operation, params) {
                 
                 throw Error(errMsg);
             }
+        }).catch(err => {
+            err.statusCode = statusCode;
         });
 }
 
@@ -33,12 +38,21 @@ function makeTspRequest(operation, params) {
  * @returns {Promise<any>}
  */
 function createNewUser(userData) {
-    return axios
-        .post('/api/createUser', userData)
-        .then(response => {
-            if (response.status !== 200) throw Error('Could not access server to create user.');
-            if (!response.data || !response.data.activationCode) throw Error('Unexpected response from server');
-            return { activationCode: response.data.activationCode };
+    // return axios
+    //     .post('/api/createUser', userData)
+    //     .then(response => {
+    //         if (response.status !== 200) throw Error('Could not access server to create user.');
+    //         if (!response.data || !response.data.activationCode) throw Error('Unexpected response from server');
+    //         return { activationCode: response.data.activationCode };
+    //     }).catch(err => {
+    //         console.log(err);
+    //         return { error: (err || {}).toString() };
+    //     });
+    return makeTspRequest('CreateUser', userData)
+        .then(result => {
+            if (!result.activationCode) throw Error('Unexpected response from server');
+
+            return result;
         }).catch(err => {
             console.log(err);
             return { error: (err || {}).toString() };
@@ -219,14 +233,15 @@ function getOwnMaintRequest() {
  * @param {{open?: boolean} } options
  */
 function getAllMaintRequests(options) {
-    var requestOptions = {};
-    if(options){
-        if (options.open != undefined) requestOptions.where = { status: options.open };
+    var params = {};
+    if (options && options.open != null) {
+        params.where = { status: options.open };
     }
 
-    return axios
-        .post("/api/getAllMaintRequests", requestOptions)
-        .then(response => response.data);
+    // return axios
+    //     .post("/api/getAllMaintRequests", params)
+    //     .then(response => response.data);
+    return makeTspRequest('GetAllMaintenanceRequests', params);
 }
 
 
@@ -236,9 +251,11 @@ function changeStatusMaintRequest(id, booleanvalue) {
     //     if (options.open != undefined) requestOptions.where = { status: options.open };
     // }
 
-    return axios
-        .post("/api/changeStatusMaintRequest", { id : id, status: booleanvalue })
-        .then(response => response.data);
+    // return axios
+    //     .post("/api/changeStatusMaintRequest", { id : id, status: booleanvalue })
+    //     .then(response => response.data);
+    
+    return makeTspRequest('ChangeMaintenanceStatus', { id: id, status: booleanvalue });
 }
 
 
@@ -247,12 +264,14 @@ function changeStatusMaintRequest(id, booleanvalue) {
  * @param {{paid?: boolean} } options
  */
 function getAllPayments(options) {
-    var requestOptions = {};
-    if (options.paid != undefined) requestOptions.where = { paid: options.paid };
+    var params = {};
+    if (options.paid != null) params.where = { paid: options.paid };
 
-    return axios
-        .post("/api/allPayments", requestOptions)
-        .then(response => response.data);
+    // return axios
+    //     .post("/api/allPayments", params)
+    //     .then(response => response.data);
+    return makeTspRequest('GetAllPayments', params);
+
 }
 
 function markPaymentPaid(id) {

@@ -40,6 +40,7 @@
 const db = require('../models');
 const requirements = require('./requirements');
 const tenantOps = require('./tenant');
+const adminOps = require('./admin');
 
 /// Errors ///////////////////////////////////////////////////////////
 
@@ -80,6 +81,7 @@ function NestError(outer, inner) {
 // Collect all operations into a single object
 var operations = {};
 Object.assign(operations, tenantOps);
+Object.assign(operations, adminOps);
 
 function processRequest(req, res, next) {
     if (!req.body || !req.body.operation) {
@@ -105,7 +107,7 @@ function processRequest(req, res, next) {
             }
         }
 
-        operation.execute(req.user, params)
+        operation.execute(req.user || null, params)
             .then(result => {
                 res.json({
                     status: 'success',

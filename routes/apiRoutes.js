@@ -31,19 +31,19 @@ router.post('/api/tsp', (req, res, next) => {
     // });
 
     // POST - Mark a maintenance request as completed
-    router.post('/api/changeStatusMaintRequest', (req, res, next) => {
+    // router.post('/api/changeStatusMaintRequest', (req, res, next) => {
         
-        db.Maintenance.findById(req.body.id).then(function(dbMaint){
-            if(dbMaint) {
-                dbMaint.updateAttributes({
-                    status:  req.body.status    // false means closed || true means open
-                })
-            }
-            res.sendStatus(200)
-        }).catch(function(error) {
-            if(error) throw error;
-        })
-    });
+    //     db.Maintenance.findById(req.body.id).then(function(dbMaint){
+    //         if(dbMaint) {
+    //             dbMaint.updateAttributes({
+    //                 status:  req.body.status    // false means closed || true means open
+    //             })
+    //         }
+    //         res.sendStatus(200)
+    //     }).catch(function(error) {
+    //         if(error) throw error;
+    //     })
+    // });
 
     // // GET - User gets all of their maintenance requests
     // router.get('/api/getOwnMaintRequest', (req, res, next) => {
@@ -63,24 +63,24 @@ router.post('/api/tsp', (req, res, next) => {
         where?: {status?: boolean} // status = true for open maint requests
     }
     */
-    router.post('/api/getAllMaintRequests', (req, res, next) => {
-        // Only allowed for logged-in admins
-        if (!req.user || req.user.role != 'admin') {
-            return res.status(403).end();
-        }
+    // router.post('/api/getAllMaintRequests', (req, res, next) => {
+    //     // Only allowed for logged-in admins
+    //     if (!req.user || req.user.role != 'admin') {
+    //         return res.status(403).end();
+    //     }
         
-        var where = (req.body || {}).where || {};
+    //     var where = (req.body || {}).where || {};
 
-        db.Maintenance.findAll({
-            where: where,
-            include: [db.Unit],
-        }).then(function(dbMaint) {
-            res.json(dbMaint)
-        }).catch(err => {
-            res.status(500).end();
-            console.log(err);
-        });
-    });
+    //     db.Maintenance.findAll({
+    //         where: where,
+    //         include: [db.Unit],
+    //     }).then(function(dbMaint) {
+    //         res.json(dbMaint)
+    //     }).catch(err => {
+    //         res.status(500).end();
+    //         console.log(err);
+    //     });
+    // });
 }
 
 { // Payments
@@ -220,24 +220,24 @@ router.post('/api/tsp', (req, res, next) => {
            where?: {paid?: boolean} 
        }
     */
-    router.post('/api/allPayments', (req, res, next) => {
-        // Only allowed for logged-in admins
-        if (!req.user || req.user.role != 'admin') {
-            return res.status(403).end();
-        }
+    // router.post('/api/allPayments', (req, res, next) => {
+    //     // Only allowed for logged-in admins
+    //     if (!req.user || req.user.role != 'admin') {
+    //         return res.status(403).end();
+    //     }
         
-        var where = (req.body || {}).where || {};
+    //     var where = (req.body || {}).where || {};
 
-        db.Payment.findAll({
-            where: where,
-            include: [db.Unit],
-        }).then(payments => {
-            res.json(payments);
-        }).catch(err => {
-            res.status(500).end();
-            console.log(err);
-        });
-    });
+    //     db.Payment.findAll({
+    //         where: where,
+    //         include: [db.Unit],
+    //     }).then(payments => {
+    //         res.json(payments);
+    //     }).catch(err => {
+    //         res.status(500).end();
+    //         console.log(err);
+    //     });
+    // });
 
     router.post('/api/payACH', (req, res, next) => {
         if(!req.user.stripeACHToken) {
@@ -368,27 +368,27 @@ router.post('/api/tsp', (req, res, next) => {
 
 { // Users
     // POST - Creates a user from the admin dashboard
-    router.post('/api/createUser', (req, res, next) => {
-        var data = req.body;
-        data.activationCode = uuidv1();
-        emailSnd.sendInv(data); // Send the user data and the uuid to the tenant through email
-        data.UnitId = data.unit;
-        data.role = 'tenant';
-        db.Unit.findOne({ where: { id: data.UnitId } }).then(function (findUnit) {
-            console.log(findUnit);
-            db.User.create(data).then(function (dbUser) {
-                findUnit.setUsers([dbUser]);
-                res.json({
-                    activationCode: dbUser.activationCode
-                });
-            }).catch(function (Error) {
-                if (Error) throw console.log(Error);
-            })
-        }).catch(function (Error) {
-            if (Error) throw console.log(Error);
-        })
+    // router.post('/api/createUser', (req, res, next) => {
+    //     var data = req.body;
+    //     data.activationCode = uuidv1();
+    //     emailSnd.sendInv(data); // Send the user data and the uuid to the tenant through email
+    //     data.UnitId = data.unit;
+    //     data.role = 'tenant';
+    //     db.Unit.findOne({ where: { id: data.UnitId } }).then(function (findUnit) {
+    //         // console.log(findUnit);
+    //         db.User.create(data).then(function (dbUser) {
+    //             findUnit.setUsers([dbUser]);
+    //             res.json({
+    //                 activationCode: dbUser.activationCode
+    //             });
+    //         }).catch(function (Error) {
+    //             if (Error) throw console.log(Error);
+    //         })
+    //     }).catch(function (Error) {
+    //         if (Error) throw console.log(Error);
+    //     })
 
-    });
+    // });
 
     // POST - Activates a user
     /* Expects:  {
@@ -652,17 +652,17 @@ router.post('/api/tsp', (req, res, next) => {
             });
     });
 
-    router.get('/api/getOwnUnits', (req, res, next) => {
-        if (!req.user) return res.status(403).end();
+    // router.get('/api/getOwnUnits', (req, res, next) => {
+    //     if (!req.user) return res.status(403).end();
 
-        req.user.getUnits()
-            .then(units => {
-                res.json({ units: units });
-            }).catch(err => {
-                console.log(err);
-                res.status(500).end();
-            });
-    });
+    //     req.user.getUnits()
+    //         .then(units => {
+    //             res.json({ units: units });
+    //         }).catch(err => {
+    //             console.log(err);
+    //             res.status(500).end();
+    //         });
+    // });
 }
 
 // Settings 

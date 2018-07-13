@@ -1,0 +1,52 @@
+- Most API calls are made to a single-point API.
+    - The URL is "/api/tsp"
+    - The request should be a POST request with a json-encoded payload
+        - Must be an object
+        - Must contain a string property named "operation"
+        - May contain an object property named "parameters"        
+    - The server will send a response where
+        - The status code may indicate an error
+        - The payload is a json-encoded object
+        - Will contain a string property named status equal to 'success' or 'error'
+        - Even in the case of an error, the status code may be 200
+            - (Not all errors can or should constitute an HTTP error)
+
+- The server will provide a module to service these requests
+    - The module will import a number of modules where
+        - Each such module will export an object
+            - Each property of the object is a valid "operation object"
+        - All such "operation objects" from all such modules will be collected into
+          a single collection of operation where each operation is identified by the
+          name of the property that contained it
+        - The "operation" string of the request references an operation object
+
+- Operation objects:
+    - Each operation object must have an array property "requirements":
+        - Each item in the array must have a function, "test", which returns a truthy/falsy value
+        - Each item in the array must have a string property, "errorMessage"
+            - This will be used in an error response when the test function returns a falsy value
+    - Each operation object must have a function, "execute"
+        - The function should accept the parameters (user, params)
+            - "user" will be a valid user model, or null if the user is not logged in
+            - "params" will be the params object sent from the front-end with the request
+                - "params" will never be null. If the request does not include a "parameters" 
+                  object, the operation will receive an empty object.
+        - The function must return a promise
+            - If the promise resolves, a response will be sent:
+                - With a status string of "success"
+                - With a "result" property set to the value the promise resolved to
+            - If the promise rejects, a response will be sent:
+                - With a status string of "error"
+                - With an "error" property set to a string value based on the value/error rejected with
+
+- Requests:
+    - The front end will provide a single function that makes requests to the single API endpoint
+        - Accepts parameters (operation, params)
+            - params may be omitted.
+        - Returns a promise
+            - Resolves if the server returns a status code of 200 with a "status" value of "success"
+                - The promise will resolve to the response's "result" value, or null if no "result"
+                  is specified
+            - Rejects with an error in all other scenarios
+                - The error will have a property "statusCode" which will contain the HTTP status of
+                  the response, if available, or otherwise null.
