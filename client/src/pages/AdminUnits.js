@@ -46,7 +46,7 @@ class AdminUnits extends Template {
     requestUnitData() {
         api.getUnitList()
             .then(response => {
-                this.setState({ units: response.units });
+                this.setState({ units: response });
             }).catch(err => {
                 console.log(err);
             });

@@ -113,15 +113,20 @@ function resetPassword(username) {
  * @returns {Promise<any>}
  */
 function createNewUnit(unitData) {
-    return axios
-        .post('/api/createUnit', unitData)
-        .then(response => {
-            if (response.status != 200) throw Error('Could not access server to create unit.');
-            if (!response.data || !response.data.id) throw Error('Unexpected response from server');
-            return response.data;
-        }).catch(err => { 
-            console.log(err);
-            return { error: (err || {}).toString() };
+    // return axios
+    //     .post('/api/createUnit', unitData)
+    //     .then(response => {
+    //         if (response.status != 200) throw Error('Could not access server to create unit.');
+    //         if (!response.data || !response.data.id) throw Error('Unexpected response from server');
+    //         return response.data;
+    //     }).catch(err => { 
+    //         console.log(err);
+    //         return { error: (err || {}).toString() };
+    //     });
+    return makeTspRequest('CreateUnit', unitData)
+        .then(result => {
+            if (!result || !result.id) throw Error('Unexpected response from server');
+            return result;
         });
 }
 
@@ -176,9 +181,11 @@ function activateUser(activationData) {
  * @returns {Promise<any>}
  */
 function getUnitList() {
-    return axios
-        .get('/api/getUnitList')
-        .then(response => response.data);
+    // return axios
+    //     .get('/api/getUnitList')
+    //     .then(response => response.data);
+    return makeTspRequest('GetUnitList');
+    
 }
 
 /**
@@ -215,9 +222,10 @@ function getAllOwnUnitPayments() {
 }
 
 function getUserList() {
-    return axios
-        .get('/api/getUserlist')
-        .then(response => response.data);
+    // return axios
+    //     .get('/api/getUserlist')
+    //     .then(response => response.data);
+    return makeTspRequest('GetUserList');
 }
 
 function postMaintRequest(message) {

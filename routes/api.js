@@ -109,7 +109,7 @@ function processRequest(req, res, next) {
 
         operation.execute(req.user || null, params)
             .then(result => {
-                res.json({
+                return res.json({
                     status: 'success',
                     result: result,
                 });

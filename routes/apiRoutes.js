@@ -480,39 +480,39 @@ router.post('/api/tsp', (req, res, next) => {
             });
     });
 
-    // GET - Returns an array of users
-    router.get('/api/getUserlist', (req, res, next) => {
-        if (req.user && req.user.role == 'admin') {
-            db.User
-                .findAll({})
-                .then(users => {
-                    var userlist = users.map(user => ({
-                        id: user.id,
-                        fullname: user.fullname,
-                        role: user.role,
-                        activated: !user.activationCode,
-                        activationCode: user.activationCode,
-                        phone: user.phone,
-                        email: user.email,
-                        authtype: user.authtype || getAccountType(user),
-                        address: user.address,
-                        city: user.city,
-                        state: user.state,
-                        zip: user.zip,
-                    }));
+    // // GET - Returns an array of users
+    // router.get('/api/getUserlist', (req, res, next) => {
+    //     if (req.user && req.user.role == 'admin') {
+    //         db.User
+    //             .findAll({})
+    //             .then(users => {
+    //                 var userlist = users.map(user => ({
+    //                     id: user.id,
+    //                     fullname: user.fullname,
+    //                     role: user.role,
+    //                     activated: !user.activationCode,
+    //                     activationCode: user.activationCode,
+    //                     phone: user.phone,
+    //                     email: user.email,
+    //                     authtype: user.authtype || getAccountType(user),
+    //                     address: user.address,
+    //                     city: user.city,
+    //                     state: user.state,
+    //                     zip: user.zip,
+    //                 }));
 
-                    res.json(userlist);
-                });
-        } else {
-            return res.status(403).end(); // forbidden
-        }
+    //                 res.json(userlist);
+    //             });
+    //     } else {
+    //         return res.status(403).end(); // forbidden
+    //     }
 
-        function getAccountType(userModel) {
-            if (userModel.googleId) return 'google';
-            if (userModel.local_username) return 'local';
-            return 'other';
-        }
-    });
+    //     function getAccountType(userModel) {
+    //         if (userModel.googleId) return 'google';
+    //         if (userModel.local_username) return 'local';
+    //         return 'other';
+    //     }
+    // });
 
     // GET - Gets a user's log-in status: {status: 'logged out' | 'tenant' | 'admin' }
     router.get("/api/userStatus", (req, res, next) => {
@@ -548,31 +548,31 @@ router.post('/api/tsp', (req, res, next) => {
     //        id: ?,
     //    } []
     // }
-    router.get('/api/getUnitList', (req, res, next) => {
-        // Admin-only route
-        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+    // router.get('/api/getUnitList', (req, res, next) => {
+    //     // Admin-only route
+    //     if (!req.user || req.user.role != 'admin') return res.status(403).end();
 
-        db.Unit
-            .findAll({
-                include: [db.User],
-            })
-            .then(units => {
-                res.json({
-                    units: units.map(unit => ({
-                        unitName: unit.unitName,
-                        id: unit.id,
-                        rate: unit.rate,
-                        users: unit.Users.map(user => ({
-                            id: user.id,
-                            fullname: user.fullname,
-                        })),
-                    }))
-                });
-            }).catch(err => {
-                console.log(err);
-                res.status(500).end();
-            });
-    });
+    //     db.Unit
+    //         .findAll({
+    //             include: [db.User],
+    //         })
+    //         .then(units => {
+    //             res.json({
+    //                 units: units.map(unit => ({
+    //                     unitName: unit.unitName,
+    //                     id: unit.id,
+    //                     rate: unit.rate,
+    //                     users: unit.Users.map(user => ({
+    //                         id: user.id,
+    //                         fullname: user.fullname,
+    //                     })),
+    //                 }))
+    //             });
+    //         }).catch(err => {
+    //             console.log(err);
+    //             res.status(500).end();
+    //         });
+    // });
 
     // POST - Creates a unit.
     /*  Request body: {
