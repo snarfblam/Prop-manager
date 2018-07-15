@@ -144,12 +144,21 @@ function editUnit(id, unitData) {
     var data = { ...unitData, id: id };
     if (data.user) data.users = [data.user];
 
-    return axios
-        .post('/api/editUnit', data)
+    // return axios
+    //     .post('/api/editUnit', data)
+    //     .then(response => {
+    //         if (response.status != 200) throw Error('Could not access server to create unit.');
+    //         if (!response.data || !response.data.id) throw Error('Unexpected response from server');
+    //         return response.data;
+    //     }).catch(err => { 
+    //         console.log(err);
+    //         return { error: (err || {}).toString() };
+    //     });
+    
+    return makeTspRequest('EditUnit', data)
         .then(response => {
-            if (response.status != 200) throw Error('Could not access server to create unit.');
-            if (!response.data || !response.data.id) throw Error('Unexpected response from server');
-            return response.data;
+            if (!response.id) throw Error('Unexpected response from server');
+            return response;
         }).catch(err => { 
             console.log(err);
             return { error: (err || {}).toString() };

@@ -131,6 +131,31 @@ module.exports = {
             }).then(() => ({ id: unitModel.id }));
         }
     },
+
+    EditUnit: {
+        requirements: [requirements.admin],
+        execute: (user, params) => {
+            var values = {};
+            if (params.unitName) values.unitName = params.unitName;
+            if (params.rate) values.rate = params.rate;
+            if (params.users) values.UserIds = params.users;
+
+            var unit;
+            return db.Unit
+                .findById(params.id)
+                .then(foundUnit => {
+                    if (foundUnit == null) throw Error('unit not found');
+                    unit = foundUnit;
+                    return unit.update(values);
+                }).then(foundUnit => {
+                    if (params.users) {
+                        return unit.setUsers(params.users);
+                    }
+                }).then(() => {
+                    return { id: params.id };
+                });
+        }
+    }
 }
 
 function getAuthType(userModel) {

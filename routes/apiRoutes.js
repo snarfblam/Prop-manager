@@ -584,32 +584,32 @@ router.post('/api/tsp', (req, res, next) => {
             id: id
         }
     */  
-    router.post('/api/createUnit', (req, res, next) => {
-        // Admin-only route
-        if (!req.user || req.user.role != 'admin') return res.status(403).end();
+    // router.post('/api/createUnit', (req, res, next) => {
+    //     // Admin-only route
+    //     if (!req.user || req.user.role != 'admin') return res.status(403).end();
         
-        // Find users first
-        var ids = req.body.users;
-        var userPromises = ids.map(id => db.User.findById(id));
-        var unit, users;
+    //     // Find users first
+    //     var ids = req.body.users;
+    //     var userPromises = ids.map(id => db.User.findById(id));
+    //     var unit, users;
 
-        Promise.all(userPromises)
-            .then(foundUsers => {
-                users = foundUsers;
-                return db.Unit.create({
-                    unitName: req.body.unitName,
-                    rate: req.body.rate,
-                });
-            }).then(createdUnit => {
-                unit = createdUnit;
-                return unit.addUsers(users);
-            }).then(() => { 
-                res.json({ id: unit.id });
-            }).catch(err => {
-                console.log(err);
-                res.status(500).send();
-            });
-    });
+    //     Promise.all(userPromises)
+    //         .then(foundUsers => {
+    //             users = foundUsers;
+    //             return db.Unit.create({
+    //                 unitName: req.body.unitName,
+    //                 rate: req.body.rate,
+    //             });
+    //         }).then(createdUnit => {
+    //             unit = createdUnit;
+    //             return unit.addUsers(users);
+    //         }).then(() => { 
+    //             res.json({ id: unit.id });
+    //         }).catch(err => {
+    //             console.log(err);
+    //             res.status(500).send();
+    //         });
+    // });
 
     // POST - Edits a unit.
     /*  Request body: {
@@ -622,35 +622,35 @@ router.post('/api/tsp', (req, res, next) => {
             id: id
         }
     */ 
-    router.post('/api/editUnit', (req, res, next) => {
-        // Admin-only route
-        if (!req.user || req.user.role != 'admin') return res.status(403).end();
-        if (!req.body.id) return res.status(500).send('invalid id').end();
+    // router.post('/api/editUnit', (req, res, next) => {
+    //     // Admin-only route
+    //     if (!req.user || req.user.role != 'admin') return res.status(403).end();
+    //     if (!req.body.id) return res.status(500).send('invalid id').end();
 
-        var values = {};
-        if (req.body.unitName) values.unitName = req.body.unitName;
-        if (req.body.rate) values.rate = req.body.rate;
-        if (req.body.users) values.UserIds = req.body.users;
+    //     var values = {};
+    //     if (req.body.unitName) values.unitName = req.body.unitName;
+    //     if (req.body.rate) values.rate = req.body.rate;
+    //     if (req.body.users) values.UserIds = req.body.users;
 
-        var unit;
-        db.Unit
-            .findById(req.body.id)
-            .then(foundUnit => {
-                if (foundUnit == null) throw Error('unit not found');
-                unit = foundUnit;
-                return unit.update(values);
-            }).then(unit => {
-                if (req.body.users) {
-                    return unit.setUsers(req.body.users);
-                }
-            }).then(() => {
-                res.json({ id: req.body.id });
-            }).catch(err => {
-                console.log(err);
-                res.status(500).send(err.toString()).end();
+    //     var unit;
+    //     db.Unit
+    //         .findById(req.body.id)
+    //         .then(foundUnit => {
+    //             if (foundUnit == null) throw Error('unit not found');
+    //             unit = foundUnit;
+    //             return unit.update(values);
+    //         }).then(unit => {
+    //             if (req.body.users) {
+    //                 return unit.setUsers(req.body.users);
+    //             }
+    //         }).then(() => {
+    //             res.json({ id: req.body.id });
+    //         }).catch(err => {
+    //             console.log(err);
+    //             res.status(500).send(err.toString()).end();
 
-            });
-    });
+    //         });
+    // });
 
     // router.get('/api/getOwnUnits', (req, res, next) => {
     //     if (!req.user) return res.status(403).end();
