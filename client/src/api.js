@@ -1,21 +1,34 @@
 import axios from 'axios';
 
+/**
+ * Makes a request to the TSP API. Returns a promise (see remarks).
+ * @param {*} operation 
+ * @param {*} params 
+ */
+// Remarks: The returned promise rejects if the response is any kind of error.
+//      However, the returned promise has a property, 'any200', which is a promise
+//      that resolves as long as the received response is not a HTTP error (i.e.,
+//      the status code is 200).
+//  
+//      Example: makeTspRequest('getErrorValue').any200.then(...);
 function makeTspRequest(operation, params) {
     var requestBody = { operation: operation };
     if (params) requestBody.parameters = params;
     var statusCode = null;
 
-    return axios.post('/api/tsp', requestBody)
+    var result = axios.post('/api/tsp', requestBody)
         .then(response => {
             statusCode = response.status;
 
             if (response.status == 200 && response.data) {
-                if(response.data.status == 'error') {
+                if (response.data.status == 'error') {
+                    // Throw on error value
                     throw Error(response.data.error || 'The server returned an error');
                 } else {
                     return response.data.result || null;
                 }
             } else {
+                // Throw on HTTP error
                 var errMsg = 'There was an error making the request.';
                 if (response.data && response.data.error) {
                     errMsg = response.data.error;
@@ -25,8 +38,23 @@ function makeTspRequest(operation, params) {
                 throw Error(errMsg);
             }
         }).catch(err => {
+            // Attach HTTP status to error object for reference
             err.statusCode = statusCode;
+            throw err;
         });
+    
+    // Provides a property that allows the caller to treat any 200
+    // response as a resolved promise.
+    result.any200 = result.catch(err => {
+        // Resolve the 
+        if (err.statusCode === 200) {
+            return err;
+        } else {
+            throw err;
+        }
+    });
+
+    return result;
 }
 
 /**
@@ -160,7 +188,6 @@ function editUnit(id, unitData) {
             if (!response.id) throw Error('Unexpected response from server');
             return response;
         }).catch(err => { 
-            console.log(err);
             return { error: (err || {}).toString() };
         });
 }
@@ -172,16 +199,17 @@ function editUnit(id, unitData) {
  * @returns {Promise<any>}
  */
 function activateUser(activationData) {
-    return axios
-        .post('/api/activateUser/', activationData)
-        .then(response => {
-            if (response.status !== 200) throw Error('Could not access server to create user.');
-            if (!response.data || !response.data.result) throw Error('Unexpected response from server');
-            return response.data;
-        }).catch(err => {
-            console.log(err);
-            return { error: (err || {}).toString() };
-        })
+    // return axios
+    //     .post('/api/activateUser/', activationData)
+    //     .then(response => {
+    //         if (response.status !== 200) throw Error('Could not access server to create user.');
+    //         if (!response.data || !response.data.result) throw Error('Unexpected response from server');
+    //         return response.data;
+    //     }).catch(err => {
+    //         console.log(err);
+    //         return { error: (err || {}).toString() };
+    //     })
+    return makeTspRequest('SubmitActivationCode', activationData)
 }
 
 /**
@@ -202,15 +230,16 @@ function getUnitList() {
  * {status: 'logged out' | 'tenant' | 'admin'}
  */
 function getUserStatus() {
-    return axios
-        .get('/api/userStatus')
-        .catch(err => {
-            console.log(err);
-            return { data: { status: 'connection failed' } };
-        })
-        .then(response => {
-            return response.data;
-        });
+    // return axios
+    //     .get('/api/userStatus')
+    //     .catch(err => {
+    //         console.log(err);
+    //         return { data: { status: 'connection failed' } };
+    //     })
+    //     .then(response => {
+    //         return response.data;
+    //     });
+    return makeTspRequest('GetUserStatus');
 }
 
 /** Requests a list of due rent payments from the server.
@@ -292,8 +321,9 @@ function getAllPayments(options) {
 }
 
 function markPaymentPaid(id) {
-    return axios
-        .post('/api/markPaid', { id: id });
+    // return axios
+    //     .post('/api/markPaid', { id: id });
+    return makeTspRequest('MarkInvoicePaid', { id: id });
 }
 
 /**
@@ -304,14 +334,19 @@ function markPaymentPaid(id) {
  * @param {number[]} invoiceNumbers - ID for Payment records to be paid
  }
  */
+function submitPaymentCardToken(token) {
+    return makeTspRequest('SubmitCardPayment', token);
+}
+
 function payACH(invoiceNumbers) {
-    return axios
-        .post('/api/payACH', { invoiceList: invoiceNumbers })
-        .then(response => response.data)
-        .catch(err => {
-            console.log(err);
-            return { result: 'error', error: err.toString() };
-        });
+    return makeTspRequest('PayACH', { invoiceList: invoiceNumbers }).any200;
+    // return axios
+    //     .post('/api/payACH', { invoiceList: invoiceNumbers })
+    //     .then(response => response.data)
+    //     .catch(err => {
+    //         console.log(err);
+    //         return { result: 'error', error: err.toString() };
+    //     });
 }
 
 /**
@@ -322,13 +357,14 @@ function payACH(invoiceNumbers) {
  * @param {{name: string, accountType: string, accountNumber: string, accountRouting: string}} accountDetails - Account information
  */
 function setupACH(token) {
-    return axios
-        .post('/api/setupACH', token)
-        .then(response => response.data)
-        .catch(err => {
-            console.log(err);
-            return { result: 'error', error: err.toString() };
-        });
+    // return axios
+    //     .post('/api/setupACH', token)
+    //     .then(response => response.data)
+    //     .catch(err => {
+    //         console.log(err);
+    //         return { result: 'error', error: err.toString() };
+    //     });
+    return makeTspRequest('SetupACH', token);
 }
 
 /**
@@ -336,13 +372,14 @@ function setupACH(token) {
  * @param {number[]} amounts - Amount of each verification deposit made by stripe
  */
 function verifyACH(amounts) {
-    return axios
-        .post('/api/verifyACH', amounts)
-        .then(response => response.data)
-        .catch(err => {
-            console.log(err);
-            return { result: 'error', error: err.toString() };
-        });
+    // return axios
+    //     .post('/api/verifyACH', amounts)
+    //     .then(response => response.data)
+    //     .catch(err => {
+    //         console.log(err);
+    //         return { result: 'error', error: err.toString() };
+    //     });
+    return makeTspRequest('VerifyACH', amounts);
 }
 
 function getOwnUnits() {
@@ -353,17 +390,24 @@ function getOwnUnits() {
 }
 
 function getAppSettings() {
-    return axios
-        .get('/api/getSettings')
-        .then(response => response.data);
+    // return axios
+    //     .get('/api/getSettings')
+    //     .then(response => response.data);
+    return makeTspRequest('GetSettings')
+        .then(settingList => ({ settings: settingList }));
 }
 
 function changeAppSetting(name, value, description) {
-    return axios
-        .post(
-            '/api/changeSettings',
-            { settings: [{ name: name, value: value, description: description }] }
-        ).then(response => response.data);
+    // return axios
+    //     .post(
+    //         '/api/changeSettings',
+    //         { settings: [{ name: name, value: value, description: description }] }
+    // ).then(response => response.data);
+    
+    return makeTspRequest(
+        'ChangeSettings',
+        [{ name: name, value: value, description: description }]
+    );
 }
 
 export {
@@ -371,7 +415,7 @@ export {
     getUserStatus, getRentDue, getUserList,
     getOwnMaintRequest, getAllMaintRequests, getAllPayments, postMaintRequest,
     createNewUnit, editUnit, changeStatusMaintRequest,
-    payACH, setupACH, verifyACH,
+    submitPaymentCardToken, payACH, setupACH, verifyACH,
     markPaymentPaid, getAllOwnUnitPayments,
     getOwnUnits,
     getAppSettings, changeAppSetting, setLocalCreds, localLogin,

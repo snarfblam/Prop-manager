@@ -59,7 +59,7 @@ class TenantVerifyACH extends Template {
             api
                 .verifyACH([parseInt(this.state.amnt1), parseInt(this.state.amnt2)])
                 .then(response => {
-                    if (response.result == 'success') {
+                    if (response == 'success') {
                         this.setState({ verified: true });
                         this.showModal((
                             <div>

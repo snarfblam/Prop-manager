@@ -90,7 +90,8 @@ class AdminSettings extends Template {
 
         api
             .changeAppSetting(name, value, description)
-            .catch(err => err) // forward err to .then
+            .then(response => ({result: 'success'}))
+            .catch(err => ({result: 'error', error: err})) // forward err to .then
             .then(response => {
                 var newPending = this.state.pendingSettings;
                 var index = newPending.indexOf(name);

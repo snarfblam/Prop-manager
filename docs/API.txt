@@ -26,7 +26,7 @@
         - Each item in the array must have a string property, "errorMessage"
             - This will be used in an error response when the test function returns a falsy value
     - Each operation object must have a function, "execute"
-        - The function should accept the parameters (user, params)
+        - The function will be passed the parameters (user, params, request)
             - "user" will be a valid user model, or null if the user is not logged in
             - "params" will be the params object sent from the front-end with the request
                 - "params" will never be null. If the request does not include a "parameters" 
@@ -38,6 +38,8 @@
             - If the promise rejects, a response will be sent:
                 - With a status string of "error"
                 - With an "error" property set to a string value based on the value/error rejected with
+                - With a status code of 200 if the promise rejected with a string
+                - With a status code of 500 if the promise rejected with an Error object
 
 - Requests:
     - The front end will provide a single function that makes requests to the single API endpoint

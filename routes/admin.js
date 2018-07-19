@@ -8,6 +8,7 @@ const db = require('../models');
 const requirements = require('./requirements');
 const uuidv1 = require('uuid/v1');
 const mailer = require('../mail/emailActivation')
+const appSettings = require('../appSettings');
 
 
 /// Operations ///////////////////////////////////////////////////////
@@ -154,6 +155,24 @@ module.exports = {
                 }).then(() => {
                     return { id: params.id };
                 });
+        }
+    },
+
+    GetSettings: {
+        requirements: [requirements.admin],
+        execute: (user, params) =>
+            Promise.resolve(appSettings.getAllSettings())
+    },
+
+    ChangeSettings: {
+        requirements: [requirements.admin],
+        execute: (user, params) => {
+            if (!Array.isArray(params)) throw 'Expected: array';
+    
+            var pendingChanges = params.map(
+                setting => appSettings.changeSetting(setting.name, setting.value, setting.description));
+    
+            return Promise.all(pendingChanges);
         }
     }
 }

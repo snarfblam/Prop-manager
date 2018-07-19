@@ -142,20 +142,21 @@ class Tenant extends Template {
               account_holder_name: data.name,
               account_holder_type: data.accountType,
               routing_number: data.accountRouting,
-              account_number: data.accountNumber
-        }).then(token => {
-            console.log(token);
-            axios.post('/api/setupACH', token)
-            .then(response => {
+            account_number: data.accountNumber
+        })
+            .then(token => api.setupACH(token))
+            .then(result => {
+            console.log(result);
+            // axios.post('/api/setupACH', token)
+            // .then(response => {
                 console.log('Token Sent');
                 this.showModal(<p>Your account details have been submitted. An email will be sent with instructions to verify the account.</p>, "Account Submitted");
                 this.refreshUser();
-            }).catch(error => {
+            })
+            .catch(error => {
                 console.log(error);
                 this.showModal(<p>There was an error submitting your account information.</p>, "Error");
             });
-        })
-        
 
         // api.setupACH(data)
         //     .then(response => {
@@ -185,12 +186,12 @@ class Tenant extends Template {
         
         api.payACH(this.state.checkedPaymentIds)
             .then(response => {
-                if (response.result == 'paid') {
+                if (response == 'paid') {
                     this.showModal(<p>Your payment has been submitted via ACH.</p>, 'Payment Submitted');
                     this.requestRentData();
-                } else if (response.result == 'needs verification') {
+                } else if (response == 'needs verification') {
                     this.showModal(<p>Your account has not been verified. Please see the email that was sent when you requested ACH service.</p>, 'ACH Not Verified');
-                } else if (response.result == 'needs setup') {
+                } else if (response == 'needs setup') {
                     this.showModal(<RequestAch onRequestAch={this.requestACH} />, 'Request ACH Service');
                 } else {
                     this.showModal(<p>There was an error submitting the request. Please contact your property manager for more information.</p>, 'Error');
@@ -207,9 +208,10 @@ class Tenant extends Template {
 
         this.setState({ processingPayment: true });
 
-        axios.post("/api/submitPayment", token)
+        api.submitPaymentCardToken(token)
+        // axios.post("/api/submitPayment", token)
             .then(response => {
-                var output = response.data;
+                var output = response; //.data;
                 
                 console.log(output);
 

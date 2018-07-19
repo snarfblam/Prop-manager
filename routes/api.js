@@ -39,8 +39,13 @@
 /// Modules //////////////////////////////////////////////////////////
 const db = require('../models');
 const requirements = require('./requirements');
-const tenantOps = require('./tenant');
-const adminOps = require('./admin');
+const allOperations = [
+    require('./tenant'),
+    require('./admin'),
+    require('./user'),
+    require('./payments'),
+];
+
 
 /// Errors ///////////////////////////////////////////////////////////
 
@@ -80,8 +85,7 @@ function NestError(outer, inner) {
 
 // Collect all operations into a single object
 var operations = {};
-Object.assign(operations, tenantOps);
-Object.assign(operations, adminOps);
+allOperations.forEach(op => Object.assign(operations, op));
 
 function processRequest(req, res, next) {
     if (!req.body || !req.body.operation) {
@@ -107,7 +111,8 @@ function processRequest(req, res, next) {
             }
         }
 
-        operation.execute(req.user || null, params)
+        // If operation.execute returns a non-promise value, it's converted to a promise
+        ExecuteOperation(operation, req.user || null, params, req)
             .then(result => {
                 return res.json({
                     status: 'success',
@@ -121,15 +126,17 @@ function processRequest(req, res, next) {
 
                 if (err instanceof Error) {
                     status = 500;
-                    errMsg = err.message;
+                    errMsg = err.message || errMsg;
                 }
 
                 res.json({
                     status: 'error',
                     error: errMsg,
-                })
-            })
-    } catch (err) {
+                });
+            });
+    
+    }
+    catch (err) {
         console.error("Unhandled API error", err);
         if (!res.headersSent) res.status(500);
         if (!res.finished) res.json({
@@ -139,6 +146,15 @@ function processRequest(req, res, next) {
     }
 }
 
+// Executes an operation and returns a promise, even if the operation
+// runs syncronously.
+function ExecuteOperation(op, user, params, req) {
+    try {
+        return Promise.resolve(op.execute(user, params, req));
+    } catch (err) {
+        return Promise.reject(err);
+    }
+}
 
 /// Operations ///////////////////////////////////////////////////////
 
