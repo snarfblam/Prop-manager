@@ -1,9 +1,22 @@
+/*
+    Provides a programmatic interface to the TSP API.
+
+    Note: most operations should be nothing more than a simple call to
+    makeTspRequest. However, certain functions manipulate the returned
+    promise. This is generally legacy code that should be refactored.
+
+    The idea behind the big refactor of the API is to simplify and 
+    streamline interaction with the server to a simple send-an-object
+    get-an-object approach. 
+*/
+
 import axios from 'axios';
 
 /**
  * Makes a request to the TSP API. Returns a promise (see remarks).
- * @param {*} operation 
- * @param {*} params 
+ * @param {string} operation The name of the operation to be performed
+ * @param {*} params Any parameters to be sent for the operation. Can be omitted.
+ * @returns {Promise<any>}
  */
 // Remarks: The returned promise rejects if the response is any kind of error.
 //      However, the returned promise has a property, 'any200', which is a promise
@@ -37,7 +50,8 @@ function makeTspRequest(operation, params) {
                 
                 throw Error(errMsg);
             }
-        }).catch(err => {
+        })
+        .catch(err => {
             // Attach HTTP status to error object for reference
             err.statusCode = statusCode;
             throw err;
@@ -46,10 +60,11 @@ function makeTspRequest(operation, params) {
     // Provides a property that allows the caller to treat any 200
     // response as a resolved promise.
     result.any200 = result.catch(err => {
-        // Resolve the 
+        // Resolve to the error value instead of rejecting
         if (err.statusCode === 200) {
             return err;
         } else {
+            // HTTP errors are still errors
             throw err;
         }
     });
@@ -66,25 +81,13 @@ function makeTspRequest(operation, params) {
  * @returns {Promise<any>}
  */
 function createNewUser(userData) {
-    // return axios
-    //     .post('/api/createUser', userData)
-    //     .then(response => {
-    //         if (response.status !== 200) throw Error('Could not access server to create user.');
-    //         if (!response.data || !response.data.activationCode) throw Error('Unexpected response from server');
-    //         return { activationCode: response.data.activationCode };
-    //     }).catch(err => {
-    //         console.log(err);
-    //         return { error: (err || {}).toString() };
-    //     });
     return makeTspRequest('CreateUser', userData)
         .then(result => {
             if (!result.activationCode) throw Error('Unexpected response from server');
 
             return result;
-        }).catch(err => {
-            console.log(err);
-            return { error: (err || {}).toString() };
-        });
+        })
+        .catch(err => ({ error: (err || {}).toString() }));
 }
 
 /**
@@ -93,13 +96,13 @@ function createNewUser(userData) {
  * @param {any} localAuthData
  * @returns {Promise<any>}
  */
-
 function setLocalCreds(localAuthData) {
     return axios
         .post('/auth/signup', localAuthData)
         .then(response => {
             return response.data;
-        }).catch(err => {
+        })
+        .catch(err => {
             console.log(err);
             return { error: (err || {}).toString() };
         })
@@ -115,18 +118,19 @@ function resetPassword(username) {
         })
 }
 
- function localLogin(username, password) {
-     var localAuthData = {
-         username: username,
-         password: password
-     }
-     return axios
-            .post('/auth/login', localAuthData).then(response => {
-               return response.data;
-            }).catch(err => {
-                return { error: (err || {}).toString() };
-            });
- }
+function localLogin(username, password) {
+    var localAuthData = {
+        username: username,
+        password: password
+    }
+    return axios
+        .post('/auth/login', localAuthData).then(response => {
+            return response.data;
+        })
+        .catch(err => {
+            return { error: (err || {}).toString() };
+        });
+}
 
 /**
  * Sends a request to the server to create a new unit. Expects {
@@ -141,16 +145,6 @@ function resetPassword(username) {
  * @returns {Promise<any>}
  */
 function createNewUnit(unitData) {
-    // return axios
-    //     .post('/api/createUnit', unitData)
-    //     .then(response => {
-    //         if (response.status != 200) throw Error('Could not access server to create unit.');
-    //         if (!response.data || !response.data.id) throw Error('Unexpected response from server');
-    //         return response.data;
-    //     }).catch(err => { 
-    //         console.log(err);
-    //         return { error: (err || {}).toString() };
-    //     });
     return makeTspRequest('CreateUnit', unitData)
         .then(result => {
             if (!result || !result.id) throw Error('Unexpected response from server');
@@ -172,24 +166,12 @@ function editUnit(id, unitData) {
     var data = { ...unitData, id: id };
     if (data.user) data.users = [data.user];
 
-    // return axios
-    //     .post('/api/editUnit', data)
-    //     .then(response => {
-    //         if (response.status != 200) throw Error('Could not access server to create unit.');
-    //         if (!response.data || !response.data.id) throw Error('Unexpected response from server');
-    //         return response.data;
-    //     }).catch(err => { 
-    //         console.log(err);
-    //         return { error: (err || {}).toString() };
-    //     });
-    
     return makeTspRequest('EditUnit', data)
         .then(response => {
             if (!response.id) throw Error('Unexpected response from server');
             return response;
-        }).catch(err => { 
-            return { error: (err || {}).toString() };
-        });
+        })
+        .catch(err => ({ error: (err || {}).toString() }));
 }
 
 /**
@@ -199,16 +181,6 @@ function editUnit(id, unitData) {
  * @returns {Promise<any>}
  */
 function activateUser(activationData) {
-    // return axios
-    //     .post('/api/activateUser/', activationData)
-    //     .then(response => {
-    //         if (response.status !== 200) throw Error('Could not access server to create user.');
-    //         if (!response.data || !response.data.result) throw Error('Unexpected response from server');
-    //         return response.data;
-    //     }).catch(err => {
-    //         console.log(err);
-    //         return { error: (err || {}).toString() };
-    //     })
     return makeTspRequest('SubmitActivationCode', activationData)
 }
 
@@ -218,9 +190,6 @@ function activateUser(activationData) {
  * @returns {Promise<any>}
  */
 function getUnitList() {
-    // return axios
-    //     .get('/api/getUnitList')
-    //     .then(response => response.data);
     return makeTspRequest('GetUnitList');
     
 }
@@ -230,15 +199,6 @@ function getUnitList() {
  * {status: 'logged out' | 'tenant' | 'admin'}
  */
 function getUserStatus() {
-    // return axios
-    //     .get('/api/userStatus')
-    //     .catch(err => {
-    //         console.log(err);
-    //         return { data: { status: 'connection failed' } };
-    //     })
-    //     .then(response => {
-    //         return response.data;
-    //     });
     return makeTspRequest('GetUserStatus');
 }
 
@@ -260,9 +220,6 @@ function getAllOwnUnitPayments() {
 }
 
 function getUserList() {
-    // return axios
-    //     .get('/api/getUserlist')
-    //     .then(response => response.data);
     return makeTspRequest('GetUserList');
 }
 
@@ -284,23 +241,11 @@ function getAllMaintRequests(options) {
         params.where = { status: options.open };
     }
 
-    // return axios
-    //     .post("/api/getAllMaintRequests", params)
-    //     .then(response => response.data);
     return makeTspRequest('GetAllMaintenanceRequests', params);
 }
 
 
 function changeStatusMaintRequest(id, booleanvalue) {
-    // var requestOptions = {};
-    // if(options){
-    //     if (options.open != undefined) requestOptions.where = { status: options.open };
-    // }
-
-    // return axios
-    //     .post("/api/changeStatusMaintRequest", { id : id, status: booleanvalue })
-    //     .then(response => response.data);
-    
     return makeTspRequest('ChangeMaintenanceStatus', { id: id, status: booleanvalue });
 }
 
@@ -313,16 +258,11 @@ function getAllPayments(options) {
     var params = {};
     if (options.paid != null) params.where = { paid: options.paid };
 
-    // return axios
-    //     .post("/api/allPayments", params)
-    //     .then(response => response.data);
     return makeTspRequest('GetAllPayments', params);
 
 }
 
 function markPaymentPaid(id) {
-    // return axios
-    //     .post('/api/markPaid', { id: id });
     return makeTspRequest('MarkInvoicePaid', { id: id });
 }
 
@@ -340,13 +280,6 @@ function submitPaymentCardToken(token) {
 
 function payACH(invoiceNumbers) {
     return makeTspRequest('PayACH', { invoiceList: invoiceNumbers }).any200;
-    // return axios
-    //     .post('/api/payACH', { invoiceList: invoiceNumbers })
-    //     .then(response => response.data)
-    //     .catch(err => {
-    //         console.log(err);
-    //         return { result: 'error', error: err.toString() };
-    //     });
 }
 
 /**
@@ -357,13 +290,6 @@ function payACH(invoiceNumbers) {
  * @param {{name: string, accountType: string, accountNumber: string, accountRouting: string}} accountDetails - Account information
  */
 function setupACH(token) {
-    // return axios
-    //     .post('/api/setupACH', token)
-    //     .then(response => response.data)
-    //     .catch(err => {
-    //         console.log(err);
-    //         return { result: 'error', error: err.toString() };
-    //     });
     return makeTspRequest('SetupACH', token);
 }
 
@@ -372,38 +298,19 @@ function setupACH(token) {
  * @param {number[]} amounts - Amount of each verification deposit made by stripe
  */
 function verifyACH(amounts) {
-    // return axios
-    //     .post('/api/verifyACH', amounts)
-    //     .then(response => response.data)
-    //     .catch(err => {
-    //         console.log(err);
-    //         return { result: 'error', error: err.toString() };
-    //     });
     return makeTspRequest('VerifyACH', amounts);
 }
 
 function getOwnUnits() {
-    // return axios
-    //     .get('/api/getOwnUnits')
-    //     .then(response => response.data);
     return makeTspRequest('GetOwnUnits');
 }
 
 function getAppSettings() {
-    // return axios
-    //     .get('/api/getSettings')
-    //     .then(response => response.data);
     return makeTspRequest('GetSettings')
         .then(settingList => ({ settings: settingList }));
 }
 
 function changeAppSetting(name, value, description) {
-    // return axios
-    //     .post(
-    //         '/api/changeSettings',
-    //         { settings: [{ name: name, value: value, description: description }] }
-    // ).then(response => response.data);
-    
     return makeTspRequest(
         'ChangeSettings',
         [{ name: name, value: value, description: description }]
